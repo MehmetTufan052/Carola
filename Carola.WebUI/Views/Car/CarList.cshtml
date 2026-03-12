@@ -1,0 +1,91 @@
+﻿
+@{
+    ViewData["Title"] = "CarList";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<main id="content">
+
+    <!-- Page header -->
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Araç Listesi</h1>
+            <p class="page-subtitle">Filodaki tüm araçları yönetin, ekleyin veya düzenleyin.</p>
+        </div>
+        <button class="btn-accent" onclick="showAddModal()">
+            <i class="bi bi-plus-lg"></i> Araç Ekle
+        </button>
+    </div>
+
+    <!-- Stats row -->
+    <div class="row stats-row g-3">
+        <div class="col-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-icon yellow"><i class="bi bi-car-front"></i></div>
+                <div>
+                    <div class="stat-value">10</div>
+                    <div class="stat-label">Toplam Araç</div>
+                </div>
+                <span class="stat-badge up">+2 bu ay</span>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-icon green"><i class="bi bi-check-circle"></i></div>
+                <div>
+                    <div class="stat-value">7</div>
+                    <div class="stat-label">Müsait</div>
+                </div>
+                <span class="stat-badge up">+1</span>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-icon blue"><i class="bi bi-clock-history"></i></div>
+                <div>
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Kirada</div>
+                </div>
+                <span class="stat-badge down">-1</span>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-icon red"><i class="bi bi-currency-dollar"></i></div>
+                <div>
+                    <div class="stat-value">₺48K</div>
+                    <div class="stat-label">Bu Ay Gelir</div>
+                </div>
+                <span class="stat-badge up">+12%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+        <div class="toolbar-search">
+            <i class="bi bi-search"></i>
+            <input type="text" placeholder="Araç ara..." id="cardSearch" oninput="filterCards(this.value)" />
+        </div>
+        <button class="btn-outline">
+            <i class="bi bi-funnel"></i> Filtrele
+        </button>
+        <button class="btn-outline">
+            <i class="bi bi-arrow-down-up"></i> Sırala
+        </button>
+        <div class="filter-tabs ms-auto">
+            <button class="filter-tab active" onclick="setFilter('all', this)">Tümü</button>
+            <button class="filter-tab" onclick="setFilter('available', this)">Müsait</button>
+            <button class="filter-tab" onclick="setFilter('rented', this)">Kirada</button>
+            <button class="filter-tab" onclick="setFilter('sedan', this)">Sedan</button>
+            <button class="filter-tab" onclick="setFilter('suv', this)">SUV</button>
+        </div>
+    </div>
+
+    <!-- Vehicles Grid -->
+    <div class="vehicles-grid" id="vehiclesGrid">
+        <!-- Cards injected by JS -->
+    </div>
+
+</main>
+

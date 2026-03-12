@@ -1,0 +1,1100 @@
+﻿
+@{
+    ViewData["Title"] = "CreateCar";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+    :root {
+        --bg-dark: #0d0f14;
+        --bg-dark2: #13161e;
+        --bg-dark3: #1a1e2a;
+        --accent: #e8ff47;
+        --accent-dim: rgba(232,255,71,.12);
+        --accent2: #4f8dff;
+        --accent2-dim: rgba(79,141,255,.12);
+        --danger: #ff5259;
+        --success: #30e0a1;
+        --warning: #ffb547;
+        --border: rgba(255,255,255,.07);
+        --text: #e2e8f0;
+        --text-muted: #7a8499;
+        --radius: 12px;
+        --radius-lg: 18px;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body, .root {
+        background: var(--bg-dark);
+        color: var(--text);
+        font-family: 'DM Sans', 'Segoe UI', sans-serif;
+    }
+
+    .root {
+        padding: 28px;
+    }
+
+    /* Page header */
+    .page-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 28px;
+        flex-wrap: wrap;
+    }
+
+    .page-title {
+        font-family: 'Syne', Georgia, sans-serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1;
+    }
+
+    .page-subtitle {
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-top: 5px;
+    }
+
+    /* Breadcrumb trail */
+    .breadcrumb-trail {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-bottom: 6px;
+    }
+
+        .breadcrumb-trail span {
+            color: var(--text);
+        }
+
+        .breadcrumb-trail i {
+            font-size: 10px;
+        }
+
+    /* Buttons */
+    .btn-accent {
+        background: var(--accent);
+        color: #0d0f14;
+        border: none;
+        border-radius: 10px;
+        padding: 9px 18px;
+        font-size: 13px;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        transition: opacity .2s;
+    }
+
+        .btn-accent:hover {
+            opacity: .85;
+        }
+
+    .btn-outline {
+        background: transparent;
+        color: var(--text-muted);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 9px 18px;
+        font-size: 13px;
+        font-weight: 500;
+        font-family: inherit;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        transition: background .2s, color .2s;
+    }
+
+        .btn-outline:hover {
+            background: var(--bg-dark2);
+            color: var(--text);
+        }
+
+    /* Main grid layout */
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        gap: 20px;
+        align-items: start;
+    }
+    @@media (max-width: 900px) {
+        .form-grid
+
+    {
+        grid-template-columns: 1fr;
+    }
+
+    }
+
+    /* Section card */
+    .section-card {
+        background: var(--bg-dark2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+
+    .section-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .section-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        display: grid;
+        place-items: center;
+        font-size: 15px;
+        flex-shrink: 0;
+    }
+
+        .section-icon.yellow {
+            background: var(--accent-dim);
+            color: var(--accent);
+        }
+
+        .section-icon.blue {
+            background: var(--accent2-dim);
+            color: var(--accent2);
+        }
+
+        .section-icon.green {
+            background: rgba(48,224,161,.1);
+            color: var(--success);
+        }
+
+        .section-icon.purple {
+            background: rgba(167,139,250,.1);
+            color: #a78bfa;
+        }
+
+    .section-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    .section-subtitle {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-top: 1px;
+    }
+
+    .section-body {
+        padding: 20px;
+    }
+
+    /* Field grid */
+    .field-row {
+        display: grid;
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+        .field-row.cols-2 {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .field-row.cols-3 {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .field-row.cols-1 {
+            grid-template-columns: 1fr;
+        }
+    @@media (max-width: 600px) {
+        .field-row.cols-2, .field-row.cols-3
+
+    {
+        grid-template-columns: 1fr;
+    }
+
+    }
+
+    .field-row:last-child {
+        margin-bottom: 0;
+    }
+
+    /* Form field */
+    .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+        .field label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: .6px;
+        }
+
+        .field .hint {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: -2px;
+        }
+
+    .required-dot {
+        color: var(--danger);
+        margin-left: 3px;
+    }
+
+    /* Inputs */
+    .field input, .field select, .field textarea {
+        background: var(--bg-dark3);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        color: var(--text);
+        padding: 10px 13px;
+        font-size: 13px;
+        font-family: inherit;
+        outline: none;
+        width: 100%;
+        transition: border .2s, box-shadow .2s;
+        appearance: none;
+        -webkit-appearance: none;
+    }
+
+        .field input::placeholder, .field textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .field input:focus, .field select:focus, .field textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-dim);
+        }
+
+        .field input.error {
+            border-color: var(--danger);
+            box-shadow: 0 0 0 3px rgba(255,82,89,.12);
+        }
+
+    .field select {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a8499' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        padding-right: 32px;
+        cursor: pointer;
+    }
+
+        .field select option {
+            background: #13161e;
+        }
+
+    .field textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    /* Input with prefix/suffix */
+    .input-wrap {
+        position: relative;
+    }
+
+    .input-prefix {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 13px;
+        color: var(--text-muted);
+        pointer-events: none;
+    }
+
+    .input-suffix {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 12px;
+        color: var(--text-muted);
+        pointer-events: none;
+        white-space: nowrap;
+    }
+
+    .input-wrap input {
+        padding-left: 24px;
+    }
+
+    .input-wrap.has-suffix input {
+        padding-right: 50px;
+    }
+
+    /* Toggle switch */
+    .toggle-field {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .toggle-label {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text);
+    }
+
+    .toggle-desc {
+        font-size: 12px;
+        color: var(--text-muted);
+    }
+
+    .toggle {
+        position: relative;
+        width: 44px;
+        height: 24px;
+        flex-shrink: 0;
+        background: var(--bg-dark3);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        cursor: pointer;
+        transition: background .2s, border-color .2s;
+    }
+
+        .toggle.on {
+            background: var(--accent-dim);
+            border-color: rgba(232,255,71,.3);
+        }
+
+    .toggle-knob {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--text-muted);
+        transition: left .2s, background .2s;
+    }
+
+    .toggle.on .toggle-knob {
+        left: 23px;
+        background: var(--accent);
+    }
+
+    /* Image URL preview */
+    .img-preview {
+        width: 100%;
+        height: 160px;
+        border-radius: 10px;
+        background: var(--bg-dark3);
+        border: 1px dashed var(--border);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        overflow: hidden;
+        transition: border-color .2s;
+    }
+
+        .img-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 9px;
+            display: none;
+        }
+
+        .img-preview .placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .img-preview.has-img .placeholder {
+            display: none;
+        }
+
+        .img-preview.has-img img {
+            display: block;
+        }
+
+    .img-preview-icon {
+        font-size: 28px;
+        color: var(--text-muted);
+    }
+
+    .img-preview-label {
+        font-size: 12px;
+        color: var(--text-muted);
+        text-align: center;
+    }
+
+    /* Right sidebar cards */
+    .sidebar-card {
+        background: var(--bg-dark2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+
+    .sidebar-card-head {
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--border);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    .sidebar-card-body {
+        padding: 16px 18px;
+    }
+
+    /* Summary row */
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+    .summary-key {
+        font-size: 12px;
+        color: var(--text-muted);
+    }
+
+    .summary-val {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text);
+    }
+
+        .summary-val.accent {
+            color: var(--accent);
+        }
+
+        .summary-val.empty {
+            color: var(--text-muted);
+            font-style: italic;
+            font-weight: 400;
+            font-size: 12px;
+        }
+
+    /* Status pill */
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 6px;
+    }
+
+        .status-pill.available {
+            background: rgba(48,224,161,.12);
+            color: var(--success);
+            border: 1px solid rgba(48,224,161,.25);
+        }
+
+        .status-pill.unavailable {
+            background: rgba(255,82,89,.1);
+            color: var(--danger);
+            border: 1px solid rgba(255,82,89,.2);
+        }
+
+    .status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+    }
+
+    /* Tips */
+    .tip-item {
+        display: flex;
+        gap: 10px;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+        .tip-item:last-child {
+            border-bottom: none;
+        }
+
+    .tip-icon {
+        font-size: 14px;
+        flex-shrink: 0;
+        margin-top: 1px;
+    }
+
+    .tip-text {
+        font-size: 12px;
+        color: var(--text-muted);
+        line-height: 1.5;
+    }
+
+    /* Step indicator */
+    .step-bar {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        margin-bottom: 24px;
+    }
+
+    .step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .step-num {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 1.5px solid var(--border);
+        display: grid;
+        place-items: center;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-muted);
+        background: var(--bg-dark3);
+        flex-shrink: 0;
+    }
+
+    .step.active .step-num {
+        background: var(--accent-dim);
+        border-color: rgba(232,255,71,.4);
+        color: var(--accent);
+    }
+
+    .step.done .step-num {
+        background: rgba(48,224,161,.12);
+        border-color: rgba(48,224,161,.3);
+        color: var(--success);
+    }
+
+    .step-label {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text-muted);
+    }
+
+    .step.active .step-label {
+        color: var(--text);
+    }
+
+    .step-line {
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+        margin: 0 10px;
+        min-width: 20px;
+    }
+
+    /* Action bar */
+    .action-bar {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+        margin-top: 4px;
+    }
+
+    /* Validation hint */
+    .err-hint {
+        font-size: 11px;
+        color: var(--danger);
+        margin-top: 3px;
+        display: none;
+    }
+
+    .show-err .err-hint {
+        display: block;
+    }
+
+    .show-err input {
+        border-color: var(--danger) !important;
+    }
+</style>
+
+<div class="root">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-trail">
+        Araç Yönetimi <span>›</span> Araç Listesi <span>›</span> <span>Yeni Araç Ekle</span>
+    </div>
+
+    <!-- Page header -->
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Yeni Araç Ekle</h1>
+            <p class="page-subtitle">Filonuza yeni bir araç tanımlayın ve kiralama sistemine ekleyin.</p>
+        </div>
+        <div style="display:flex;gap:10px;">
+            <button class="btn-outline" onclick="resetForm()">✕ İptal</button>
+            <button class="btn-accent" onclick="submitForm()">＋ Aracı Kaydet</button>
+        </div>
+    </div>
+
+    <!-- Step bar -->
+    <div class="step-bar">
+        <div class="step active" id="step1">
+            <div class="step-num">1</div>
+            <div class="step-label">Temel Bilgiler</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" id="step2">
+            <div class="step-num">2</div>
+            <div class="step-label">Teknik Özellikler</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" id="step3">
+            <div class="step-num">3</div>
+            <div class="step-label">Fiyat & Durum</div>
+        </div>
+    </div>
+
+    <!-- Main grid -->
+    <div class="form-grid">
+
+        <!-- LEFT: form sections -->
+        <div>
+
+            <!-- Section 1: Temel Bilgiler -->
+            <div class="section-card">
+                <div class="section-head">
+                    <div class="section-icon yellow">🚗</div>
+                    <div>
+                        <div class="section-title">Temel Bilgiler</div>
+                        <div class="section-subtitle">Araç kimliği ve marka/model bilgileri</div>
+                    </div>
+                </div>
+                <div class="section-body">
+                    <div class="field-row cols-2">
+                        <div class="field" id="field-brand">
+                            <label>Marka <span class="required-dot">*</span></label>
+                            <select id="brand" onchange="syncSummary()">
+                                <option value="">Marka seçin...</option>
+                                <option>BMW</option>
+                                <option>Audi</option>
+                                <option>Mercedes</option>
+                                <option>Toyota</option>
+                                <option>Volkswagen</option>
+                                <option>Ford</option>
+                                <option>Hyundai</option>
+                                <option>Kia</option>
+                                <option>Renault</option>
+                                <option>Peugeot</option>
+                                <option>Honda</option>
+                                <option>Nissan</option>
+                                <option>Fiat</option>
+                                <option>Seat</option>
+                                <option>Skoda</option>
+                            </select>
+                            <div class="err-hint">Marka seçimi zorunludur.</div>
+                        </div>
+                        <div class="field" id="field-model">
+                            <label>Model <span class="required-dot">*</span></label>
+                            <input type="text" id="model" placeholder="ör. 3 Serisi, A4, Corolla" oninput="syncSummary()" />
+                            <div class="err-hint">Model adı zorunludur.</div>
+                        </div>
+                    </div>
+                    <div class="field-row cols-2">
+                        <div class="field" id="field-year">
+                            <label>Model Yılı <span class="required-dot">*</span></label>
+                            <select id="modelYear" onchange="syncSummary()">
+                                <option value="">Yıl seçin...</option>
+                                <option>2025</option>
+                                <option>2024</option>
+                                <option>2023</option>
+                                <option>2022</option>
+                                <option>2021</option>
+                                <option>2020</option>
+                                <option>2019</option>
+                                <option>2018</option>
+                                <option>2017</option>
+                            </select>
+                            <div class="err-hint">Model yılı zorunludur.</div>
+                        </div>
+                        <div class="field" id="field-plate">
+                            <label>Plaka No <span class="required-dot">*</span></label>
+                            <input type="text" id="plateNumber" placeholder="ör. 34 ABC 1234" oninput="this.value=this.value.toUpperCase(); syncSummary()" />
+                            <div class="err-hint">Plaka numarası zorunludur.</div>
+                        </div>
+                    </div>
+                    <div class="field-row cols-1">
+                        <div class="field">
+                            <label>Kategori <span class="required-dot">*</span></label>
+                            <select id="categoryId" onchange="syncSummary()">
+                                <option value="">Kategori seçin...</option>
+                                <option value="1">Sedan</option>
+                                <option value="2">SUV</option>
+                                <option value="3">Hatchback</option>
+                                <option value="4">Coupe</option>
+                                <option value="5">Minivan</option>
+                                <option value="6">Pick-up</option>
+                                <option value="7">Elektrikli</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Teknik Özellikler -->
+            <div class="section-card">
+                <div class="section-head">
+                    <div class="section-icon blue">⚙️</div>
+                    <div>
+                        <div class="section-title">Teknik Özellikler</div>
+                        <div class="section-subtitle">Yakıt, vites ve kapasite bilgileri</div>
+                    </div>
+                </div>
+                <div class="section-body">
+                    <div class="field-row cols-2">
+                        <div class="field">
+                            <label>Yakıt Tipi <span class="required-dot">*</span></label>
+                            <select id="fuelType" onchange="syncSummary()">
+                                <option value="">Seçin...</option>
+                                <option>Benzin</option>
+                                <option>Dizel</option>
+                                <option>Elektrik</option>
+                                <option>Hibrit</option>
+                                <option>LPG</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Vites Tipi <span class="required-dot">*</span></label>
+                            <select id="transmissionType" onchange="syncSummary()">
+                                <option value="">Seçin...</option>
+                                <option>Otomatik</option>
+                                <option>Manuel</option>
+                                <option>Yarı Otomatik</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field-row cols-3">
+                        <div class="field">
+                            <label>Koltuk Sayısı <span class="required-dot">*</span></label>
+                            <div class="input-wrap has-suffix">
+                                <input type="number" id="seatCount" min="2" max="9" placeholder="5" oninput="syncSummary()" />
+                                <span class="input-suffix">kişi</span>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Bagaj Kapasitesi</label>
+                            <div class="input-wrap has-suffix">
+                                <input type="number" id="luggageCapacity" min="0" placeholder="450" oninput="syncSummary()" />
+                                <span class="input-suffix">litre</span>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Kilometre</label>
+                            <div class="input-wrap has-suffix">
+                                <input type="number" id="mileage" min="0" placeholder="0" oninput="syncSummary()" />
+                                <span class="input-suffix">km</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Fiyat & Durum -->
+            <div class="section-card">
+                <div class="section-head">
+                    <div class="section-icon green">₺</div>
+                    <div>
+                        <div class="section-title">Fiyat & Durum</div>
+                        <div class="section-subtitle">Kiralama fiyatı ve müsaitlik durumu</div>
+                    </div>
+                </div>
+                <div class="section-body">
+                    <div class="field-row cols-2">
+                        <div class="field" id="field-price">
+                            <label>Günlük Kiralama Fiyatı <span class="required-dot">*</span></label>
+                            <div class="input-wrap has-suffix">
+                                <span class="input-prefix">₺</span>
+                                <input type="number" id="dailyPrice" min="0" step="50" placeholder="1200" oninput="syncSummary()" style="padding-left:26px;" />
+                                <span class="input-suffix">/ gün</span>
+                            </div>
+                            <div class="err-hint">Günlük fiyat zorunludur.</div>
+                        </div>
+                        <div class="field">
+                            <label>Müsaitlik Durumu</label>
+                            <div style="padding: 10px 0;">
+                                <div class="toggle-field">
+                                    <div>
+                                        <div class="toggle-label" id="availLabel">Müsait</div>
+                                        <div class="toggle-desc">Araç kiralama için aktif</div>
+                                    </div>
+                                    <div class="toggle on" id="availToggle" onclick="toggleAvail()">
+                                        <div class="toggle-knob"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Görsel -->
+            <div class="section-card">
+                <div class="section-head">
+                    <div class="section-icon purple">🖼</div>
+                    <div>
+                        <div class="section-title">Araç Görseli</div>
+                        <div class="section-subtitle">Görsel URL'si girerek önizleme yapın</div>
+                    </div>
+                </div>
+                <div class="section-body">
+                    <div class="field-row cols-1" style="margin-bottom:14px;">
+                        <div class="field">
+                            <label>Görsel URL (ImageUrl)</label>
+                            <input type="text" id="imageUrl" placeholder="https://example.com/car.jpg" oninput="previewImg(this.value)" />
+                            <div class="hint">Araç için geçerli bir görsel URL'si girin.</div>
+                        </div>
+                    </div>
+                    <div class="img-preview" id="imgPreview">
+                        <img id="previewTag" src="" alt="Önizleme" />
+                        <div class="placeholder">
+                            <div class="img-preview-icon">📷</div>
+                            <div class="img-preview-label">Görsel URL girerek<br />önizleme görebilirsiniz</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action bar -->
+            <div class="action-bar">
+                <button class="btn-outline" onclick="resetForm()">✕ Formu Temizle</button>
+                <button class="btn-accent" onclick="submitForm()">＋ Aracı Kaydet</button>
+            </div>
+
+        </div>
+
+        <!-- RIGHT: sidebar -->
+        <div>
+
+            <!-- Live summary -->
+            <div class="sidebar-card">
+                <div class="sidebar-card-head">📋 Canlı Özet</div>
+                <div class="sidebar-card-body">
+                    <div class="summary-row">
+                        <span class="summary-key">Marka / Model</span>
+                        <span class="summary-val" id="sum-brand-model"><em class="summary-val empty">—</em></span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-key">Yıl</span>
+                        <span class="summary-val" id="sum-year"><em class="summary-val empty">—</em></span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-key">Plaka</span>
+                        <span class="summary-val" id="sum-plate"><em class="summary-val empty">—</em></span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-key">Yakıt / Vites</span>
+                        <span class="summary-val" id="sum-fuel-trans"><em class="summary-val empty">—</em></span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-key">Koltuk</span>
+                        <span class="summary-val" id="sum-seat"><em class="summary-val empty">—</em></span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-key">Günlük Fiyat</span>
+                        <span class="summary-val accent" id="sum-price"><em class="summary-val empty">—</em></span>
+                    </div>
+                    <div class="summary-row" style="border-bottom:none;padding-bottom:0;">
+                        <span class="summary-key">Durum</span>
+                        <span id="sum-status">
+                            <span class="status-pill available"><span class="status-dot"></span>Müsait</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Zorunlu alanlar -->
+            <div class="sidebar-card">
+                <div class="sidebar-card-head">✅ Zorunlu Alanlar</div>
+                <div class="sidebar-card-body">
+                    <div id="required-list" style="display:flex;flex-direction:column;gap:6px;font-size:13px;"></div>
+                </div>
+            </div>
+
+            <!-- Tips -->
+            <div class="sidebar-card">
+                <div class="sidebar-card-head">💡 İpuçları</div>
+                <div class="sidebar-card-body">
+                    <div class="tip-item">
+                        <div class="tip-icon">🔑</div>
+                        <div class="tip-text">Plaka numarası sistemde tekil olmalıdır. Aynı plaka iki kez girilemez.</div>
+                    </div>
+                    <div class="tip-item">
+                        <div class="tip-icon">📸</div>
+                        <div class="tip-text">Yüksek çözünürlüklü görsel URL'si girilmesi kart tasarımında daha iyi sonuç verir.</div>
+                    </div>
+                    <div class="tip-item">
+                        <div class="tip-icon">₺</div>
+                        <div class="tip-text">Günlük fiyat KDV hariç girilmelidir. Sistem otomatik KDV hesaplar.</div>
+                    </div>
+                    <div class="tip-item">
+                        <div class="tip-icon">🔧</div>
+                        <div class="tip-text">Kilometre bilgisi araç teslim alındığında güncellenmeli, boş bırakılabilir.</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const requiredFields = [
+      { id: 'brand', label: 'Marka', fieldId: 'field-brand' },
+      { id: 'model', label: 'Model', fieldId: 'field-model' },
+      { id: 'modelYear', label: 'Model Yılı', fieldId: 'field-year' },
+      { id: 'plateNumber', label: 'Plaka No', fieldId: 'field-plate' },
+      { id: 'dailyPrice', label: 'Günlük Fiyat', fieldId: 'field-price' },
+    ];
+
+    let isAvailable = true;
+
+    function val(id) { return document.getElementById(id)?.value?.trim() || ''; }
+
+    function syncSummary() {
+      const brand = val('brand'), model = val('model');
+      const year = val('modelYear'), plate = val('plateNumber');
+      const fuel = val('fuelType'), trans = val('transmissionType');
+      const seat = val('seatCount'), price = val('dailyPrice');
+
+      set('sum-brand-model', brand && model ? brand + ' ' + model : null);
+      set('sum-year', year || null);
+      set('sum-plate', plate || null);
+      set('sum-fuel-trans', fuel && trans ? fuel + ' · ' + trans : fuel || trans || null);
+      set('sum-seat', seat ? seat + ' kişi' : null);
+      set('sum-price', price ? '₺' + Number(price).toLocaleString('tr-TR') + ' / gün' : null);
+      updateRequiredList();
+      updateStepBar();
+    }
+
+    function set(id, val) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.innerHTML = val
+        ? '<span class="summary-val">' + val + '</span>'
+        : '<em class="summary-val empty">—</em>';
+    }
+
+    function toggleAvail() {
+      isAvailable = !isAvailable;
+      const t = document.getElementById('availToggle');
+      const l = document.getElementById('availLabel');
+      const s = document.getElementById('sum-status');
+      t.classList.toggle('on', isAvailable);
+      l.textContent = isAvailable ? 'Müsait' : 'Müsait Değil';
+      s.innerHTML = isAvailable
+        ? '<span class="status-pill available"><span class="status-dot"></span>Müsait</span>'
+        : '<span class="status-pill unavailable"><span class="status-dot"></span>Müsait Değil</span>';
+    }
+
+    function previewImg(url) {
+      const wrap = document.getElementById('imgPreview');
+      const img = document.getElementById('previewTag');
+      if (!url) { wrap.classList.remove('has-img'); return; }
+      img.onload = () => wrap.classList.add('has-img');
+      img.onerror = () => wrap.classList.remove('has-img');
+      img.src = url;
+    }
+
+    function updateRequiredList() {
+      const list = document.getElementById('required-list');
+      list.innerHTML = requiredFields.map(f => {
+        const v = val(f.id);
+        const done = !!v;
+        return `<div style="display:flex;align-items:center;gap:8px;color:${done ? 'var(--success)' : 'var(--text-muted)'};">
+          <span style="font-size:14px;">${done ? '✓' : '○'}</span>
+          <span>${f.label}</span>
+        </div>`;
+      }).join('');
+    }
+
+    function updateStepBar() {
+      const s1 = val('brand') && val('model') && val('modelYear') && val('plateNumber');
+      const s2 = val('fuelType') && val('transmissionType') && val('seatCount');
+      const s3 = val('dailyPrice');
+
+      const setStep = (id, done, active) => {
+        const el = document.getElementById(id);
+        el.className = 'step' + (done ? ' done' : active ? ' active' : '');
+      };
+      setStep('step1', s1, !s1);
+      setStep('step2', s1 && s2, s1 && !s2);
+      setStep('step3', s1 && s2 && s3, s1 && s2 && !s3);
+    }
+
+    function submitForm() {
+      let valid = true;
+      requiredFields.forEach(f => {
+        const v = val(f.id);
+        const fieldEl = document.getElementById(f.fieldId);
+        if (fieldEl) fieldEl.classList.toggle('show-err', !v);
+        if (!v) valid = false;
+      });
+      if (!valid) return;
+
+      const data = {
+        brand: val('brand'), model: val('model'), modelYear: val('modelYear'),
+        plateNumber: val('plateNumber'), dailyPrice: val('dailyPrice'),
+        seatCount: val('seatCount'), luggageCapacity: val('luggageCapacity'),
+        mileage: val('mileage'), isAvailable, fuelType: val('fuelType'),
+        transmissionType: val('transmissionType'), categoryId: val('categoryId'),
+        imageUrl: val('imageUrl')
+      };
+      console.log('POST payload:', data);
+
+      const btn = document.querySelector('.btn-accent');
+      const orig = btn.textContent;
+      btn.textContent = '✓ Kaydedildi!';
+      btn.style.background = 'var(--success)';
+      setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 2500);
+    }
+
+    function resetForm() {
+      ['brand','model','modelYear','plateNumber','fuelType','transmissionType',
+       'seatCount','luggageCapacity','mileage','dailyPrice','categoryId','imageUrl'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      requiredFields.forEach(f => {
+        const el = document.getElementById(f.fieldId);
+        if (el) el.classList.remove('show-err');
+      });
+      document.getElementById('imgPreview').classList.remove('has-img');
+      if (!isAvailable) toggleAvail();
+      syncSummary();
+    }
+
+    updateRequiredList();
+    updateStepBar();
+</script>
+
