@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace Carola.BusinessLayer.Abstract
 {
-    public interface ICarService :IGenericService<Car>
+    public interface ICarService : IGenericService<Car>
     {
+        Task<List<Car>> TGetAllCarsWithCategoryAsync();
     }
 }

@@ -1,17 +1,40 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Carola.BusinessLayer.Abstract;
+using Carola.EntityLayer.Entities;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Carola.WebUI.Controllers
 {
     public class CarController : Controller
     {
-        public IActionResult CarList()
+        private readonly ICarService _carService;
+        private readonly ICategoryService _categoryService;
+
+        public CarController(ICarService carService, ICategoryService categoryService)
         {
-            return View();
+            _carService = carService;
+            _categoryService = categoryService;
         }
-        public IActionResult CreateCar()
+
+        public async Task<IActionResult> CarList()
         {
+            var values = await _carService.TGetAllAsync();
+            return View(values);
+        }
+        public async Task<IActionResult> CreateCar()
+        {
+            ViewBag.Categories = new SelectList(await _categoryService.TGetAllAsync(), "CategoryId", "CategoryName");
             return View();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CreateCar(Car car)
+        {
+            
+                await _carService.TInsertAsync(car);
+                return RedirectToAction("CarList");
+            
+            
+        }
     }
 }

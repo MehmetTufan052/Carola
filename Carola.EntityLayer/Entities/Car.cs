@@ -21,6 +21,7 @@ namespace Carola.EntityLayer.Entities
         public string FuelType { get; set; }
         public string TransmissionType { get; set; }
         public int CategoryId { get; set; }
+        public Category Category { get; set; }
         public string ImageUrl { get; set; }    
     }
 }
