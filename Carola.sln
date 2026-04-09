@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36930.0 d17.14
+VisualStudioVersion = 17.14.36930.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carola.EntityLayer", "Carola.EntityLayer\Carola.EntityLayer.csproj", "{6A77FC24-8405-44EB-ABA5-A37751ACA224}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carola.BusinessLayer", "Carola.BusinessLayer\Carola.BusinessLayer.csproj", "{1902A84F-D6E3-46D0-A335-F3A4D522C321}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carola.WebUI", "Carola.WebUI\Carola.WebUI.csproj", "{4315F8CB-8F78-46E5-88C7-885292EAC96D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carola.DtoLayer", "Carola.DtoLayerr\Carola.DtoLayer.csproj", "{5F536026-7087-4595-8EF8-70B270807561}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{4315F8CB-8F78-46E5-88C7-885292EAC96D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4315F8CB-8F78-46E5-88C7-885292EAC96D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4315F8CB-8F78-46E5-88C7-885292EAC96D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F536026-7087-4595-8EF8-70B270807561}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F536026-7087-4595-8EF8-70B270807561}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F536026-7087-4595-8EF8-70B270807561}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F536026-7087-4595-8EF8-70B270807561}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

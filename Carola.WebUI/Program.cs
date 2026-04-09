@@ -1,5 +1,6 @@
 using Carola.BusinessLayer.Abstract;
 using Carola.BusinessLayer.Concrete;
+using Carola.BusinessLayer.Mapping;
 using Carola.BusinessLayer.ValidationRules;
 using Carola.DataAccessLayer.Abstract;
 using Carola.DataAccessLayer.Concrete;
@@ -24,7 +25,14 @@ builder.Services.AddScoped<ICategoryDal,EfCategoryDal>();
 builder.Services.AddScoped<ILocationService,LocationManager>();
 builder.Services.AddScoped<ILocationDal,EfLocationDal>();
 
+builder.Services.AddScoped<ICustomerService,CustomerManager>();
+builder.Services.AddScoped<ICustomerDal,EfCustomerDal>();
+
+builder.Services.AddAutoMapper(typeof(GeneralMapping));
+
 builder.Services.AddScoped<IValidator<Brand>, BrandValidator>();
+
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
