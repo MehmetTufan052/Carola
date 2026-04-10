@@ -34,6 +34,7 @@ builder.Services.AddScoped<IValidator<Brand>, BrandValidator>();
 
 
 
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 

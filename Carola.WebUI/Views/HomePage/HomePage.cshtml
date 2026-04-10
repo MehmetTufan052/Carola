@@ -1,0 +1,61 @@
+﻿
+@{
+    ViewData["Title"] = "HomePage";
+    Layout = "~/Views/Shared/_ClientLayout.cshtml";
+}
+
+<style>
+    .hero-soft-bg {
+        background-position: center right;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+</style>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Page Wrapper -->
+<body class="boxed_wrapper">
+
+    @await Component.InvokeAsync("_HomePageSliderComponentPartial")
+
+    @await Component.InvokeAsync("_HomePageBookingComponentPartial")
+
+
+
+    @await Component.InvokeAsync("_HomePageCarTypeComponentPartial")   
+
+
+    <!-- Divider Section -->
+    <section class="divider">
+        <div class="container">
+            <div class="border-divider"></div>
+        </div>
+    </section>
+
+    @await Component.InvokeAsync("_HomePageChooseUsComponentPartial")   
+
+    @await Component.InvokeAsync("_HomePageBrand2ComponentPartial")   
+
+
+
+    @await Component.InvokeAsync("_HomePageFeaturedCarsComponentPartial")
+
+    @await Component.InvokeAsync("_HomePageBrandComponentPartial")
+
+    <section class="video-section">
+        <div class="container-fulid">
+            <div class="vedio-section-outer" style="background-image: url(/carola pack/carola/assets/images/background/dark-vedio-bg.jpg);">
+                <a href="https://www.youtube.com/watch?v=nfP5N9Yc72A&t=28s" class="lightbox-image"><i class="icon-14"></i></a>
+            </div>
+        </div>
+    </section>
+
+    @await Component.InvokeAsync("_HomePageServiceComponentPartial")  
+
+
+</body>
+<!-- End Page Wrapper -->
+</html>
+

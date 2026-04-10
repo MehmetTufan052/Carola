@@ -1,0 +1,38 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+  @await Component.InvokeAsync("_ClientLayoutHeadComponentPartial")
+
+<!-- Page Wrapper -->
+<body class="boxed_wrapper">
+
+    <!-- preloader -->
+    @await Component.InvokeAsync("_ClientLayoutPreloaderComponentPartial")
+    <!-- preloader end -->
+    <!--Search Popup-->
+    @await Component.InvokeAsync("_ClientLayoutSearchPopupComponentPartial")
+    <!--End Search Popup-->
+    <!-- Main Header -->
+    @await Component.InvokeAsync("_ClientLayoutHeaderComponentPartial")
+    <!-- End Main Header -->
+
+    @RenderBody()
+
+    <!-- Main Footer -->
+    @await Component.InvokeAsync("_ClientLayoutFooterComponentPartial")
+    <!-- Main Footer End -->
+    <!-- Scroll to Top -->
+    <button class="scroll-top scroll-to-target" data-target="html">
+        <i class="icon-13"></i>
+    </button>
+    <!--End Scroll to Top -->
+    <!-- Include Js -->
+    @await Component.InvokeAsync("_ClientLayoutScriptsComponentPartial")
+    <!-- End Include Js -->
+
+</body>
+<!-- End Page Wrapper -->
+</html>
