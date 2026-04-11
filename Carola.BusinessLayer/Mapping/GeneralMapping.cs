@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Carola.DtoLayer.Dtos.BrandDtos;
+using Carola.DtoLayer.Dtos.CarDtos;
+using Carola.DtoLayer.Dtos.CategoryDtos;
 using Carola.DtoLayer.Dtos.CustomerDtos;
 using Carola.EntityLayer.Entities;
 using System;
@@ -23,6 +25,16 @@ namespace Carola.BusinessLayer.Mapping
                 CreateMap<Brand, CreateBrandDto>().ReverseMap();
                 CreateMap<Brand, UpdateBrandDto>().ReverseMap();
                 CreateMap<Brand, GetBrandByIdDto>().ReverseMap();
+
+                CreateMap<Category, ResultCategoryDto>().ReverseMap();
+                CreateMap<Category, CreateCategoryDto>().ReverseMap();
+                CreateMap<Category, UpdateCategoryDto>().ReverseMap();
+                CreateMap<Category, GetCategoryByIdDto>().ReverseMap();
+
+                CreateMap<Car, ResultCarDto>().ReverseMap();
+                CreateMap<Car, CreateCarDto>().ReverseMap();
+                CreateMap<Car, UpdateCarDto>().ReverseMap();
+                CreateMap<Car, GetCarByIdDto>().ReverseMap();
         }
     }
 }

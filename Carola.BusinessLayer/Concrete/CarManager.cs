@@ -1,5 +1,7 @@
-﻿using Carola.BusinessLayer.Abstract;
+﻿using AutoMapper;
+using Carola.BusinessLayer.Abstract;
 using Carola.DataAccessLayer.Abstract;
+using Carola.DtoLayer.Dtos.CarDtos;
 using Carola.EntityLayer.Entities;
 using System;
 using System.Collections.Generic;
@@ -12,40 +14,46 @@ namespace Carola.BusinessLayer.Concrete
     public class CarManager : ICarService
     {
         private readonly ICarDal _carDal;
+        private readonly IMapper _mapper;
 
-        public CarManager(ICarDal carDal)
+        public CarManager(ICarDal carDal, IMapper mapper)
         {
             _carDal = carDal;
+            _mapper = mapper;
         }
 
-        public async Task TDeleteAsync(int id)
+        public async Task CreateCarAsync(CreateCarDto createCarDto)
+        {
+           var values= _mapper.Map<Car>(createCarDto);
+            await _carDal.InsertAsync(values);
+        }
+
+        public async Task DeleteCarAsync(int id)
         {
             await _carDal.DeleteAsync(id);
         }
 
-        public async Task<List<Car>> TGetAllAsync()
+        public async Task<List<ResultCarDto>> GetAllCarAsync()
         {
-            return await _carDal.GetAllAsync();
+           var values=await _carDal.GetAllAsync();
+           return _mapper.Map<List<ResultCarDto>>(values);
         }
 
-        public async Task<List<Car>> TGetAllCarsWithCategoryAsync()
+        public async Task<GetCarByIdDto> GetCarByIdAsync(int id)
         {
-           return await _carDal.GetAllCarsWithCategoryAsync();
+           var values=await _carDal.GetByIdAsync(id);
+           return _mapper.Map<GetCarByIdDto>(values);
         }
 
-        public async Task<Car> TGetByIdAsync(int id)
+        public async Task<List<ResultCarDto>> TGetAllCarsWithCategoryAsync()
         {
-            return await _carDal.GetByIdAsync(id);
+            throw new NotImplementedException();
         }
 
-        public async Task TInsertAsync(Car entity)
+        public async Task UpdateCarAsync(UpdateCarDto updateCarDto)
         {
-            await _carDal.InsertAsync(entity);
-        }
-
-        public async Task TUpdateAsync(Car entity)
-        {
-            await _carDal.UpdateAsync(entity);
+            var values= _mapper.Map<Car>(updateCarDto); 
+            await _carDal.UpdateAsync(values);
         }
     }
 }
