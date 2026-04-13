@@ -1,13 +1,10 @@
-﻿@model Carola.EntityLayer.Entities.Location
+﻿
+@model CreateLocationDto
+
 @{
-    ViewData["Title"] = "Lokasyon Güncelleme";
-    Layout = "~/Views/AdminLayout/Index.cshtml";
+    ViewData["Title"] = "Yeni Lokasyon Ekle";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
 }
-
-
-
-
-
 
 <style>
     :root {
@@ -491,7 +488,6 @@
     </div>
 
     <form method="post" id="lcForm" novalidate>
-        <input type="hidden" asp-for="LocationId" />
         @Html.AntiForgeryToken()
 
         <!-- Validation Summary -->
@@ -711,8 +707,6 @@
         });
     </script>
 }
-
-
 
 
 

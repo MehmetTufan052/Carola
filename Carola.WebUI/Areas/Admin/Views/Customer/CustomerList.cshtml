@@ -1,10 +1,10 @@
 ﻿
 
-@model List<Carola.DtoLayer.Dtos.CustomerDtos.ResultCustomerDto>
+@model List<ResultCustomerDto>
 
 @{
     ViewData["Title"] = "MüşteriListesi";
-    Layout = "~/Views/AdminLayout/Index.cshtml";
+    Layout ="~/Areas/Admin/Views/AdminLayout/Index.cshtml";
 
     var totalCount = Model.Count();
     var avgAge     = Model.Any()

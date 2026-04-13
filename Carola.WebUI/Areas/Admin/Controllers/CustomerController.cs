@@ -2,8 +2,9 @@
 using Carola.DtoLayer.Dtos.CustomerDtos;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Carola.WebUI.Controllers
+namespace Carola.WebUI.Areas.Admin.Controllers
 {
+    [Area("Admin")] 
     public class CustomerController : Controller
     {
         private readonly ICustomerService _customerService;
@@ -22,7 +23,7 @@ namespace Carola.WebUI.Controllers
         [HttpGet]
         public IActionResult CreateCustomer()
         {
-            return View();
+            return View("~/Areas/Admin/Views/Customer/CreateCustomer.cshtml");
         }
         
         [HttpPost]

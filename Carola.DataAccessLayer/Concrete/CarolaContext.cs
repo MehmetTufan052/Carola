@@ -1,18 +1,12 @@
 ﻿using Carola.EntityLayer.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Carola.DataAccessLayer.Concrete
 {
     public class CarolaContext : DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public CarolaContext(DbContextOptions<CarolaContext> options) : base(options)
         {
-            optionsBuilder.UseSqlServer("Server=DESKTOP-MO1FN9D;Database=CarolaRentDb;Trusted_Connection=True;");
         }
 
         public DbSet<Brand> Brands { get; set; }

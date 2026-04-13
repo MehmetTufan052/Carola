@@ -3,8 +3,9 @@ using Carola.EntityLayer.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace Carola.WebUI.Controllers
+namespace Carola.WebUI.Areas.Admin.Controllers
 {
+    [Area("Admin")] 
     public class LocationController : Controller
     {
         private readonly ILocationService _locationService;

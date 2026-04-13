@@ -45,9 +45,10 @@ namespace Carola.BusinessLayer.Concrete
            return _mapper.Map<GetCarByIdDto>(values);
         }
 
-        public async Task<List<ResultCarDto>> TGetAllCarsWithCategoryAsync()
+        public async Task<List<ResultCarDto>> GetAllCarsWithCategoryAsync()
         {
-            throw new NotImplementedException();
+            var values = await _carDal.GetAllCarsWithCategoryAsync();
+            return _mapper.Map<List<ResultCarDto>>(values);
         }
 
         public async Task UpdateCarAsync(UpdateCarDto updateCarDto)

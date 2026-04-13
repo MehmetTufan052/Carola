@@ -15,6 +15,6 @@ namespace Carola.BusinessLayer.Abstract
         Task<GetCarByIdDto> GetCarByIdAsync(int id);
         Task CreateCarAsync(CreateCarDto createCarDto);
         Task UpdateCarAsync(UpdateCarDto updateCarDto);
-        Task<List<ResultCarDto>> TGetAllCarsWithCategoryAsync();
+        Task<List<ResultCarDto>> GetAllCarsWithCategoryAsync();
     }
 }

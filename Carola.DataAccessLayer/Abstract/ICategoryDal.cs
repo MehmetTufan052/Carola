@@ -1,4 +1,5 @@
-﻿using Carola.EntityLayer.Entities;
+﻿using Carola.DtoLayer.Dtos.CategoryDtos;
+using Carola.EntityLayer.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,5 +10,7 @@ namespace Carola.DataAccessLayer.Abstract
 {
     public interface ICategoryDal:IGenericDal<Category>
     {
+        Task<List<ResultCategoryDto>> GetCategoriesWithCarCountAsync();
+
     }
 }

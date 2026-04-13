@@ -7,11 +7,13 @@ using Carola.DataAccessLayer.Concrete;
 using Carola.DataAccessLayer.EntityFramework;
 using Carola.EntityLayer.Entities;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddDbContext<CarolaContext>();
+builder.Services.AddDbContext<CarolaContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IBrandService,BrandManager>();
 builder.Services.AddScoped<IBrandDal,EfBrandDal>();
@@ -56,15 +58,11 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllerRoute(
-      name: "areas",
-      pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-    );
-});
 
 app.Run();

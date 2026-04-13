@@ -18,5 +18,8 @@ namespace Carola.BusinessLayer.Abstract
         Task UpdateCategoryAsync(UpdateCategoryDto updateCategoryDto);
 
         Task CreateCategoryAsync(CreateCategoryDto createCategoryDto);
+
+        Task<List<ResultCategoryDto>> GetCategoriesWithCarCountAsync();
+
     }
 }

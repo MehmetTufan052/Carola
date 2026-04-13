@@ -8,7 +8,6 @@ namespace Carola.DtoLayer.Dtos.LocationDtos
 {
     public class CreateLocationDto
     {
-        public int LocationId { get; set; }
         public string AuthorizedPerson { get; set; }
         public string LocationName { get; set; }
         public string City { get; set; }

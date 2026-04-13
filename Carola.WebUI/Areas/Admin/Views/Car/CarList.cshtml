@@ -1,8 +1,8 @@
-﻿@model List<Carola.EntityLayer.Entities.Car>
+﻿@model List<ResultCarDto>
 
 @{
     ViewData["Title"] = "CarList";
-    Layout = "~/Views/AdminLayout/Index.cshtml";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
 
     var totalCount     = Model.Count();
     var availableCount = Model.Count(c => c.IsAvailable);

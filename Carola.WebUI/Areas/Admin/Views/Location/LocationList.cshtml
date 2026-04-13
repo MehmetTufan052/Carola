@@ -1,7 +1,7 @@
-﻿@model List<Carola.EntityLayer.Entities.Location>
+﻿@model List<ResultLocationDto>
 @{
     ViewData["Title"] = "LocationList";
-    Layout = "~/Views/AdminLayout/Index.cshtml";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
 
     var totalCount  = Model.Count();
     var cityCount   = Model.Select(l => l.City).Distinct().Count();

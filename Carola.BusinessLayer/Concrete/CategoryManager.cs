@@ -40,6 +40,11 @@ namespace Carola.BusinessLayer.Concrete
            
         }
 
+        public async Task<List<ResultCategoryDto>> GetCategoriesWithCarCountAsync()
+        {
+            return await _categoryDal.GetCategoriesWithCarCountAsync();
+        }
+
         public async Task<GetCategoryByIdDto> GetCategoryByIdAsync(int id)
         {
             var value =await _categoryDal.GetByIdAsync(id);

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Carola.WebUI.Controllers
+namespace Carola.WebUI.Areas.Admin.Controllers
 {
     public class AdminLayoutController : Controller
     {

@@ -1,0 +1,1147 @@
+﻿@model List<ResultCategoryDto>
+@{
+    ViewData["Title"] = "CategoryList";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+    var totalCategories = Model?.Count ?? 0;
+    var totalCars = Model?.Sum(x => x.CarCount) ?? 0;
+    var activeCategories = Model?.Count(x => x.CarCount > 0) ?? 0;
+    var emptyCategories = Model?.Count(x => x.CarCount == 0) ?? 0;
+}
+
+
+@* In production, pass this from controller: @model IEnumerable<Category> *@
+
+<main id="content">
+
+    <!-- ============================================================
+         PAGE HEADER
+    ============================================================ -->
+    <div class="page-header">
+        <div>
+            <div class="page-title">Kategori Listesi</div>
+            <div class="page-subtitle">Tüm araç kategorilerini görüntüleyin ve yönetin.</div>
+        </div>
+        <a asp-area="Admin" asp-controller="Category" asp-action="CreateCategory" class="btn-accent">
+            <i class="bi bi-plus-lg"></i> Yeni Kategori
+        </a>
+    </div>
+
+    <!-- ============================================================
+         STATS ROW
+    ============================================================ -->
+    <div class="row g-3 stats-row">
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon yellow"><i class="bi bi-tags"></i></div>
+                <div>
+                    <div class="stat-value" id="statTotal">@totalCategories</div>
+                    <div class="stat-label">Toplam Kategori</div>
+                </div>
+                <span class="stat-badge up" id="statTotalBadge">@totalCategories adet</span>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon blue"><i class="bi bi-car-front"></i></div>
+                <div>
+                    <div class="stat-value" id="statCars">@totalCars</div>
+                    <div class="stat-label">Toplam Araç</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon green"><i class="bi bi-check-circle"></i></div>
+                <div>
+                    <div class="stat-value" id="statActive">@activeCategories</div>
+                    <div class="stat-label">Aktif Kategori</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon red"><i class="bi bi-slash-circle"></i></div>
+                <div>
+                    <div class="stat-value" id="statEmpty">@emptyCategories</div>
+                    <div class="stat-label">Boş Kategori</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         TOOLBAR
+    ============================================================ -->
+    <div class="toolbar">
+        <!-- Search -->
+        <div class="toolbar-search">
+            <i class="bi bi-search"></i>
+            <input type="text" placeholder="Kategori ara..." id="searchInput" oninput="catApplyFilters()" />
+        </div>
+
+        <!-- Filter tabs -->
+        <div class="filter-tabs">
+            <button class="filter-tab active" onclick="catSetFilter('all', this)">Tümü</button>
+            <button class="filter-tab" onclick="catSetFilter('active', this)">Aktif</button>
+            <button class="filter-tab" onclick="catSetFilter('empty', this)">Boş</button>
+        </div>
+
+        <!-- View toggle -->
+        <div class="view-toggle ms-auto">
+            <button class="view-btn active" id="btnGrid" onclick="catSetView('grid', this)" title="Kart görünümü">
+                <i class="bi bi-grid-3x3-gap"></i>
+            </button>
+            <button class="view-btn" id="btnTable" onclick="catSetView('table', this)" title="Tablo görünümü">
+                <i class="bi bi-list-ul"></i>
+            </button>
+        </div>
+
+        <!-- Sort -->
+        <div class="dropdown">
+            <button class="btn-outline" data-bs-toggle="dropdown">
+                <i class="bi bi-sort-down"></i> Sırala
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><h6 class="dropdown-header">Sıralama Kriteri</h6></li>
+                <li><a class="dropdown-item sort-opt active" href="#" onclick="return catSetSortActive(this)" data-sort="name-asc"><i class="bi bi-sort-alpha-down"></i> İsim A→Z</a></li>
+                <li><a class="dropdown-item sort-opt" href="#" onclick="return catSetSortActive(this)" data-sort="name-desc"><i class="bi bi-sort-alpha-up"></i> İsim Z→A</a></li>
+                <li><a class="dropdown-item sort-opt" href="#" onclick="return catSetSortActive(this)" data-sort="cars-desc"><i class="bi bi-sort-numeric-down"></i> En Fazla Araç</a></li>
+                <li><a class="dropdown-item sort-opt" href="#" onclick="return catSetSortActive(this)" data-sort="cars-asc"><i class="bi bi-sort-numeric-up"></i> En Az Araç</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         GRID VIEW
+    ============================================================ -->
+    <div id="gridView">
+        <div class="cat-grid" id="catGrid">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <div class="cat-card">
+                        <div class="cat-card-top">
+                            <div class="cat-card-left">
+                                <div class="cat-card-icon" style="background:rgba(232,255,71,.15);color:#e8ff47;">
+                                    <i class="bi bi-tags"></i>
+                                </div>
+                                <div>
+                                    <div class="cat-card-name">@item.CategoryName</div>
+                                    <div class="cat-card-id">ID: #@item.CategoryId</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cat-progress-wrap">
+                            <div class="cat-progress-meta">
+                                <span>@item.CarCount araç</span>
+                                <span>@(item.CarCount > 0 ? "Aktif" : "Boş")</span>
+                            </div>
+                            <div class="cat-progress-bar-bg">
+                                <div class="cat-progress-bar" style="width:@Math.Min(item.CarCount * 10, 100)%;background:#e8ff47;"></div>
+                            </div>
+                        </div>
+
+                        <div class="cat-card-footer">
+                            <span class="cat-status-dot @(item.CarCount > 0 ? "active" : "empty")">
+                                @(item.CarCount > 0 ? "Aktif" : "Boş")
+                            </span>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <!-- ============================================================
+         TABLE VIEW
+    ============================================================ -->
+    <div id="tableView" style="display:none;">
+        <div class="table-wrap">
+            <table class="cat-table" id="catTable">
+                <thead>
+                    <tr>
+                        <th style="width:48px;">#</th>
+                        <th>Kategori</th>
+                        <th>Araç Sayısı</th>
+                        <th>Doluluk</th>
+                        <th>Durum</th>
+                        <th style="width:130px;">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody id="catTbody">
+                    <!-- JS rendered -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Empty state -->
+    <div id="emptyState" style="display:@((Model != null && Model.Any()) ? "none" : "block");">
+        <div class="empty-state">
+            <div class="empty-icon"><i class="bi bi-tags"></i></div>
+            <div class="empty-title">Kategori bulunamadı</div>
+            <div class="empty-sub">Arama kriterlerinizi değiştirin ya da yeni bir kategori ekleyin.</div>
+            <a asp-area="Admin" asp-controller="Category" asp-action="CreateCategory" class="btn-accent" style="margin-top:20px;">
+                <i class="bi bi-plus-lg"></i> Yeni Kategori Ekle
+            </a>
+        </div>
+    </div>
+
+</main>
+
+<!-- ============================================================
+     EDIT MODAL
+============================================================ -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-pencil me-2" style="color:var(--accent)"></i>Kategori Düzenle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <input type="hidden" id="editId" />
+                <div class="mb-3">
+                    <label class="form-label">Kategori Adı</label>
+                    <input type="text" class="form-control" id="editName" placeholder="Kategori adı..." maxlength="60" />
+                    <div class="form-text" style="color:var(--text-muted);font-size:11px;">En az 2, en fazla 60 karakter.</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-outline" data-bs-dismiss="modal">İptal</button>
+                <button class="btn-accent" onclick="catSaveEdit()"><i class="bi bi-check-lg"></i> Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     DELETE CONFIRM MODAL
+============================================================ -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
+        <div class="modal-content">
+            <div class="modal-header" style="border-bottom:1px solid var(--border);">
+                <h5 class="modal-title" style="color:var(--danger);"><i class="bi bi-exclamation-triangle me-2"></i>Kategoriyi Sil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p style="font-size:14px;color:var(--text-muted);">
+                    <strong id="deleteTargetName" style="color:var(--text);"></strong> kategorisini silmek istediğinizden emin misiniz?
+                </p>
+                <div class="delete-warning" id="deleteWarning" style="display:none;">
+                    <i class="bi bi-exclamation-circle"></i>
+                    <span id="deleteWarningText"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-outline" data-bs-dismiss="modal">Vazgeç</button>
+                <button class="btn-danger-custom" onclick="catConfirmDelete()"><i class="bi bi-trash"></i> Evet, Sil</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="liveToast" class="toast align-items-center" role="alert">
+        <div class="toast-header">
+            <strong class="me-auto" id="toastTitle">Bildirim</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-body" id="toastMsg"></div>
+    </div>
+</div>
+
+<!-- ============================================================
+     PAGE-SPECIFIC STYLES
+============================================================ -->
+<style>
+    /* ── VIEW TOGGLE ── */
+    .view-toggle {
+        display: flex;
+        background: var(--bg-dark2);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+    .view-btn {
+        width: 38px;
+        height: 38px;
+        border: none;
+        background: transparent;
+        color: var(--text-muted);
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background var(--transition), color var(--transition);
+    }
+
+        .view-btn.active {
+            background: var(--accent-dim);
+            color: var(--accent);
+        }
+
+        .view-btn:hover:not(.active) {
+            background: var(--bg-dark3);
+            color: var(--text);
+        }
+
+    /* ── CATEGORY GRID ── */
+    .cat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 18px;
+    }
+
+    /* ── CATEGORY CARD ── */
+    .cat-card {
+        background: var(--bg-dark2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 22px 20px 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        cursor: default;
+        transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+        animation: fadeUp .35s ease both;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .cat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--card-accent, var(--accent));
+            opacity: 0;
+            transition: opacity var(--transition);
+        }
+
+        .cat-card:hover {
+            border-color: rgba(255,255,255,.13);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 32px rgba(0,0,0,.4);
+        }
+
+            .cat-card:hover::before {
+                opacity: 1;
+            }
+
+        /* Stagger */
+        .cat-card:nth-child(1) {
+            animation-delay: .05s
+        }
+
+        .cat-card:nth-child(2) {
+            animation-delay: .10s
+        }
+
+        .cat-card:nth-child(3) {
+            animation-delay: .15s
+        }
+
+        .cat-card:nth-child(4) {
+            animation-delay: .20s
+        }
+
+        .cat-card:nth-child(5) {
+            animation-delay: .25s
+        }
+
+        .cat-card:nth-child(6) {
+            animation-delay: .30s
+        }
+
+        .cat-card:nth-child(7) {
+            animation-delay: .35s
+        }
+
+        .cat-card:nth-child(8) {
+            animation-delay: .40s
+        }
+
+    .cat-card-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .cat-card-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .cat-card-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 13px;
+        display: grid;
+        place-items: center;
+        font-size: 22px;
+        flex-shrink: 0;
+        transition: transform var(--transition);
+    }
+
+    .cat-card:hover .cat-card-icon {
+        transform: scale(1.08) rotate(-4deg);
+    }
+
+    .cat-card-name {
+        font-family: 'Syne', sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1.2;
+    }
+
+    .cat-card-id {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-top: 2px;
+    }
+
+    /* Kebab menu */
+    .cat-menu-btn {
+        width: 30px;
+        height: 30px;
+        border: none;
+        background: transparent;
+        color: var(--text-muted);
+        border-radius: 8px;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        font-size: 15px;
+        transition: background var(--transition), color var(--transition);
+        flex-shrink: 0;
+    }
+
+        .cat-menu-btn:hover {
+            background: var(--bg-dark3);
+            color: var(--text);
+        }
+
+    /* Progress bar */
+    .cat-progress-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .cat-progress-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        color: var(--text-muted);
+    }
+
+    .cat-progress-bar-bg {
+        height: 5px;
+        background: var(--bg-dark3);
+        border-radius: 99px;
+        overflow: hidden;
+    }
+
+    .cat-progress-bar {
+        height: 100%;
+        border-radius: 99px;
+        transition: width .6s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* Footer */
+    .cat-card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 14px;
+        border-top: 1px solid var(--border);
+    }
+
+    .cat-status-dot {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+        .cat-status-dot::before {
+            content: '';
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .cat-status-dot.active {
+            color: var(--success);
+        }
+
+            .cat-status-dot.active::before {
+                background: var(--success);
+                box-shadow: 0 0 6px var(--success);
+            }
+
+        .cat-status-dot.empty {
+            color: var(--text-muted);
+        }
+
+            .cat-status-dot.empty::before {
+                background: var(--text-muted);
+            }
+
+    .cat-action-btns {
+        display: flex;
+        gap: 6px;
+    }
+
+    .cat-act-btn {
+        height: 30px;
+        padding: 0 10px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: transparent;
+        color: var(--text-muted);
+        font-size: 12px;
+        font-weight: 500;
+        font-family: 'DM Sans', sans-serif;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all var(--transition);
+    }
+
+        .cat-act-btn.edit:hover {
+            background: var(--accent-dim);
+            color: var(--accent);
+            border-color: rgba(232,255,71,.25);
+        }
+
+        .cat-act-btn.del:hover {
+            background: rgba(255,82,89,.1);
+            color: var(--danger);
+            border-color: rgba(255,82,89,.25);
+        }
+
+    /* ── TABLE ── */
+    .table-wrap {
+        background: var(--bg-dark2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        animation: fadeUp .3s ease both;
+    }
+
+    .cat-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+
+        .cat-table thead th {
+            padding: 13px 18px;
+            text-align: left;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            color: var(--text-muted);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        .cat-table tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background var(--transition);
+        }
+
+            .cat-table tbody tr:last-child {
+                border-bottom: none;
+            }
+
+            .cat-table tbody tr:hover {
+                background: rgba(255,255,255,.025);
+            }
+
+        .cat-table td {
+            padding: 13px 18px;
+            vertical-align: middle;
+        }
+
+    .tbl-cat-name {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .tbl-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
+        font-size: 16px;
+        flex-shrink: 0;
+    }
+
+    .tbl-name-text {
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    .tbl-id-text {
+        font-size: 11px;
+        color: var(--text-muted);
+    }
+
+    .tbl-bar-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 120px;
+    }
+
+    .tbl-bar-bg {
+        flex: 1;
+        height: 4px;
+        background: var(--bg-dark3);
+        border-radius: 99px;
+        overflow: hidden;
+    }
+
+    .tbl-bar {
+        height: 100%;
+        border-radius: 99px;
+    }
+
+    .tbl-bar-pct {
+        font-size: 11px;
+        color: var(--text-muted);
+        width: 32px;
+        text-align: right;
+        flex-shrink: 0;
+    }
+
+    .tbl-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 3px 10px;
+        border-radius: 6px;
+    }
+
+        .tbl-status.active {
+            background: rgba(48,224,161,.1);
+            color: var(--success);
+        }
+
+        .tbl-status.empty {
+            background: rgba(107,114,128,.1);
+            color: var(--text-muted);
+        }
+
+    .tbl-actions {
+        display: flex;
+        gap: 6px;
+    }
+
+    .tbl-btn {
+        height: 30px;
+        padding: 0 10px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: transparent;
+        color: var(--text-muted);
+        font-size: 12px;
+        font-family: 'DM Sans', sans-serif;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all var(--transition);
+    }
+
+        .tbl-btn.edit:hover {
+            background: var(--accent-dim);
+            color: var(--accent);
+            border-color: rgba(232,255,71,.25);
+        }
+
+        .tbl-btn.del:hover {
+            background: rgba(255,82,89,.1);
+            color: var(--danger);
+            border-color: rgba(255,82,89,.25);
+        }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 80px 20px;
+        text-align: center;
+    }
+
+    .empty-icon {
+        width: 72px;
+        height: 72px;
+        background: var(--bg-dark2);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        display: grid;
+        place-items: center;
+        font-size: 32px;
+        color: var(--text-muted);
+        margin-bottom: 20px;
+    }
+
+    .empty-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .empty-sub {
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-top: 6px;
+    }
+
+    /* ── DELETE WARNING ── */
+    .delete-warning {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255,82,89,.08);
+        border: 1px solid rgba(255,82,89,.2);
+        border-radius: 8px;
+        padding: 10px 14px;
+        margin-top: 12px;
+        font-size: 12px;
+        color: var(--danger);
+    }
+
+    .btn-danger-custom {
+        background: var(--danger);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 9px 18px;
+        font-size: 13px;
+        font-weight: 600;
+        font-family: 'DM Sans', sans-serif;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        transition: opacity var(--transition);
+    }
+
+        .btn-danger-custom:hover {
+            opacity: .85;
+        }
+
+    .sort-opt.active {
+        color: var(--accent) !important;
+        background: var(--accent-dim) !important;
+    }
+
+    @@keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(16px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .cat-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .view-toggle {
+            display: none;
+        }
+    }
+</style>
+
+@section Scripts {
+    <script>
+        /* ============================================================
+           SERVER DATA
+        ============================================================ */
+        const TOTAL_CAPACITY = 20; // filodaki toplam araç kapasitesi (demo)
+        const CATEGORY_STYLES = [
+          { icon: 'bi-car-front',        color: { key:'yellow', hex:'#e8ff47', dim:'rgba(232,255,71,.15)' } },
+          { icon: 'bi-truck',            color: { key:'blue',   hex:'#4f8dff', dim:'rgba(79,141,255,.15)'  } },
+          { icon: 'bi-speedometer2',     color: { key:'green',  hex:'#30e0a1', dim:'rgba(48,224,161,.15)'  } },
+          { icon: 'bi-lightning-charge', color: { key:'purple', hex:'#a855f7', dim:'rgba(168,85,247,.15)'  } },
+          { icon: 'bi-bus-front',        color: { key:'orange', hex:'#ffb547', dim:'rgba(255,181,71,.15)'  } },
+          { icon: 'bi-fuel-pump',        color: { key:'cyan',   hex:'#22d3ee', dim:'rgba(34,211,238,.15)'  } }
+        ];
+
+        const serverCategories = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            Model.Select(category => new
+            {
+                categoryId = category.CategoryId,
+                categoryName = category.CategoryName,
+                carCount = category.CarCount
+            })
+        ));
+
+        let categories = serverCategories.map((category, index) => {
+          const style = CATEGORY_STYLES[index % CATEGORY_STYLES.length];
+          return {
+            ...category,
+            icon: style.icon,
+            color: style.color,
+            cars: Array.from({ length: category.carCount || 0 }, () => ({}))
+          };
+        });
+
+        let catActiveFilter = 'all';
+        let catActiveSort   = 'name-asc';
+        let catActiveView   = 'grid';
+        let catDeletePendingId = null;
+
+        /* ============================================================
+           INIT
+        ============================================================ */
+        document.addEventListener('DOMContentLoaded', () => {
+          render();
+          updateStats();
+        });
+
+        /* ============================================================
+           STATS
+        ============================================================ */
+        function updateStats() {
+          const total  = categories.length;
+          const cars   = categories.reduce((s, c) => s + c.cars.length, 0);
+          const active = categories.filter(c => c.cars.length > 0).length;
+          const empty  = categories.filter(c => c.cars.length === 0).length;
+
+          animateCount('statTotal',  total);
+          animateCount('statCars',   cars);
+          animateCount('statActive', active);
+          animateCount('statEmpty',  empty);
+
+          document.getElementById('statTotalBadge').textContent = `${total} adet`;
+        }
+
+        function animateCount(id, target) {
+          const el = document.getElementById(id);
+          let current = 0;
+          const step = Math.ceil(target / 20);
+          const timer = setInterval(() => {
+            current = Math.min(current + step, target);
+            el.textContent = current;
+            if (current >= target) clearInterval(timer);
+          }, 30);
+        }
+
+        /* ============================================================
+           FILTER / SORT / SEARCH
+        ============================================================ */
+        function catSetFilter(val, btn) {
+          catActiveFilter = val;
+          document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          catRender();
+        }
+
+        function catSetSortActive(el) {
+          document.querySelectorAll('.sort-opt').forEach(e => e.classList.remove('active'));
+          el.classList.add('active');
+          catActiveSort = el.dataset.sort;
+          catRender();
+          return false;
+        }
+
+        function catApplyFilters() { catRender(); }
+
+        function catGetFiltered() {
+          const q = (document.getElementById('searchInput').value || '').toLowerCase();
+
+          let list = categories.filter(c => {
+            const matchSearch = c.categoryName.toLowerCase().includes(q);
+            const matchFilter =
+              catActiveFilter === 'all' ||
+              (catActiveFilter === 'active' && c.cars.length > 0) ||
+              (catActiveFilter === 'empty'  && c.cars.length === 0);
+            return matchSearch && matchFilter;
+          });
+
+          list.sort((a, b) => {
+            if (catActiveSort === 'name-asc')  return a.categoryName.localeCompare(b.categoryName, 'tr');
+            if (catActiveSort === 'name-desc') return b.categoryName.localeCompare(a.categoryName, 'tr');
+            if (catActiveSort === 'cars-desc') return b.cars.length - a.cars.length;
+            if (catActiveSort === 'cars-asc')  return a.cars.length - b.cars.length;
+            return 0;
+          });
+
+          return list;
+        }
+
+        /* ============================================================
+           VIEW TOGGLE
+        ============================================================ */
+        function catSetView(v, btn) {
+          catActiveView = v;
+          document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          document.getElementById('gridView').style.display  = v === 'grid'  ? '' : 'none';
+          document.getElementById('tableView').style.display = v === 'table' ? '' : 'none';
+          catRender();
+        }
+
+        /* ============================================================
+           RENDER
+        ============================================================ */
+        function catRender() {
+          const list = catGetFiltered();
+
+          const emptyState = document.getElementById('emptyState');
+          const gridView   = document.getElementById('gridView');
+          const tableView  = document.getElementById('tableView');
+
+          if (!list.length) {
+            emptyState.style.display = '';
+            gridView.style.display   = 'none';
+            tableView.style.display  = 'none';
+            return;
+          }
+
+          emptyState.style.display = 'none';
+
+          if (catActiveView === 'grid') {
+            gridView.style.display  = '';
+            tableView.style.display = 'none';
+            catRenderGrid(list);
+          } else {
+            gridView.style.display  = 'none';
+            tableView.style.display = '';
+            catRenderTable(list);
+          }
+        }
+
+        /* ── GRID ── */
+        function catRenderGrid(list) {
+          document.getElementById('catGrid').innerHTML = list.map(c => {
+            const pct = TOTAL_CAPACITY ? Math.round((c.cars.length / TOTAL_CAPACITY) * 100) : 0;
+            const isActive = c.cars.length > 0;
+            return `
+              <div class="cat-card" style="--card-accent:${c.color.hex};" id="catCard-${c.categoryId}">
+                <div class="cat-card-top">
+                  <div class="cat-card-left">
+                    <div class="cat-card-icon" style="background:${c.color.dim};color:${c.color.hex};">
+                      <i class="bi ${c.icon}"></i>
+                    </div>
+                    <div>
+                      <div class="cat-card-name">${escHtml(c.categoryName)}</div>
+                      <div class="cat-card-id">ID: #${c.categoryId}</div>
+                    </div>
+                  </div>
+                  <div class="dropdown">
+                    <button class="cat-menu-btn" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                      <li><a class="dropdown-item" href="/Category/Detail/${c.categoryId}"><i class="bi bi-eye"></i> Detay</a></li>
+                      <li><a class="dropdown-item" href="#" onclick="catOpenEdit(${c.categoryId}); return false;"><i class="bi bi-pencil"></i> Düzenle</a></li>
+                      <li><hr class="dropdown-divider"/></li>
+                      <li><a class="dropdown-item text-danger" href="#" onclick="catOpenDelete(${c.categoryId}); return false;"><i class="bi bi-trash"></i> Sil</a></li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="cat-progress-wrap">
+                  <div class="cat-progress-meta">
+                    <span>${c.cars.length} araç</span>
+                    <span>%${pct} dolu</span>
+                  </div>
+                  <div class="cat-progress-bar-bg">
+                    <div class="cat-progress-bar"
+                         style="width:${pct}%;background:${c.color.hex};"></div>
+                  </div>
+                </div>
+
+                <div class="cat-card-footer">
+                  <span class="cat-status-dot ${isActive ? 'active' : 'empty'}">
+                    ${isActive ? 'Aktif' : 'Boş'}
+                  </span>
+                  <div class="cat-action-btns">
+                    <button class="cat-act-btn edit" onclick="catOpenEdit(${c.categoryId})">
+                      <i class="bi bi-pencil"></i> Düzenle
+                    </button>
+                    <button class="cat-act-btn del" onclick="catOpenDelete(${c.categoryId})">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+
+        /* ── TABLE ── */
+        function catRenderTable(list) {
+          document.getElementById('catTbody').innerHTML = list.map((c, i) => {
+            const pct = TOTAL_CAPACITY ? Math.round((c.cars.length / TOTAL_CAPACITY) * 100) : 0;
+            const isActive = c.cars.length > 0;
+            return `
+              <tr id="catRow-${c.categoryId}">
+                <td style="color:var(--text-muted);font-size:12px;">${i + 1}</td>
+                <td>
+                  <div class="tbl-cat-name">
+                    <div class="tbl-icon" style="background:${c.color.dim};color:${c.color.hex};">
+                      <i class="bi ${c.icon}"></i>
+                    </div>
+                    <div>
+                      <div class="tbl-name-text">${escHtml(c.categoryName)}</div>
+                      <div class="tbl-id-text">ID: #${c.categoryId}</div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;">${c.cars.length}</span>
+                  <span style="font-size:11px;color:var(--text-muted);margin-left:3px;">araç</span>
+                </td>
+                <td>
+                  <div class="tbl-bar-wrap">
+                    <div class="tbl-bar-bg">
+                      <div class="tbl-bar" style="width:${pct}%;background:${c.color.hex};"></div>
+                    </div>
+                    <span class="tbl-bar-pct">%${pct}</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="tbl-status ${isActive ? 'active' : 'empty'}">
+                    <i class="bi ${isActive ? 'bi-check-circle' : 'bi-dash-circle'}"></i>
+                    ${isActive ? 'Aktif' : 'Boş'}
+                  </span>
+                </td>
+                <td>
+                  <div class="tbl-actions">
+                    <button class="tbl-btn edit" onclick="catOpenEdit(${c.categoryId})"><i class="bi bi-pencil"></i> Düzenle</button>
+                    <button class="tbl-btn del"  onclick="catOpenDelete(${c.categoryId})"><i class="bi bi-trash"></i></button>
+                  </div>
+                </td>
+              </tr>
+            `;
+          }).join('');
+        }
+
+        /* ============================================================
+           EDIT MODAL
+        ============================================================ */
+        function catOpenEdit(id) {
+          const cat = categories.find(c => c.categoryId === id);
+          if (!cat) return;
+          document.getElementById('editId').value   = id;
+          document.getElementById('editName').value = cat.categoryName;
+          new bootstrap.Modal(document.getElementById('editModal')).show();
+        }
+
+        function catSaveEdit() {
+          const id  = parseInt(document.getElementById('editId').value);
+          const val = document.getElementById('editName').value.trim();
+
+          if (val.length < 2) {
+            document.getElementById('editName').style.borderColor = 'var(--danger)';
+            return;
+          }
+
+          const cat = categories.find(c => c.categoryId === id);
+          if (cat) {
+            cat.categoryName = val;
+            bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
+            catRender();
+            catShowToast(`"${val}" güncellendi.`, 'success');
+          }
+        }
+
+        /* ============================================================
+           DELETE MODAL
+        ============================================================ */
+        function catOpenDelete(id) {
+          const cat = categories.find(c => c.categoryId === id);
+          if (!cat) return;
+          catDeletePendingId = id;
+          document.getElementById('deleteTargetName').textContent = `"${cat.categoryName}"`;
+
+          const warnEl = document.getElementById('deleteWarning');
+          const warnTx = document.getElementById('deleteWarningText');
+
+          if (cat.cars.length > 0) {
+            warnEl.style.display = 'flex';
+            warnTx.textContent   = `Bu kategoriye bağlı ${cat.cars.length} araç var. Silmeden önce araçları başka kategoriye taşıyın.`;
+          } else {
+            warnEl.style.display = 'none';
+          }
+
+          new bootstrap.Modal(document.getElementById('deleteModal')).show();
+        }
+
+        function catConfirmDelete() {
+          const id  = catDeletePendingId;
+          const cat = categories.find(c => c.categoryId === id);
+          bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
+
+          // Animate out
+          const cardEl = document.getElementById('catCard-' + id) || document.getElementById('catRow-' + id);
+          if (cardEl) {
+            cardEl.style.transition = 'opacity .25s, transform .25s';
+            cardEl.style.opacity    = '0';
+            cardEl.style.transform  = 'scale(.96)';
+          }
+
+          setTimeout(() => {
+            const idx = categories.findIndex(c => c.categoryId === id);
+            if (idx > -1) categories.splice(idx, 1);
+            catRender();
+            updateStats();
+            catShowToast(`${cat?.categoryName ?? 'Kategori'} silindi.`, 'danger');
+          }, 280);
+        }
+
+        /* ============================================================
+           TOAST
+        ============================================================ */
+        function catShowToast(msg, type = 'success') {
+          const colors = { success: 'var(--success)', danger: 'var(--danger)', info: 'var(--accent2)' };
+          const el     = document.getElementById('liveToast');
+          document.getElementById('toastMsg').textContent = msg;
+          document.getElementById('toastTitle').style.color = colors[type] || colors.success;
+          new bootstrap.Toast(el, { delay: 3000 }).show();
+        }
+
+        /* ============================================================
+           HELPERS
+        ============================================================ */
+        function escHtml(str) {
+          return String(str).replace(/[&<>"']/g, m =>
+            ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])
+          );
+        }
+    </script>
+}
+
+

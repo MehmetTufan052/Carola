@@ -11,6 +11,6 @@ namespace Carola.DtoLayer.Dtos.CategoryDtos
     {
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
-        public List<Car> Cars { get; set; }
+        public int CarCount { get; set; }
     }
 }
