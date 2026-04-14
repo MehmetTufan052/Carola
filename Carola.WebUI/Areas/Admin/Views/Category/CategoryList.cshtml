@@ -192,32 +192,6 @@
 </main>
 
 <!-- ============================================================
-     EDIT MODAL
-============================================================ -->
-<div class="modal fade" id="editModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><i class="bi bi-pencil me-2" style="color:var(--accent)"></i>Kategori Düzenle</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-4">
-                <input type="hidden" id="editId" />
-                <div class="mb-3">
-                    <label class="form-label">Kategori Adı</label>
-                    <input type="text" class="form-control" id="editName" placeholder="Kategori adı..." maxlength="60" />
-                    <div class="form-text" style="color:var(--text-muted);font-size:11px;">En az 2, en fazla 60 karakter.</div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-outline" data-bs-dismiss="modal">İptal</button>
-                <button class="btn-accent" onclick="catSaveEdit()"><i class="bi bi-check-lg"></i> Kaydet</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ============================================================
      DELETE CONFIRM MODAL
 ============================================================ -->
 <div class="modal fade" id="deleteModal" tabindex="-1">
@@ -965,7 +939,7 @@
                     <button class="cat-menu-btn" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></button>
                     <ul class="dropdown-menu dropdown-menu-end">
                       <li><a class="dropdown-item" href="/Category/Detail/${c.categoryId}"><i class="bi bi-eye"></i> Detay</a></li>
-                      <li><a class="dropdown-item" href="#" onclick="catOpenEdit(${c.categoryId}); return false;"><i class="bi bi-pencil"></i> Düzenle</a></li>
+                      <li><a class="dropdown-item" href="${catGetEditUrl(c.categoryId)}"><i class="bi bi-pencil"></i> Düzenle</a></li>
                       <li><hr class="dropdown-divider"/></li>
                       <li><a class="dropdown-item text-danger" href="#" onclick="catOpenDelete(${c.categoryId}); return false;"><i class="bi bi-trash"></i> Sil</a></li>
                     </ul>
@@ -988,7 +962,7 @@
                     ${isActive ? 'Aktif' : 'Boş'}
                   </span>
                   <div class="cat-action-btns">
-                    <button class="cat-act-btn edit" onclick="catOpenEdit(${c.categoryId})">
+                    <button class="cat-act-btn edit" onclick="window.location.href='${catGetEditUrl(c.categoryId)}'">
                       <i class="bi bi-pencil"></i> Düzenle
                     </button>
                     <button class="cat-act-btn del" onclick="catOpenDelete(${c.categoryId})">
@@ -1040,42 +1014,13 @@
                 </td>
                 <td>
                   <div class="tbl-actions">
-                    <button class="tbl-btn edit" onclick="catOpenEdit(${c.categoryId})"><i class="bi bi-pencil"></i> Düzenle</button>
+                    <button class="tbl-btn edit" onclick="window.location.href='${catGetEditUrl(c.categoryId)}'"><i class="bi bi-pencil"></i> Düzenle</button>
                     <button class="tbl-btn del"  onclick="catOpenDelete(${c.categoryId})"><i class="bi bi-trash"></i></button>
                   </div>
                 </td>
               </tr>
             `;
           }).join('');
-        }
-
-        /* ============================================================
-           EDIT MODAL
-        ============================================================ */
-        function catOpenEdit(id) {
-          const cat = categories.find(c => c.categoryId === id);
-          if (!cat) return;
-          document.getElementById('editId').value   = id;
-          document.getElementById('editName').value = cat.categoryName;
-          new bootstrap.Modal(document.getElementById('editModal')).show();
-        }
-
-        function catSaveEdit() {
-          const id  = parseInt(document.getElementById('editId').value);
-          const val = document.getElementById('editName').value.trim();
-
-          if (val.length < 2) {
-            document.getElementById('editName').style.borderColor = 'var(--danger)';
-            return;
-          }
-
-          const cat = categories.find(c => c.categoryId === id);
-          if (cat) {
-            cat.categoryName = val;
-            bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
-            catRender();
-            catShowToast(`"${val}" güncellendi.`, 'success');
-          }
         }
 
         /* ============================================================
@@ -1140,6 +1085,10 @@
           return String(str).replace(/[&<>"']/g, m =>
             ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])
           );
+        }
+
+        function catGetEditUrl(id) {
+          return `/Admin/Category/UpdateCategory/${id}`;
         }
     </script>
 }

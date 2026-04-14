@@ -23,5 +23,6 @@ namespace Carola.DtoLayer.Dtos.CarDtos
         public int CategoryId { get; set; }
         public Category Category { get; set; }
         public string ImageUrl { get; set; }
+        public string Status { get; set; }
     }
 }

@@ -1,64 +1,40 @@
-﻿<section class="car-type-section pt_120 pb_90 home-three">
+@model List<ResultCategoryDto>
+
+<section class="car-type-section pt_120 pb_90 home-three">
     <div class="container">
         <div class="section-title centred mb_60">
             <span class="sub-title">Car Types</span>
-            <h2 class="title">Explore  Car Types</h2>
+            <h2 class="title">Explore Car Types</h2>
         </div>
-        <div class="car-type-outer-box">
-            <div class="car-type-item">
-                <div class="car-image">
-                    <img src="assets/images/car-type/car-1.png" alt="">
-                    <div class="shape"><img src="/carola pack/carola/assets/images/shape/shape-2.png" alt=""></div>
+
+        <div class="owl-carousel owl-theme theme_carousel"
+             data-options='{"loop": true, "margin": 24, "nav": true, "dots": false, "autoplay": true, "autoplayTimeout": 3500, "smartSpeed": 900, "responsive":{ "0":{"items":1}, "576":{"items":2}, "992":{"items":3}, "1200":{"items":4}}}'>
+            @foreach (var item in Model ?? new List<ResultCategoryDto>())
+            {
+                var imagePath = item.CategoryImage ?? string.Empty;
+                if (!string.IsNullOrWhiteSpace(imagePath) &&
+                    !imagePath.StartsWith("http", StringComparison.OrdinalIgnoreCase) &&
+                    !imagePath.StartsWith("/"))
+                {
+                    imagePath = imagePath.StartsWith("assets/", StringComparison.OrdinalIgnoreCase)
+                        ? $"/carola pack/carola/{imagePath}"
+                        : $"/{imagePath.TrimStart('/')}";
+                }
+
+                <div class="item">
+                    <div class="car-type-item">
+                        <div class="car-image">
+                            <img src="@imagePath" alt="@item.CategoryName">
+                            <div class="shape">
+                                <img src="/carola pack/carola/assets/images/shape/shape-2.png" alt="">
+                            </div>
+                        </div>
+                        <div class="car-name">
+                            <h6><a href="#">@item.CategoryName</a></h6>
+                        </div>
+                    </div>
                 </div>
-                <div class="car-name">
-                    <h6><a href="#">Truck</a></h6>
-                </div>
-            </div>
-            <div class="car-type-item">
-                <div class="car-image">
-                    <img src="assets/images/car-type/car-2.png" alt="">
-                    <div class="shape"><img src="/carola pack/carola/assets/images/shape/shape-2.png" alt=""></div>
-                </div>
-                <div class="car-name">
-                    <h6><a href="#">Luxury Sedan</a></h6>
-                </div>
-            </div>
-            <div class="car-type-item">
-                <div class="car-image">
-                    <img src="assets/images/car-type/car-3.png" alt="">
-                    <div class="shape"><img src="/carola pack/carola/assets/images/shape/shape-2.png" alt=""></div>
-                </div>
-                <div class="car-name">
-                    <h6><a href="#">Sedan</a></h6>
-                </div>
-            </div>
-            <div class="car-type-item">
-                <div class="car-image">
-                    <img src="assets/images/car-type/car-4.png" alt="">
-                    <div class="shape"><img src="/carola pack/carola/assets/images/shape/shape-2.png" alt=""></div>
-                </div>
-                <div class="car-name">
-                    <h6><a href="#">Sports Car</a></h6>
-                </div>
-            </div>
-            <div class="car-type-item">
-                <div class="car-image">
-                    <img src="assets/images/car-type/car-5.png" alt="">
-                    <div class="shape"><img src="/carola pack/carola/assets/images/shape/shape-2.png" alt=""></div>
-                </div>
-                <div class="car-name">
-                    <h6><a href="#">Hatchback</a></h6>
-                </div>
-            </div>
-            <div class="car-type-item">
-                <div class="car-image">
-                    <img src="assets/images/car-type/car-6.png" alt="">
-                    <div class="shape"><img src="/carola pack/carola/assets/images/shape/shape-2.png" alt=""></div>
-                </div>
-                <div class="car-name">
-                    <h6><a href="#">SUV</a></h6>
-                </div>
-            </div>
+            }
         </div>
     </div>
 </section>

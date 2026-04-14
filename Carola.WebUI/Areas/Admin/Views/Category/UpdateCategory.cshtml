@@ -1,0 +1,186 @@
+﻿
+
+@model UpdateCategoryDto
+@{
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+    ViewData["Title"] = "Kategori Güncelle";
+}
+<div id="content">
+
+    <!-- Breadcrumb -->
+    <div style="font-size:12px; color:var(--text-muted); margin-bottom:20px;">
+        Araç Yönetimi &rsaquo; Araç Kategorileri &rsaquo; <span style="color:var(--text);">Kategori Güncelle</span>
+    </div>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div>
+            <div class="page-title">Kategori Güncelle</div>
+            <div class="page-subtitle">Mevcut kategori bilgilerini düzenleyin</div>
+        </div>
+        <a asp-action="CategoryList" asp-controller="Category" class="btn-outline">
+            <i class="bi bi-arrow-left"></i> Geri Dön
+        </a>
+    </div>
+
+    <!-- Form -->
+    <form asp-action="UpdateCategory" asp-controller="Category" method="post">
+        <input asp-for="CategoryId" type="hidden" />
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+
+            <!-- Sol Kolon -->
+            <div>
+
+                <!-- Temel Bilgiler -->
+                <div style="background:var(--bg-dark2); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px; margin-bottom:20px;">
+                    <div style="font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:var(--text); margin-bottom:18px; display:flex; align-items:center; gap:8px;">
+                        <i class="bi bi-tag" style="color:var(--accent);"></i> Temel Bilgiler
+                    </div>
+
+                    <div style="margin-bottom:18px;">
+                        <label class="form-label">Kategori ID</label>
+                        <input class="form-control" type="text" value="@Model.CategoryId" disabled
+                               style="opacity:.5; cursor:not-allowed;" />
+                    </div>
+
+                    <div>
+                        <label asp-for="CategoryName" class="form-label">Kategori Adı</label>
+                        <input asp-for="CategoryName" class="form-control"
+                               placeholder="ör. Sedan, SUV, Hatchback" />
+                        <span asp-validation-for="CategoryName"
+                              style="font-size:12px; color:var(--danger); display:block; margin-top:4px;"></span>
+                    </div>
+                </div>
+
+                <!-- Görsel -->
+                <div style="background:var(--bg-dark2); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px;">
+                    <div style="font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:var(--text); margin-bottom:18px; display:flex; align-items:center; gap:8px;">
+                        <i class="bi bi-image" style="color:var(--accent);"></i> Kategori Görseli
+                    </div>
+
+                    <!-- Önizleme -->
+                    <div id="imgPreviewWrap"
+                         style="background:var(--bg-dark3); border:1px dashed rgba(255,255,255,.12); border-radius:12px; height:160px; overflow:hidden; margin-bottom:12px; position:relative;">
+                        @if (!string.IsNullOrEmpty(Model.CategoryImage))
+                        {
+                            <img id="imgPreview" src="@Model.CategoryImage" alt="Kategori görseli"
+                                 style="width:100%; height:100%; object-fit:cover;" />
+                        }
+                        else
+                        {
+                            <div id="imgPlaceholder"
+                                 style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--text-muted);">
+                                <i class="bi bi-image" style="font-size:32px; opacity:.4; margin-bottom:8px;"></i>
+                                <p style="font-size:12px; margin:0;">Görsel URL giriniz</p>
+                            </div>
+                        }
+                    </div>
+
+                    <div>
+                        <label asp-for="CategoryImage" class="form-label">Görsel URL</label>
+                        <input asp-for="CategoryImage" class="form-control"
+                               placeholder="https://..."
+                               oninput="previewImage(this.value)" />
+                        <span asp-validation-for="CategoryImage"
+                              style="font-size:12px; color:var(--danger); display:block; margin-top:4px;"></span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Sağ Kolon — Araçlar -->
+            <div style="background:var(--bg-dark2); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px;">
+                <div style="font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:var(--text); margin-bottom:18px; display:flex; align-items:center; gap:8px;">
+                    <i class="bi bi-car-front" style="color:var(--accent);"></i>
+                    Bu Kategorideki Araçlar
+                    <span style="background:var(--accent-dim); color:var(--accent); border-radius:6px; font-size:11px; font-weight:600; padding:2px 8px; margin-left:4px;">
+                        @(Model.Cars?.Count ?? 0) Araç
+                    </span>
+                </div>
+
+                @if (Model.Cars != null && Model.Cars.Any())
+                {
+                    <div style="display:flex; flex-direction:column; gap:8px; max-height:340px; overflow-y:auto; padding-right:4px;">
+                        @foreach (var car in Model.Cars)
+                        {
+                            <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--bg-dark3); border:1px solid var(--border); border-radius:10px; font-size:13px;">
+                                <span style="width:8px; height:8px; border-radius:50%; flex-shrink:0; background:@(car.Status == "available" ? "var(--success)" : "var(--warning)");"></span>
+                                <span>@car.Brand @car.Model</span>
+                            </div>
+                        }
+                    </div>
+
+                    <div style="margin-top:14px; padding-top:14px; border-top:1px solid var(--border); font-size:12px; color:var(--text-muted); display:flex; gap:16px;">
+                        <span>Müsait: @Model.Cars.Count(c => c.Status == "erişilebilir")</span>
+                        <span>Kirada: @Model.Cars.Count(c => c.Status != "dolu")</span>
+                    </div>
+                }
+                else
+                {
+                    <div style="text-align:center; padding:40px 0; color:var(--text-muted);">
+                        <i class="bi bi-car-front" style="font-size:32px; opacity:.25; display:block; margin-bottom:10px;"></i>
+                        <p style="font-size:13px; margin:0;">Bu kategoride henüz araç yok.</p>
+                    </div>
+                }
+            </div>
+
+        </div>
+
+        <!-- Action Bar -->
+        <div style="display:flex; align-items:center; gap:10px; margin-top:24px; flex-wrap:wrap;">
+            <button type="submit" class="btn-accent">
+                <i class="bi bi-check-lg"></i> Değişiklikleri Kaydet
+            </button>
+            <a asp-action="CategoryList" asp-controller="Category" class="btn-outline">
+                İptal
+            </a>
+            <button type="button" class="btn-outline"
+                    style="margin-left:auto; color:var(--danger); border-color:rgba(255,82,89,.25);"
+                    onclick="confirmDelete(@Model.CategoryId)">
+                <i class="bi bi-trash"></i> Kategoriyi Sil
+            </button>
+        </div>
+
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        function previewImage(url) {
+            const wrap = document.getElementById('imgPreviewWrap');
+            const placeholder = document.getElementById('imgPlaceholder');
+            let img = document.getElementById('imgPreview');
+
+            if (!url || url.trim() === '') {
+                if (img) img.remove();
+                if (!placeholder) {
+                    wrap.innerHTML = `
+                        <div id="imgPlaceholder" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text-muted);">
+                            <i class="bi bi-image" style="font-size:32px;opacity:.4;margin-bottom:8px;"></i>
+                            <p style="font-size:12px;margin:0;">Görsel URL giriniz</p>
+                        </div>`;
+                }
+                return;
+            }
+
+            if (!img) {
+                wrap.innerHTML = '';
+                img = document.createElement('img');
+                img.id = 'imgPreview';
+                img.style = 'width:100%;height:100%;object-fit:cover;';
+                img.onerror = () => { img.remove(); };
+                wrap.appendChild(img);
+            }
+            img.src = url;
+            img.alt = 'Kategori görseli';
+        }
+
+        function confirmDelete(id) {
+            if (confirm('Bu kategoriyi silmek istediğinize emin misiniz?')) {
+                window.location.href = '/Admin/Category/DeleteCategory/' + id;
+            }
+        }
+    </script>
+}
+

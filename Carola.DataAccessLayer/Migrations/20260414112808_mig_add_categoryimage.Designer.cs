@@ -4,6 +4,7 @@ using Carola.DataAccessLayer.Concrete;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Carola.DataAccessLayer.Migrations
 {
     [DbContext(typeof(CarolaContext))]
-    partial class CarolaContextModelSnapshot : ModelSnapshot
+    [Migration("20260414112808_mig_add_categoryimage")]
+    partial class mig_add_categoryimage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -94,10 +96,6 @@ namespace Carola.DataAccessLayer.Migrations
 
                     b.Property<int>("SeatCount")
                         .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TransmissionType")
                         .IsRequired()

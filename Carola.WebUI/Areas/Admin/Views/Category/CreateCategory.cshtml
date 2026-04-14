@@ -1,29 +1,23 @@
-﻿
-@model CreateCategoryDto
-@{
-    ViewData["Title"] = "CreateCategory";
+﻿@{
+    ViewData["Title"] = "Kategori Oluştur";
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
 }
 
 <main id="content">
 
-    <!-- ============================================================
-         PAGE HEADER
-    ============================================================ -->
+    <!-- PAGE HEADER -->
     <div class="page-header">
         <div>
             <div class="page-title">Kategori Oluştur</div>
-            <div class="page-subtitle">Araç filonuz için yeni bir kategori tanımlayın.</div>
+            <div class="page-subtitle">Araç filonuz için yeni bir kategori ve kapak görseli tanımlayın.</div>
         </div>
-        <a asp-area="Admin" asp-controller="Category" asp-action="CategoryList" class="btn-outline">
+        <a href="/Category" class="btn-outline">
             <i class="bi bi-arrow-left"></i> Kategorilere Dön
         </a>
     </div>
 
-    <!-- ============================================================
-         STATS ROW
-    ============================================================ -->
-    <div class="row g-3 stats-row" id="statsRow">
+    <!-- STATS ROW -->
+    <div class="row g-3 stats-row">
         <div class="col-6 col-md-3">
             <div class="stat-card">
                 <div class="stat-icon yellow"><i class="bi bi-tags"></i></div>
@@ -44,16 +38,16 @@
         </div>
         <div class="col-6 col-md-3">
             <div class="stat-card">
-                <div class="stat-icon green"><i class="bi bi-check-circle"></i></div>
+                <div class="stat-icon green"><i class="bi bi-image"></i></div>
                 <div>
-                    <div class="stat-value" id="statActive">0</div>
-                    <div class="stat-label">Aktif Kategori</div>
+                    <div class="stat-value" id="statWithImg">0</div>
+                    <div class="stat-label">Görselli Kategori</div>
                 </div>
             </div>
         </div>
         <div class="col-6 col-md-3">
             <div class="stat-card">
-                <div class="stat-icon red"><i class="bi bi-exclamation-circle"></i></div>
+                <div class="stat-icon red"><i class="bi bi-slash-circle"></i></div>
                 <div>
                     <div class="stat-value" id="statEmpty">0</div>
                     <div class="stat-label">Boş Kategori</div>
@@ -62,12 +56,10 @@
         </div>
     </div>
 
-    <!-- ============================================================
-         MAIN LAYOUT: FORM + PREVIEW
-    ============================================================ -->
+    <!-- MAIN LAYOUT -->
     <div class="row g-4">
 
-        <!-- ── FORM CARD ── -->
+        <!-- FORM COLUMN -->
         <div class="col-lg-7">
             <div class="form-card">
                 <div class="form-card-header">
@@ -78,16 +70,19 @@
                     </div>
                 </div>
 
-                <form id="categoryForm"  method="post" onsubmit="handleSubmit(event)">
+                <form id="categoryForm"
+                      asp-action="CreateCategory"
+                      method="post"
+                      enctype="multipart/form-data"
+                      onsubmit="handleSubmit(event)">
                     @Html.AntiForgeryToken()
 
-                    <!-- Category Name -->
+                    <!-- Kategori Adı -->
                     <div class="field-group">
                         <label class="field-label" for="CategoryName">
-                            Kategori Adı
-                            <span class="field-required">*</span>
+                            Kategori Adı <span class="field-required">*</span>
                         </label>
-                        <div class="field-input-wrap" id="nameWrap">
+                        <div class="field-input-wrap">
                             <i class="bi bi-tag field-icon"></i>
                             <input type="text"
                                    id="CategoryName"
@@ -96,35 +91,89 @@
                                    placeholder="ör. Sedan, SUV, Elektrik..."
                                    maxlength="60"
                                    autocomplete="off"
-                                   oninput="syncPreview(this.value); validateName(this.value);"
+                                   oninput="syncPreview(); validateName(this.value);"
                                    required />
                             <span class="char-count" id="charCount">0 / 60</span>
                         </div>
-                        <div class="field-hint" id="nameHint">Kategori adı 2 ile 60 karakter arasında olmalıdır.</div>
+                        <div class="field-hint">Kategori adı 2 ile 60 karakter arasında olmalıdır.</div>
                         <div class="field-error" id="nameError" style="display:none;"></div>
                     </div>
 
-                    <!-- Icon Picker -->
+                    <!-- Kategori Görseli -->
+                    <div class="field-group">
+                        <label class="field-label">
+                            Kategori Görseli <span class="field-required">*</span>
+                        </label>
+
+                        <div class="drop-zone" id="dropZone"
+                             ondragover="onDragOver(event)"
+                             ondragleave="onDragLeave(event)"
+                             ondrop="onDrop(event)"
+                             onclick="document.getElementById('CategoryImage').click()">
+
+                            <!-- Empty state -->
+                            <div class="dz-empty" id="dzEmpty">
+                                <div class="dz-icon-wrap">
+                                    <i class="bi bi-cloud-arrow-up"></i>
+                                </div>
+                                <div class="dz-title">Görseli buraya sürükleyin</div>
+                                <div class="dz-sub">veya <span class="dz-link">dosya seçin</span></div>
+                                <div class="dz-formats">PNG, JPG, WebP &middot; Maks. 5 MB</div>
+                            </div>
+
+                            <!-- Preview state -->
+                            <div class="dz-preview" id="dzPreview" style="display:none;">
+                                <img id="dzPreviewImg" src="" alt="Önizleme" />
+                                <div class="dz-overlay">
+                                    <button type="button" class="dz-change-btn" onclick="triggerFilePicker(event)">
+                                        <i class="bi bi-arrow-repeat"></i> Değiştir
+                                    </button>
+                                    <button type="button" class="dz-remove-btn" onclick="removeImage(event)">
+                                        <i class="bi bi-trash"></i> Kaldır
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="file"
+                               id="CategoryImage"
+                               name="CategoryImage"
+                               accept="image/png,image/jpeg,image/webp"
+                               style="display:none;"
+                               onchange="onFileSelected(this)" />
+
+                        <div class="field-error" id="imgError" style="display:none;"></div>
+
+                        <!-- Image meta bar -->
+                        <div class="img-meta-bar" id="imgMetaBar" style="display:none;">
+                            <div class="img-meta-thumb" id="imgMetaThumb"></div>
+                            <div class="img-meta-info">
+                                <div class="img-meta-name" id="imgMetaName"></div>
+                                <div class="img-meta-size" id="imgMetaSize"></div>
+                            </div>
+                            <div class="img-meta-ok"><i class="bi bi-check-circle-fill"></i></div>
+                        </div>
+                    </div>
+
+                    <!-- İkon Seç -->
                     <div class="field-group">
                         <label class="field-label">İkon Seç</label>
-                        <div class="icon-grid" id="iconGrid">
-                            <!-- populated by JS -->
-                        </div>
+                        <div class="icon-grid" id="iconGrid"></div>
                         <input type="hidden" name="CategoryIcon" id="CategoryIcon" value="bi-car-front" />
                     </div>
 
-                    <!-- Color Picker -->
+                    <!-- Renk Etiketi -->
                     <div class="field-group">
                         <label class="field-label">Renk Etiketi</label>
-                        <div class="color-swatches" id="colorSwatches">
-                            <!-- populated by JS -->
-                        </div>
+                        <div class="color-swatches" id="colorSwatches"></div>
                         <input type="hidden" name="CategoryColor" id="CategoryColor" value="yellow" />
                     </div>
 
-                    <!-- Description (optional) -->
+                    <!-- Açıklama -->
                     <div class="field-group">
-                        <label class="field-label" for="CategoryDesc">Açıklama <span style="color:var(--text-muted);font-weight:400;">(isteğe bağlı)</span></label>
+                        <label class="field-label">
+                            Açıklama <span style="color:var(--text-muted);font-weight:400;">(isteğe bağlı)</span>
+                        </label>
                         <div class="field-input-wrap">
                             <textarea id="CategoryDesc"
                                       name="CategoryDescription"
@@ -148,26 +197,49 @@
             </div>
         </div>
 
-        <!-- ── RIGHT COLUMN: PREVIEW + EXISTING ── -->
+        <!-- RIGHT COLUMN -->
         <div class="col-lg-5">
 
-            <!-- Live Preview -->
-            <div class="preview-card" id="previewCard">
-                <div class="preview-label">
-                    <i class="bi bi-eye"></i> Canlı Önizleme
+            <!-- Live Preview Card -->
+            <div class="preview-card">
+                <div class="preview-label"><i class="bi bi-eye"></i> Canlı Önizleme</div>
+
+                <!-- Hero Image -->
+                <div class="preview-hero" id="previewHero">
+                    <div class="preview-hero-empty" id="previewHeroEmpty">
+                        <i class="bi bi-image"></i>
+                        <span>Görsel yüklenmedi</span>
+                    </div>
+                    <img id="previewHeroImg" src="" alt="" style="display:none;" />
+                    <div class="preview-hero-overlay" id="previewHeroOverlay" style="display:none;">
+                        <div class="preview-hero-badge">
+                            <div class="preview-hero-icon" id="previewHeroIcon">
+                                <i class="bi bi-car-front" id="previewIconEl"></i>
+                            </div>
+                            <div>
+                                <div class="preview-hero-name" id="previewName">Kategori Adı</div>
+                                <div class="preview-hero-sub">0 araç</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Badge Preview -->
                 <div class="preview-badge-wrap">
-                    <div class="preview-badge" id="previewBadge">
-                        <div class="preview-badge-icon stat-icon yellow" id="previewIcon">
-                            <i class="bi bi-car-front" id="previewIconEl"></i>
+                    <div class="preview-badge">
+                        <div class="preview-badge-icon stat-icon yellow" id="previewBadgeIcon">
+                            <i class="bi bi-car-front" id="previewBadgeIconEl"></i>
                         </div>
                         <div>
-                            <div class="preview-badge-name" id="previewName">Kategori Adı</div>
+                            <div class="preview-badge-name" id="previewBadgeName">Kategori Adı</div>
                             <div class="preview-badge-sub">0 araç</div>
                         </div>
                     </div>
-                    <div class="preview-chip-wrap">
+                    <div class="preview-chips">
                         <span class="preview-chip" id="previewChip">Kategori Adı</span>
+                        <span class="preview-chip img-chip" id="previewImgChip" style="display:none;">
+                            <i class="bi bi-image"></i> Görsel eklendi
+                        </span>
                     </div>
                 </div>
             </div>
@@ -185,17 +257,27 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
 </main>
 
+<!-- Toast -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="liveToast" class="toast align-items-center" role="alert">
+        <div class="toast-header">
+            <strong class="me-auto" id="toastTitle">Bildirim</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-body" id="toastMsg"></div>
+    </div>
+</div>
+
 <!-- ============================================================
-     PAGE-SPECIFIC STYLES
+     PAGE STYLES
 ============================================================ -->
 <style>
-    /* ── FORM CARD ── */
+    /* FORM CARD */
     .form-card {
         background: var(--bg-dark2);
         border: 1px solid var(--border);
@@ -237,7 +319,7 @@
         margin-top: 2px;
     }
 
-    /* ── FIELD ── */
+    /* FIELDS */
     .field-group {
         margin-bottom: 22px;
     }
@@ -248,7 +330,6 @@
         color: var(--text-muted);
         display: block;
         margin-bottom: 7px;
-        letter-spacing: .2px;
     }
 
     .field-required {
@@ -289,19 +370,18 @@
             box-shadow: 0 0 0 3px var(--accent-dim);
         }
 
-            .field-input:focus + .field-icon,
-            .field-input-wrap:focus-within .field-icon {
-                color: var(--accent);
-            }
+    .field-input-wrap:focus-within .field-icon {
+        color: var(--accent);
+    }
 
-        .field-input.error {
-            border-color: var(--danger) !important;
-            box-shadow: 0 0 0 3px rgba(255,82,89,.15) !important;
-        }
+    .field-input.error {
+        border-color: var(--danger) !important;
+        box-shadow: 0 0 0 3px rgba(255,82,89,.15) !important;
+    }
 
-        .field-input.success {
-            border-color: var(--success) !important;
-        }
+    .field-input.success {
+        border-color: var(--success) !important;
+    }
 
     .field-textarea {
         padding: 10px 14px !important;
@@ -331,7 +411,196 @@
         margin-top: 5px;
     }
 
-    /* ── ICON GRID ── */
+    /* DROP ZONE */
+    .drop-zone {
+        border: 2px dashed var(--border);
+        border-radius: var(--radius);
+        background: var(--bg-dark3);
+        cursor: pointer;
+        overflow: hidden;
+        transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+        position: relative;
+        min-height: 190px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .drop-zone:hover, .drop-zone.drag-over {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+            box-shadow: 0 0 0 3px var(--accent-dim);
+        }
+
+    .dz-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        padding: 36px 20px;
+        text-align: center;
+        pointer-events: none;
+    }
+
+    .dz-icon-wrap {
+        width: 56px;
+        height: 56px;
+        background: var(--bg-dark2);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        font-size: 26px;
+        color: var(--text-muted);
+        margin-bottom: 6px;
+        transition: border-color var(--transition), color var(--transition);
+    }
+
+    .drop-zone:hover .dz-icon-wrap,
+    .drop-zone.drag-over .dz-icon-wrap {
+        border-color: var(--accent);
+        color: var(--accent);
+    }
+
+    .dz-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    .dz-sub {
+        font-size: 12px;
+        color: var(--text-muted);
+    }
+
+    .dz-link {
+        color: var(--accent);
+        font-weight: 600;
+    }
+
+    .dz-formats {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-top: 4px;
+    }
+
+    .dz-preview {
+        position: absolute;
+        inset: 0;
+    }
+
+        .dz-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .4s ease;
+        }
+
+    .drop-zone:hover .dz-preview img {
+        transform: scale(1.04);
+    }
+
+    .dz-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,.58);
+        backdrop-filter: blur(4px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        opacity: 0;
+        transition: opacity var(--transition);
+    }
+
+    .drop-zone:hover .dz-overlay {
+        opacity: 1;
+    }
+
+    .dz-change-btn, .dz-remove-btn {
+        border: none;
+        border-radius: 9px;
+        padding: 9px 16px;
+        font-size: 12px;
+        font-weight: 600;
+        font-family: 'DM Sans', sans-serif;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: opacity var(--transition), transform var(--transition);
+    }
+
+    .dz-change-btn {
+        background: var(--accent);
+        color: var(--bg-dark);
+    }
+
+    .dz-remove-btn {
+        background: rgba(255,82,89,.92);
+        color: #fff;
+    }
+
+        .dz-change-btn:hover, .dz-remove-btn:hover {
+            opacity: .85;
+            transform: translateY(-1px);
+        }
+
+    /* Meta bar */
+    .img-meta-bar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(48,224,161,.07);
+        border: 1px solid rgba(48,224,161,.2);
+        border-radius: 10px;
+        padding: 10px 14px;
+        margin-top: 10px;
+        animation: fadeUp .2s ease both;
+    }
+
+    .img-meta-thumb {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        background: var(--bg-dark3);
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+        .img-meta-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .img-meta-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .img-meta-name {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .img-meta-size {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-top: 1px;
+    }
+
+    .img-meta-ok {
+        color: var(--success);
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    /* ICON GRID */
     .icon-grid {
         display: flex;
         flex-wrap: wrap;
@@ -363,7 +632,7 @@
             color: var(--accent);
         }
 
-    /* ── COLOR SWATCHES ── */
+    /* COLOR SWATCHES */
     .color-swatches {
         display: flex;
         gap: 10px;
@@ -385,7 +654,7 @@
         }
 
         .color-swatch.active {
-            border-color: var(--text);
+            border-color: #fff;
             transform: scale(1.15);
         }
 
@@ -401,7 +670,7 @@
                 text-shadow: 0 1px 3px rgba(0,0,0,.5);
             }
 
-    /* ── FORM ACTIONS ── */
+    /* FORM ACTIONS */
     .form-actions {
         display: flex;
         gap: 10px;
@@ -410,12 +679,12 @@
         border-top: 1px solid var(--border);
     }
 
-    /* ── PREVIEW CARD ── */
+    /* PREVIEW CARD */
     .preview-card {
         background: var(--bg-dark2);
         border: 1px solid var(--border);
         border-radius: var(--radius-lg);
-        padding: 22px;
+        overflow: hidden;
         margin-bottom: 20px;
         animation: fadeUp .4s .1s ease both;
     }
@@ -426,61 +695,151 @@
         letter-spacing: 1px;
         color: var(--text-muted);
         font-weight: 600;
-        margin-bottom: 18px;
+        padding: 16px 20px 0;
         display: flex;
         align-items: center;
         gap: 6px;
     }
 
-    .preview-badge-wrap {
+    /* Hero */
+    .preview-hero {
+        position: relative;
+        height: 200px;
+        margin: 14px 16px 0;
+        border-radius: 12px;
+        overflow: hidden;
+        background: var(--bg-dark3);
+        border: 1px solid var(--border);
+    }
+
+    .preview-hero-empty {
+        position: absolute;
+        inset: 0;
         display: flex;
         flex-direction: column;
-        gap: 14px;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        color: var(--text-muted);
+        font-size: 12px;
+    }
+
+        .preview-hero-empty i {
+            font-size: 32px;
+            opacity: .35;
+        }
+
+    .preview-hero img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .preview-hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(0deg, rgba(0,0,0,.72) 0%, transparent 55%);
+        display: flex;
+        align-items: flex-end;
+        padding: 14px;
+    }
+
+    .preview-hero-badge {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .preview-hero-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 11px;
+        display: grid;
+        place-items: center;
+        font-size: 19px;
+        flex-shrink: 0;
+        background: rgba(232,255,71,.18);
+        color: var(--accent);
+        transition: all var(--transition);
+    }
+
+    .preview-hero-name {
+        font-family: 'Syne', sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: #fff;
+    }
+
+    .preview-hero-sub {
+        font-size: 11px;
+        color: rgba(255,255,255,.55);
+        margin-top: 2px;
+    }
+
+    .preview-badge-wrap {
+        padding: 14px 16px 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
     }
 
     .preview-badge {
         display: flex;
         align-items: center;
-        gap: 14px;
+        gap: 12px;
         background: var(--bg-dark3);
         border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 14px 16px;
-        transition: all var(--transition);
+        border-radius: 10px;
+        padding: 12px 14px;
+    }
+
+    .preview-badge-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 9px;
+        display: grid;
+        place-items: center;
+        font-size: 17px;
+        flex-shrink: 0;
     }
 
     .preview-badge-name {
         font-family: 'Syne', sans-serif;
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 700;
-        color: var(--text);
-        transition: color var(--transition);
     }
 
     .preview-badge-sub {
         font-size: 11px;
         color: var(--text-muted);
-        margin-top: 2px;
+        margin-top: 1px;
     }
 
-    .preview-chip-wrap {
+    .preview-chips {
         display: flex;
         gap: 8px;
+        flex-wrap: wrap;
     }
 
     .preview-chip {
         display: inline-flex;
         align-items: center;
+        gap: 5px;
         background: var(--bg-dark3);
         border: 1px solid var(--border);
         border-radius: 7px;
         padding: 5px 12px;
         font-size: 12px;
         color: var(--text-muted);
-        transition: all var(--transition);
     }
 
-    /* ── EXISTING CATEGORIES ── */
+    .img-chip {
+        color: var(--success) !important;
+        border-color: rgba(48,224,161,.25) !important;
+        background: rgba(48,224,161,.07) !important;
+    }
+
+    /* EXISTING CATEGORIES */
     .existing-card {
         background: var(--bg-dark2);
         border: 1px solid var(--border);
@@ -514,7 +873,7 @@
 
     .existing-list {
         padding: 8px;
-        max-height: 340px;
+        max-height: 300px;
         overflow-y: auto;
     }
 
@@ -522,9 +881,8 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 10px 12px;
+        padding: 8px 10px;
         border-radius: 10px;
-        cursor: default;
         transition: background var(--transition);
         animation: fadeUp .3s ease both;
     }
@@ -539,22 +897,34 @@
         gap: 10px;
     }
 
-    .existing-item-icon {
-        width: 34px;
-        height: 34px;
+    .existing-thumb {
+        width: 40px;
+        height: 40px;
         border-radius: 9px;
+        overflow: hidden;
+        flex-shrink: 0;
+        background: var(--bg-dark3);
+        border: 1px solid var(--border);
         display: grid;
         place-items: center;
-        font-size: 15px;
-        flex-shrink: 0;
+        font-size: 16px;
+        position: relative;
     }
+
+        .existing-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            inset: 0;
+        }
 
     .existing-item-name {
         font-size: 13px;
         font-weight: 600;
     }
 
-    .existing-item-cars {
+    .existing-item-meta {
         font-size: 11px;
         color: var(--text-muted);
         margin-top: 1px;
@@ -571,9 +941,8 @@
         place-items: center;
         cursor: pointer;
         font-size: 13px;
-        transition: background var(--transition), color var(--transition);
         opacity: 0;
-        flex-shrink: 0;
+        transition: all var(--transition);
     }
 
     .existing-item:hover .existing-item-del {
@@ -607,6 +976,20 @@
             transform: translateY(0);
         }
     }
+
+    @@keyframes shake {
+        0%, 100% {
+            transform: translateX(0);
+        }
+
+        20%, 60% {
+            transform: translateX(-6px);
+        }
+
+        40%, 80% {
+            transform: translateX(6px);
+        }
+    }
 </style>
 
 @section Scripts {
@@ -621,20 +1004,23 @@
         ];
 
         const COLORS = [
-          { key: 'yellow',  hex: '#e8ff47', dim: 'rgba(232,255,71,.15)'  },
-          { key: 'blue',    hex: '#4f8dff', dim: 'rgba(79,141,255,.15)'  },
-          { key: 'green',   hex: '#30e0a1', dim: 'rgba(48,224,161,.15)'  },
-          { key: 'red',     hex: '#ff5259', dim: 'rgba(255,82,89,.15)'   },
-          { key: 'purple',  hex: '#a855f7', dim: 'rgba(168,85,247,.15)'  },
-          { key: 'orange',  hex: '#ffb547', dim: 'rgba(255,181,71,.15)'  },
-          { key: 'cyan',    hex: '#22d3ee', dim: 'rgba(34,211,238,.15)'  },
-          { key: 'pink',    hex: '#f472b6', dim: 'rgba(244,114,182,.15)' },
+          { key:'yellow', hex:'#e8ff47', dim:'rgba(232,255,71,.15)'  },
+          { key:'blue',   hex:'#4f8dff', dim:'rgba(79,141,255,.15)'  },
+          { key:'green',  hex:'#30e0a1', dim:'rgba(48,224,161,.15)'  },
+          { key:'red',    hex:'#ff5259', dim:'rgba(255,82,89,.15)'   },
+          { key:'purple', hex:'#a855f7', dim:'rgba(168,85,247,.15)'  },
+          { key:'orange', hex:'#ffb547', dim:'rgba(255,181,71,.15)'  },
+          { key:'cyan',   hex:'#22d3ee', dim:'rgba(34,211,238,.15)'  },
+          { key:'pink',   hex:'#f472b6', dim:'rgba(244,114,182,.15)' },
         ];
 
-        /* Local category store (simulates server-side list) */
-        let categories = [];
-        let selectedIcon  = 'bi-car-front';
-        let selectedColor = COLORS[0];
+        const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+        let categories      = [];
+        let selectedIcon    = 'bi-car-front';
+        let selectedColor   = COLORS[0];
+        let currentImgDataUrl = null;
+        let hasImage        = false;
 
         /* ============================================================
            INIT
@@ -643,17 +1029,16 @@
           buildIconGrid();
           buildColorSwatches();
           updateStats();
+          applyPreviewColor();
         });
 
         /* ============================================================
            ICON GRID
         ============================================================ */
         function buildIconGrid() {
-          const grid = document.getElementById('iconGrid');
-          grid.innerHTML = ICONS.map(ic => `
+          document.getElementById('iconGrid').innerHTML = ICONS.map(ic => `
             <div class="icon-opt ${ic === selectedIcon ? 'active' : ''}"
-                 title="${ic}"
-                 onclick="selectIcon('${ic}', this)">
+                 title="${ic}" onclick="selectIcon('${ic}', this)">
               <i class="bi ${ic}"></i>
             </div>
           `).join('');
@@ -664,21 +1049,18 @@
           el.classList.add('active');
           selectedIcon = ic;
           document.getElementById('CategoryIcon').value = ic;
-          // update preview
-          document.getElementById('previewIconEl').className = `bi ${ic}`;
+          document.getElementById('previewIconEl').className      = `bi ${ic}`;
+          document.getElementById('previewBadgeIconEl').className = `bi ${ic}`;
         }
 
         /* ============================================================
            COLOR SWATCHES
         ============================================================ */
         function buildColorSwatches() {
-          const wrap = document.getElementById('colorSwatches');
-          wrap.innerHTML = COLORS.map((c, i) => `
+          document.getElementById('colorSwatches').innerHTML = COLORS.map((c, i) => `
             <div class="color-swatch ${i === 0 ? 'active' : ''}"
-                 style="background:${c.hex};"
-                 title="${c.key}"
-                 onclick="selectColor('${c.key}', this)">
-            </div>
+                 style="background:${c.hex};" title="${c.key}"
+                 onclick="selectColor('${c.key}', this)"></div>
           `).join('');
         }
 
@@ -691,21 +1073,120 @@
         }
 
         function applyPreviewColor() {
-          const iconEl = document.getElementById('previewIcon');
-          iconEl.style.background = selectedColor.dim;
-          iconEl.style.color      = selectedColor.hex;
+          const els = [
+            document.getElementById('previewHeroIcon'),
+            document.getElementById('previewBadgeIcon')
+          ];
+          els.forEach(el => {
+            if (!el) return;
+            el.style.background = selectedColor.dim;
+            el.style.color      = selectedColor.hex;
+          });
         }
 
         /* ============================================================
-           LIVE PREVIEW SYNC
+           DROP ZONE
         ============================================================ */
-        function syncPreview(val) {
-          const name = val.trim() || 'Kategori Adı';
-          document.getElementById('previewName').textContent  = name;
-          document.getElementById('previewChip').textContent  = name;
+        function onDragOver(e) {
+          e.preventDefault();
+          document.getElementById('dropZone').classList.add('drag-over');
+        }
+        function onDragLeave() {
+          document.getElementById('dropZone').classList.remove('drag-over');
+        }
+        function onDrop(e) {
+          e.preventDefault();
+          document.getElementById('dropZone').classList.remove('drag-over');
+          const file = e.dataTransfer.files[0];
+          if (file) processFile(file);
+        }
+        function triggerFilePicker(e) {
+          e.stopPropagation();
+          document.getElementById('CategoryImage').click();
+        }
+        function onFileSelected(input) {
+          if (input.files[0]) processFile(input.files[0]);
+        }
 
-          // char counter
-          document.getElementById('charCount').textContent = `${val.length} / 60`;
+        function processFile(file) {
+          const imgError = document.getElementById('imgError');
+
+          if (!['image/png','image/jpeg','image/webp'].includes(file.type)) {
+            showImgError('Yalnızca PNG, JPG veya WebP dosyaları kabul edilir.');
+            return;
+          }
+          if (file.size > MAX_FILE_SIZE) {
+            showImgError(`Dosya boyutu ${(file.size/1024/1024).toFixed(1)} MB — maksimum 5 MB olmalıdır.`);
+            return;
+          }
+          imgError.style.display = 'none';
+
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            currentImgDataUrl = ev.target.result;
+            hasImage = true;
+
+            // Drop zone
+            document.getElementById('dzEmpty').style.display   = 'none';
+            document.getElementById('dzPreview').style.display = '';
+            document.getElementById('dzPreviewImg').src        = currentImgDataUrl;
+
+            // Meta bar
+            document.getElementById('imgMetaBar').style.display = '';
+            document.getElementById('imgMetaThumb').innerHTML   = `<img src="${currentImgDataUrl}" alt="" />`;
+            document.getElementById('imgMetaName').textContent  = file.name;
+            document.getElementById('imgMetaSize').textContent  = formatBytes(file.size);
+
+            // Hero preview
+            document.getElementById('previewHeroEmpty').style.display   = 'none';
+            document.getElementById('previewHeroImg').style.display     = '';
+            document.getElementById('previewHeroImg').src               = currentImgDataUrl;
+            document.getElementById('previewHeroOverlay').style.display = '';
+
+            // Chip
+            document.getElementById('previewImgChip').style.display = '';
+            syncPreview();
+          };
+          reader.readAsDataURL(file);
+        }
+
+        function removeImage(e) {
+          if (e && e.stopPropagation) e.stopPropagation();
+          currentImgDataUrl = null;
+          hasImage = false;
+
+          document.getElementById('CategoryImage').value = '';
+          document.getElementById('dzPreview').style.display  = 'none';
+          document.getElementById('dzEmpty').style.display    = '';
+          document.getElementById('imgMetaBar').style.display = 'none';
+
+          document.getElementById('previewHeroEmpty').style.display   = '';
+          document.getElementById('previewHeroImg').style.display     = 'none';
+          document.getElementById('previewHeroImg').src               = '';
+          document.getElementById('previewHeroOverlay').style.display = 'none';
+          document.getElementById('previewImgChip').style.display     = 'none';
+          document.getElementById('imgError').style.display           = 'none';
+        }
+
+        function showImgError(msg) {
+          const el = document.getElementById('imgError');
+          el.textContent = msg;
+          el.style.display = 'block';
+          const dz = document.getElementById('dropZone');
+          dz.style.animation = 'none';
+          requestAnimationFrame(() => { dz.style.animation = 'shake .32s ease'; });
+        }
+
+        /* ============================================================
+           LIVE PREVIEW
+        ============================================================ */
+        function syncPreview() {
+          const val  = document.getElementById('CategoryName').value;
+          const name = val.trim() || 'Kategori Adı';
+          document.getElementById('charCount').textContent          = `${val.length} / 60`;
+          document.getElementById('previewName').textContent        = name;
+          document.getElementById('previewBadgeName').textContent   = name;
+          document.getElementById('previewChip').textContent        = name;
           applyPreviewColor();
         }
 
@@ -715,70 +1196,72 @@
         function validateName(val) {
           const input   = document.getElementById('CategoryName');
           const errEl   = document.getElementById('nameError');
-          const hintEl  = document.getElementById('nameHint');
           const trimmed = val.trim();
 
-          if (trimmed.length === 0) {
-            setFieldState(input, errEl, hintEl, null);
-            return false;
-          }
+          if (!trimmed)          { setFieldState(input, errEl, null);                                              return false; }
+          if (trimmed.length < 2){ setFieldState(input, errEl, 'En az 2 karakter olmalıdır.', 'error');           return false; }
 
-          if (trimmed.length < 2) {
-            setFieldState(input, errEl, hintEl, 'Kategori adı en az 2 karakter olmalıdır.', 'error');
-            return false;
-          }
+          const dup = categories.some(c => c.name.toLowerCase() === trimmed.toLowerCase());
+          if (dup)               { setFieldState(input, errEl, 'Bu isimde bir kategori zaten mevcut.', 'error'); return false; }
 
-          const duplicate = categories.some(c => c.name.toLowerCase() === trimmed.toLowerCase());
-          if (duplicate) {
-            setFieldState(input, errEl, hintEl, 'Bu isimde bir kategori zaten mevcut.', 'error');
-            return false;
-          }
-
-          setFieldState(input, errEl, hintEl, null, 'success');
+          setFieldState(input, errEl, null, 'success');
           return true;
         }
 
-        function setFieldState(input, errEl, hintEl, msg, state) {
-          input.classList.remove('error', 'success');
+        function setFieldState(input, errEl, msg, state) {
+          input.classList.remove('error','success');
           errEl.style.display = 'none';
-          if (state === 'error') {
-            input.classList.add('error');
-            errEl.textContent  = msg;
-            errEl.style.display = 'block';
-          } else if (state === 'success') {
-            input.classList.add('success');
-          }
+          if (state === 'error')   { input.classList.add('error');   errEl.textContent = msg; errEl.style.display = 'block'; }
+          if (state === 'success') { input.classList.add('success'); }
         }
 
         /* ============================================================
-           FORM SUBMIT (client-side demo + server submit)
+           SUBMIT
         ============================================================ */
         function handleSubmit(e) {
+          e.preventDefault();
           const nameVal = document.getElementById('CategoryName').value;
-          if (!validateName(nameVal)) {
-            e.preventDefault();
-            return;
-          }
+          if (!validateName(nameVal)) return;
+
+          addToExistingList({
+            id:     Date.now(),
+            name:   nameVal.trim(),
+            icon:   selectedIcon,
+            color:  selectedColor,
+            imgUrl: currentImgDataUrl,
+            cars:   0
+          });
+
+          showToast('Kategori başarıyla oluşturuldu!', 'success');
+          resetForm();
+          // Production: remove e.preventDefault() ve gerçek POST'a izin ver
         }
 
         /* ============================================================
-           RESET FORM
+           RESET
         ============================================================ */
         function resetForm() {
           document.getElementById('CategoryName').value = '';
           document.getElementById('CategoryDesc').value  = '';
           document.getElementById('charCount').textContent = '0 / 60';
-          syncPreview('');
+
           const input = document.getElementById('CategoryName');
-          input.classList.remove('error', 'success');
+          input.classList.remove('error','success');
           document.getElementById('nameError').style.display = 'none';
-          // Reset selections
+
+          removeImage(null);
+
           selectedIcon  = 'bi-car-front';
           selectedColor = COLORS[0];
           buildIconGrid();
           buildColorSwatches();
+
+          document.getElementById('previewIconEl').className      = 'bi bi-car-front';
+          document.getElementById('previewBadgeIconEl').className = 'bi bi-car-front';
+          document.getElementById('previewName').textContent      = 'Kategori Adı';
+          document.getElementById('previewBadgeName').textContent = 'Kategori Adı';
+          document.getElementById('previewChip').textContent      = 'Kategori Adı';
           applyPreviewColor();
-          document.getElementById('previewIconEl').className = 'bi bi-car-front';
         }
 
         /* ============================================================
@@ -806,12 +1289,19 @@
           list.innerHTML = categories.map(c => `
             <div class="existing-item" id="ecat-${c.id}">
               <div class="existing-item-left">
-                <div class="existing-item-icon" style="background:${c.color.dim};color:${c.color.hex};">
-                  <i class="bi ${c.icon}"></i>
+                <div class="existing-thumb" style="color:${c.color.hex};">
+                  ${c.imgUrl
+                    ? `<img src="${c.imgUrl}" alt="" /><i class="bi ${c.icon}" style="opacity:.3;"></i>`
+                    : `<i class="bi ${c.icon}"></i>`}
                 </div>
                 <div>
                   <div class="existing-item-name">${escHtml(c.name)}</div>
-                  <div class="existing-item-cars">${c.cars} araç</div>
+                  <div class="existing-item-meta">
+                    ${c.cars} araç
+                    ${c.imgUrl
+                      ? '&nbsp;·&nbsp;<span style="color:var(--success);"><i class="bi bi-image"></i> Görsel</span>'
+                      : '<span style="color:var(--text-muted);opacity:.6;">&nbsp;·&nbsp;Görselsiz</span>'}
+                  </div>
                 </div>
               </div>
               <button class="existing-item-del" onclick="deleteCategory(${c.id})" title="Sil">
@@ -823,37 +1313,52 @@
 
         function deleteCategory(id) {
           const el = document.getElementById('ecat-' + id);
-          if (el) {
-            el.style.transition = 'opacity .25s, transform .25s';
-            el.style.opacity = '0';
-            el.style.transform = 'translateX(10px)';
-            setTimeout(() => {
-              const idx = categories.findIndex(c => c.id === id);
-              if (idx > -1) categories.splice(idx, 1);
-              renderExistingList();
-              updateStats();
-              showToast('Kategori silindi.', 'danger');
-            }, 250);
-          }
+          if (!el) return;
+          el.style.transition = 'opacity .25s, transform .25s';
+          el.style.opacity    = '0';
+          el.style.transform  = 'translateX(12px)';
+          setTimeout(() => {
+            categories.splice(categories.findIndex(c => c.id === id), 1);
+            renderExistingList();
+            updateStats();
+            showToast('Kategori silindi.', 'danger');
+          }, 260);
         }
 
         /* ============================================================
            STATS
         ============================================================ */
         function updateStats() {
-          document.getElementById('statTotal').textContent  = categories.length;
-          document.getElementById('statCars').textContent   = categories.reduce((s, c) => s + c.cars, 0);
-          document.getElementById('statActive').textContent  = categories.filter(c => c.cars > 0).length;
+          document.getElementById('statTotal').textContent   = categories.length;
+          document.getElementById('statCars').textContent    = categories.reduce((s, c) => s + c.cars, 0);
+          document.getElementById('statWithImg').textContent = categories.filter(c => c.imgUrl).length;
           document.getElementById('statEmpty').textContent   = categories.filter(c => c.cars === 0).length;
+        }
+
+        /* ============================================================
+           TOAST
+        ============================================================ */
+        function showToast(msg, type = 'success') {
+          const colors = { success:'var(--success)', danger:'var(--danger)', info:'var(--accent2)' };
+          const el = document.getElementById('liveToast');
+          document.getElementById('toastMsg').textContent   = msg;
+          document.getElementById('toastTitle').style.color = colors[type] || colors.success;
+          new bootstrap.Toast(el, { delay: 3000 }).show();
         }
 
         /* ============================================================
            HELPERS
         ============================================================ */
+        function formatBytes(b) {
+          if (b < 1024)        return b + ' B';
+          if (b < 1048576)     return (b/1024).toFixed(1) + ' KB';
+          return (b/1048576).toFixed(2) + ' MB';
+        }
+
         function escHtml(str) {
-          return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+          return String(str).replace(/[&<>"']/g,
+            m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])
+          );
         }
     </script>
 }
-
-

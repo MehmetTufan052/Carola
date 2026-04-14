@@ -5,6 +5,10 @@ namespace Carola.DataAccessLayer.Concrete
 {
     public class CarolaContext : DbContext
     {
+        public CarolaContext()
+        {
+        }
+
         public CarolaContext(DbContextOptions<CarolaContext> options) : base(options)
         {
         }
