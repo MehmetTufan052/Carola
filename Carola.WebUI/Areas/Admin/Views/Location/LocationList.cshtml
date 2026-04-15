@@ -508,7 +508,7 @@
 
         var actions =
             '<div class="ll-card-actions">' +
-                '<a href="/Location/UpdateLocation/' + l.LocationId + '" class="btn-edit">&#9999; Düzenle</a>' +
+                '<a href="/Admin/Location/UpdateLocation/' + l.LocationId + '" class="btn-edit">&#9999; Düzenle</a>' +
                 '<button class="btn-danger" onclick="llConfirmDelete(' + l.LocationId + ',\'' + llEsc(l.LocationName) + '\')">&#128465; Sil</button>' +
             '</div>';
 
@@ -518,7 +518,7 @@
     function llConfirmDelete(id, name) {
         document.getElementById('llConfirmMsg').innerHTML =
             '<strong>' + llEsc(name) + '</strong> lokasyonunu silmek istediğinizden emin misiniz?<br>Bu işlem geri alınamaz.';
-        document.getElementById('llDeleteForm').action = '/Location/DeleteLocation/' + id;
+        document.getElementById('llDeleteForm').action = '/Admin/Location/DeleteLocation/' + id;
         document.getElementById('llConfirmModal').classList.add('open');
     }
 

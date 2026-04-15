@@ -19,8 +19,7 @@ namespace Carola.DataAccessLayer.EntityFramework
 
         public async Task<List<Car>> GetAllCarsWithCategoryAsync()
         {
-            var context=new CarolaContext();
-            var values=await context.Cars.Include(c=>c.Category).ToListAsync();
+            var values = await Context.Cars.Include(c => c.Category).ToListAsync();
             return values;
         }
     }

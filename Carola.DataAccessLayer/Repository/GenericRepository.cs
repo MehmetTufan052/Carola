@@ -11,40 +11,40 @@ namespace Carola.DataAccessLayer.Repository
 {
     public class GenericRepository<T> : IGenericDal<T> where T : class
     {
-        private readonly CarolaContext _context;
+        protected readonly CarolaContext Context;
 
         public GenericRepository(CarolaContext context)
         {
-            _context = context;
+            Context = context;
         }
 
         public async Task DeleteAsync(int id)
         {
-           var value = await _context.Set<T>().FindAsync(id);
-            _context.Set<T>().Remove(value);
-            await _context.SaveChangesAsync();
+           var value = await Context.Set<T>().FindAsync(id);
+            Context.Set<T>().Remove(value);
+            await Context.SaveChangesAsync();
         }
 
         public async Task<List<T>> GetAllAsync()
         {
-           return await _context.Set<T>().ToListAsync();
+           return await Context.Set<T>().ToListAsync();
         }
 
         public async Task<T> GetByIdAsync(int id)
         {
-           return await _context.Set<T>().FindAsync(id);
+           return await Context.Set<T>().FindAsync(id);
         }
 
         public async Task InsertAsync(T entity)
         {
-           await _context.Set<T>().AddAsync(entity);
-            await _context.SaveChangesAsync();
+           await Context.Set<T>().AddAsync(entity);
+            await Context.SaveChangesAsync();
         }
 
         public Task UpdateAsync(T entity)
         {
-            _context.Set<T>().Update(entity);
-            return _context.SaveChangesAsync();
+            Context.Set<T>().Update(entity);
+            return Context.SaveChangesAsync();
         }
     }
 }
