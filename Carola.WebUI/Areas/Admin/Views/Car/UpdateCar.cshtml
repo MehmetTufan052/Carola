@@ -1,0 +1,289 @@
+@model GetCarByIdDto
+
+@{
+    ViewData["Title"] = "UpdateCar";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<div id="content">
+
+    <!-- Breadcrumb -->
+    <div style="font-size:12px; color:var(--text-muted); margin-bottom:20px;">
+        Araç Yönetimi &rsaquo; Araç Listesi &rsaquo; <span style="color:var(--text);">Araç Güncelle</span>
+    </div>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div>
+            <div class="page-title">Araç Güncelle</div>
+            <div class="page-subtitle">@Model.Brand @Model.Model — mevcut bilgileri düzenleyin</div>
+        </div>
+        <a asp-action="Index" asp-controller="Car" class="btn-outline">
+            <i class="bi bi-arrow-left"></i> Geri Dön
+        </a>
+    </div>
+
+    <form asp-action="UpdateCar" asp-controller="Car" method="post">
+        <input asp-for="CarId" type="hidden" />
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+
+            <!-- ===================== SOL KOLON ===================== -->
+            <div style="display:flex; flex-direction:column; gap:20px;">
+
+                <!-- Temel Bilgiler -->
+                <div style="background:var(--bg-dark2); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px;">
+                    <div style="font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:var(--text); margin-bottom:18px; display:flex; align-items:center; gap:8px;">
+                        <i class="bi bi-car-front" style="color:var(--accent);"></i> Temel Bilgiler
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+
+                        <div>
+                            <label asp-for="Brand" class="form-label">Marka</label>
+                            <input asp-for="Brand" class="form-control" placeholder="ör. BMW" />
+                            <span asp-validation-for="Brand" style="font-size:12px; color:var(--danger); display:block; margin-top:4px;"></span>
+                        </div>
+
+                        <div>
+                            <label asp-for="Model" class="form-label">Model</label>
+                            <input asp-for="Model" class="form-control" placeholder="ör. 3 Serisi" />
+                            <span asp-validation-for="Model" style="font-size:12px; color:var(--danger); display:block; margin-top:4px;"></span>
+                        </div>
+
+                        <div>
+                            <label asp-for="ModelYear" class="form-label">Model Yılı</label>
+                            <input asp-for="ModelYear" class="form-control" type="number" placeholder="2024" />
+                            <span asp-validation-for="ModelYear" style="font-size:12px; color:var(--danger); display:block; margin-top:4px;"></span>
+                        </div>
+
+                        <div>
+                            <label asp-for="PlateNumber" class="form-label">Plaka</label>
+                            <input asp-for="PlateNumber" class="form-control" placeholder="ör. 34 ABC 123" />
+                            <span asp-validation-for="PlateNumber" style="font-size:12px; color:var(--danger); display:block; margin-top:4px;"></span>
+                        </div>
+
+                        <div>
+                            <label asp-for="FuelType" class="form-label">Yakıt Tipi</label>
+                            <select asp-for="FuelType" class="form-select">
+                                <option value="Benzin">Benzin</option>
+                                <option value="Dizel">Dizel</option>
+                                <option value="Elektrik">Elektrik</option>
+                                <option value="Hibrit">Hibrit</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label asp-for="TransmissionType" class="form-label">Vites</label>
+                            <select asp-for="TransmissionType" class="form-select">
+                                <option value="Otomatik">Otomatik</option>
+                                <option value="Manuel">Manuel</option>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Teknik & Fiyat -->
+                <div style="background:var(--bg-dark2); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px;">
+                    <div style="font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:var(--text); margin-bottom:18px; display:flex; align-items:center; gap:8px;">
+                        <i class="bi bi-speedometer2" style="color:var(--accent);"></i> Teknik Bilgiler & Fiyat
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+
+                        <div>
+                            <label asp-for="DailyPrice" class="form-label">Günlük Fiyat (₺)</label>
+                            <input asp-for="DailyPrice" class="form-control" type="number" step="0.01" placeholder="850" />
+                            <span asp-validation-for="DailyPrice" style="font-size:12px; color:var(--danger); display:block; margin-top:4px;"></span>
+                        </div>
+
+                        <div>
+                            <label asp-for="Mileage" class="form-label">Kilometre</label>
+                            <input asp-for="Mileage" class="form-control" type="number" placeholder="15000" />
+                            <span asp-validation-for="Mileage" style="font-size:12px; color:var(--danger); display:block; margin-top:4px;"></span>
+                        </div>
+
+                        <div>
+                            <label asp-for="SeatCount" class="form-label">Koltuk Sayısı</label>
+                            <input asp-for="SeatCount" class="form-control" type="number" placeholder="5" />
+                            <span asp-validation-for="SeatCount" style="font-size:12px; color:var(--danger); display:block; margin-top:4px;"></span>
+                        </div>
+
+                        <div>
+                            <label asp-for="LuggageCapacity" class="form-label">Bagaj (L)</label>
+                            <input asp-for="LuggageCapacity" class="form-control" type="number" placeholder="450" />
+                            <span asp-validation-for="LuggageCapacity" style="font-size:12px; color:var(--danger); display:block; margin-top:4px;"></span>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ===================== SAĞ KOLON ===================== -->
+            <div style="display:flex; flex-direction:column; gap:20px;">
+
+                <!-- Görsel -->
+                <div style="background:var(--bg-dark2); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px;">
+                    <div style="font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:var(--text); margin-bottom:18px; display:flex; align-items:center; gap:8px;">
+                        <i class="bi bi-image" style="color:var(--accent);"></i> Araç Görseli
+                    </div>
+
+                    <div id="imgPreviewWrap"
+                         style="background:var(--bg-dark3); border:1px dashed rgba(255,255,255,.12); border-radius:12px; height:180px; overflow:hidden; margin-bottom:14px; position:relative;">
+                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                        {
+                            <img id="imgPreview" src="@Model.ImageUrl" alt="Araç görseli"
+                                 style="width:100%; height:100%; object-fit:cover;" />
+                        }
+                        else
+                        {
+                            <div id="imgPlaceholder"
+                                 style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--text-muted);">
+                                <i class="bi bi-image" style="font-size:36px; opacity:.3; display:block; margin-bottom:8px;"></i>
+                                <p style="font-size:12px; margin:0;">Görsel URL giriniz</p>
+                            </div>
+                        }
+                    </div>
+
+                    <label asp-for="ImageUrl" class="form-label">Görsel URL</label>
+                    <input asp-for="ImageUrl" class="form-control"
+                           placeholder="https://..."
+                           oninput="previewImage(this.value)" />
+                    <span asp-validation-for="ImageUrl" style="font-size:12px; color:var(--danger); display:block; margin-top:4px;"></span>
+                </div>
+
+                <!-- Durum & Kategori -->
+                <div style="background:var(--bg-dark2); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px;">
+                    <div style="font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:var(--text); margin-bottom:18px; display:flex; align-items:center; gap:8px;">
+                        <i class="bi bi-sliders" style="color:var(--accent);"></i> Durum & Kategori
+                    </div>
+
+                    <div style="display:flex; flex-direction:column; gap:14px;">
+
+                        <div>
+                            <label asp-for="CategoryId" class="form-label">Kategori</label>
+                            <select asp-for="CategoryId" class="form-select"
+                                    asp-items="ViewBag.Categories">
+                                <option value="">-- Kategori Seçin --</option>
+                            </select>
+                            <span asp-validation-for="CategoryId" style="font-size:12px; color:var(--danger); display:block; margin-top:4px;"></span>
+                        </div>
+
+                        <div>
+                            <label asp-for="Status" class="form-label">Durum</label>
+                            <select asp-for="Status" class="form-select">
+                                <option value="available">Müsait</option>
+                                <option value="rented">Kirada</option>
+                                <option value="maintenance">Bakımda</option>
+                            </select>
+                        </div>
+
+                        <!-- IsAvailable toggle -->
+                        <div style="display:flex; align-items:center; justify-content:space-between;
+                                    background:var(--bg-dark3); border:1px solid var(--border);
+                                    border-radius:10px; padding:12px 16px;">
+                            <div>
+                                <div style="font-size:13px; font-weight:500; color:var(--text);">Kiralama Aktif</div>
+                                <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Araç kiralama sisteminde görünsün</div>
+                            </div>
+                            <label style="position:relative; display:inline-block; width:42px; height:24px; margin:0; cursor:pointer;">
+                                <input asp-for="IsAvailable" type="checkbox" style="opacity:0; width:0; height:0; position:absolute;" id="isAvailableToggle" />
+                                <span id="toggleTrack"
+                                      style="position:absolute; inset:0; border-radius:12px; background:var(--bg-dark);
+                                             border:1px solid var(--border); transition:.2s; cursor:pointer;"
+                                      onclick="toggleSwitch()"></span>
+                                <span id="toggleThumb"
+                                      style="position:absolute; top:3px; width:16px; height:16px; border-radius:50%;
+                                             background:var(--text-muted); transition:.2s; pointer-events:none;
+                                             left:@(Model.IsAvailable ? "22px" : "3px");"></span>
+                            </label>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Action Bar -->
+        <div style="display:flex; align-items:center; gap:10px; margin-top:24px; flex-wrap:wrap;">
+            <button type="submit" class="btn-accent">
+                <i class="bi bi-check-lg"></i> Değişiklikleri Kaydet
+            </button>
+            <a asp-action="Index" asp-controller="Car" class="btn-outline">
+                İptal
+            </a>
+            <button type="button"
+                    style="margin-left:auto; background:rgba(255,82,89,.1); color:var(--danger);
+                           border:1px solid rgba(255,82,89,.2); border-radius:10px; padding:10px 20px;
+                           font-size:13px; font-weight:500; font-family:inherit; cursor:pointer;
+                           display:inline-flex; align-items:center; gap:7px;"
+                    onclick="confirmDelete(@Model.CarId)">
+                <i class="bi bi-trash"></i> Aracı Sil
+            </button>
+        </div>
+
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        // Gorsel onizleme
+        function previewImage(url) {
+            const wrap = document.getElementById('imgPreviewWrap');
+            let img = document.getElementById('imgPreview');
+
+            if (!url || url.trim() === '') {
+                if (img) img.remove();
+                if (!document.getElementById('imgPlaceholder')) {
+                    wrap.innerHTML = `
+                        <div id="imgPlaceholder" style="width:100%;height:100%;display:flex;flex-direction:column;
+                             align-items:center;justify-content:center;color:var(--text-muted);">
+                            <i class="bi bi-image" style="font-size:36px;opacity:.3;display:block;margin-bottom:8px;"></i>
+                            <p style="font-size:12px;margin:0;">Gorsel URL giriniz</p>
+                        </div>`;
+                }
+                return;
+            }
+
+            if (!img) {
+                wrap.innerHTML = '';
+                img = document.createElement('img');
+                img.id = 'imgPreview';
+                img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+                img.onerror = () => { img.remove(); };
+                wrap.appendChild(img);
+            }
+            img.src = url;
+        }
+
+        // IsAvailable toggle
+        const checkbox = document.getElementById('isAvailableToggle');
+        const track = document.getElementById('toggleTrack');
+        const thumb = document.getElementById('toggleThumb');
+
+        function applyToggleStyle(checked) {
+            track.style.background = checked ? 'var(--accent-dim)' : 'var(--bg-dark)';
+            track.style.borderColor = checked ? 'rgba(232,255,71,.3)' : 'var(--border)';
+            thumb.style.left = checked ? '22px' : '3px';
+            thumb.style.background = checked ? 'var(--accent)' : 'var(--text-muted)';
+        }
+
+        function toggleSwitch() {
+            checkbox.checked = !checkbox.checked;
+            applyToggleStyle(checkbox.checked);
+        }
+
+        // Sayfa yuklendiginde mevcut degeri uygula
+        applyToggleStyle(checkbox.checked);
+
+        // Silme onayi
+        function confirmDelete(id) {
+            if (confirm('Bu araci silmek istediginize emin misiniz?')) {
+                window.location.href = '/Car/DeleteCar/' + id;
+            }
+        }
+    </script>
+}

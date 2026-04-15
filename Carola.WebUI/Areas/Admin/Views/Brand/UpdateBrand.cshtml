@@ -1,4 +1,4 @@
-﻿@model Carola.EntityLayer.Entities.Brand
+@model Carola.DtoLayer.Dtos.BrandDtos.GetBrandByIdDto
 
 @{
     ViewData["Title"] = "UpdateBrand";
@@ -785,7 +785,7 @@
     var cbIsActive = true;
 
     function cbSync() {
-        var name    = document.getElementById('cbBrandName').value.trim();
+        var name = document.getElementById('cbBrandName').value.trim();
         var logoUrl = document.getElementById('cbLogoUrl').value.trim();
 
         document.getElementById('sumName').innerHTML = name
@@ -811,29 +811,29 @@
     }
 
     function cbPreviewLogo(url) {
-        var wrap    = document.getElementById('cbImgPreview');
-        var img     = document.getElementById('cbPreviewTag');
+        var wrap = document.getElementById('cbImgPreview');
+        var img = document.getElementById('cbPreviewTag');
         var sideImg = document.getElementById('cbSidePreview');
-        var sidePh  = document.getElementById('cbSidePlaceholder');
+        var sidePh = document.getElementById('cbSidePlaceholder');
 
         if (!url) {
             wrap.classList.remove('has-img');
             sideImg.style.display = 'none';
-            sidePh.style.display  = 'grid';
+            sidePh.style.display = 'grid';
             img.src = '';
             return;
         }
 
         img.onload = function() {
             wrap.classList.add('has-img');
-            sideImg.src           = url;
+            sideImg.src = url;
             sideImg.style.display = 'block';
-            sidePh.style.display  = 'none';
+            sidePh.style.display = 'none';
         };
         img.onerror = function() {
             wrap.classList.remove('has-img');
             sideImg.style.display = 'none';
-            sidePh.style.display  = 'grid';
+            sidePh.style.display = 'grid';
         };
         img.src = url;
     }
@@ -841,13 +841,13 @@
     function cbToggleStatus() {
         cbIsActive = !cbIsActive;
         var toggle = document.getElementById('cbToggle');
-        var label  = document.getElementById('cbToggleLabel');
-        var input  = document.getElementById('cbStatusInput');
-        var sum    = document.getElementById('sumStatus');
+        var label = document.getElementById('cbToggleLabel');
+        var input = document.getElementById('cbStatusInput');
+        var sum = document.getElementById('sumStatus');
 
         toggle.classList.toggle('on', cbIsActive);
-        label.textContent  = cbIsActive ? 'Aktif' : 'Pasif';
-        input.value        = cbIsActive ? 'true' : 'false';
+        label.textContent = cbIsActive ? 'Aktif' : 'Pasif';
+        input.value = cbIsActive ? 'true' : 'false';
 
         sum.innerHTML = cbIsActive
             ? '<span class="cb-status-pill active"><span class="cb-status-dot"></span>Aktif</span>'
@@ -855,10 +855,10 @@
     }
 
     function cbSubmit() {
-        var name    = document.getElementById('cbBrandName').value.trim();
+        var name = document.getElementById('cbBrandName').value.trim();
         var fieldEl = document.getElementById('fieldBrandName');
         var summary = document.getElementById('cbValSummary');
-        var msg     = document.getElementById('cbValMsg');
+        var msg = document.getElementById('cbValMsg');
 
         if (!name) {
             fieldEl.classList.add('has-error');
@@ -884,18 +884,12 @@
     function cbEsc(str) {
         if (!str) return '';
         return String(str)
-            .replace(/&/g,  '&amp;')
-            .replace(/</g,  '&lt;')
-            .replace(/>/g,  '&gt;')
-            .replace(/"/g,  '&quot;')
-            .replace(/'/g,  '&#x27;');
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#x27;');
     }
 
     cbSync();
 </script>
-
-
-
-
-
-

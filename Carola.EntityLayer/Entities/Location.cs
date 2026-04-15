@@ -13,6 +13,10 @@ namespace Carola.EntityLayer.Entities
         public string LocationName { get; set; }
         public string City { get; set; }
         public string Address { get; set; }
+        public string LocationImage { get; set; }
+        
+
+
     }
 
 }

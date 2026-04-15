@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Carola.BusinessLayer.Abstract;
 using Carola.DataAccessLayer.Abstract;
 using Carola.DtoLayer.Dtos.BrandDtos;
@@ -31,7 +31,9 @@ namespace Carola.BusinessLayer.Concrete
 
             var result = await _validator.ValidateAsync(values);
             if (!result.IsValid)
+            {
                 throw new ValidationException(result.Errors);
+            }
 
             await _brandDal.InsertAsync(values);
         }
@@ -41,14 +43,16 @@ namespace Carola.BusinessLayer.Concrete
             await _brandDal.DeleteAsync(id);
         }
 
-        public async Task<List<Brand>> GetAllBrandAsync()
+        public async Task<List<ResultBrandDto>> GetAllBrandAsync()
         {
-            return await _brandDal.GetAllAsync();
+            var values = await _brandDal.GetAllAsync();
+            return _mapper.Map<List<ResultBrandDto>>(values);
         }
 
-        public async Task<Brand> GetBrandByIdAsync(int id)
+        public async Task<GetBrandByIdDto> GetBrandByIdAsync(int id)
         {
-            return await _brandDal.GetByIdAsync(id);
+            var value = await _brandDal.GetByIdAsync(id);
+            return _mapper.Map<GetBrandByIdDto>(value);
         }
 
         public async Task UpdateBrandAsync(UpdateBrandDto updateBrandDto)
@@ -57,7 +61,9 @@ namespace Carola.BusinessLayer.Concrete
 
             var result = await _validator.ValidateAsync(values);
             if (!result.IsValid)
+            {
                 throw new ValidationException(result.Errors);
+            }
 
             await _brandDal.UpdateAsync(values);
         }

@@ -1,4 +1,5 @@
-﻿@{
+﻿@model CreateCategoryDto
+@{
     ViewData["Title"] = "Kategori Oluştur";
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
 }
@@ -137,10 +138,11 @@
 
                         <input type="file"
                                id="CategoryImage"
-                               name="CategoryImage"
+                               name="CategoryImageFile"
                                accept="image/png,image/jpeg,image/webp"
                                style="display:none;"
                                onchange="onFileSelected(this)" />
+                        <input type="hidden" id="CategoryImageValue" name="CategoryImage" value="" />
 
                         <div class="field-error" id="imgError" style="display:none;"></div>
 
@@ -1125,6 +1127,7 @@
           reader.onload = (ev) => {
             currentImgDataUrl = ev.target.result;
             hasImage = true;
+            document.getElementById('CategoryImageValue').value = currentImgDataUrl;
 
             // Drop zone
             document.getElementById('dzEmpty').style.display   = 'none';
@@ -1156,6 +1159,7 @@
           hasImage = false;
 
           document.getElementById('CategoryImage').value = '';
+          document.getElementById('CategoryImageValue').value = '';
           document.getElementById('dzPreview').style.display  = 'none';
           document.getElementById('dzEmpty').style.display    = '';
           document.getElementById('imgMetaBar').style.display = 'none';
@@ -1219,22 +1223,11 @@
            SUBMIT
         ============================================================ */
         function handleSubmit(e) {
-          e.preventDefault();
           const nameVal = document.getElementById('CategoryName').value;
-          if (!validateName(nameVal)) return;
-
-          addToExistingList({
-            id:     Date.now(),
-            name:   nameVal.trim(),
-            icon:   selectedIcon,
-            color:  selectedColor,
-            imgUrl: currentImgDataUrl,
-            cars:   0
-          });
-
-          showToast('Kategori başarıyla oluşturuldu!', 'success');
-          resetForm();
-          // Production: remove e.preventDefault() ve gerçek POST'a izin ver
+          if (!validateName(nameVal)) {
+            e.preventDefault();
+            return;
+          }
         }
 
         /* ============================================================

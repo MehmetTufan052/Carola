@@ -1,12 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Carola.BusinessLayer.Abstract;
+using Carola.DataAccessLayer.Abstract;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Carola.WebUI.ViewComponents.HomePage
 {
     public class _HomePageServiceComponentPartial:ViewComponent
     {
-        public IViewComponentResult Invoke()
+        private readonly ILocationService _locationService;
+
+        public _HomePageServiceComponentPartial(ILocationService locationService)
         {
-            return View("~/Views/Shared/Components/HomePage/_HomePageServiceComponentPartial/Default.cshtml");
+            _locationService = locationService;
+        }
+
+        public async Task<IViewComponentResult> InvokeAsync()
+        {
+            var values = await _locationService.GetAllLocationAsync();
+            return View("~/Views/Shared/Components/HomePage/_HomePageServiceComponentPartial/Default.cshtml",values);
         }
     }
 }

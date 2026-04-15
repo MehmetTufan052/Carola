@@ -1,74 +1,24 @@
-﻿<section class="services-section pt_120 pb_90">
+﻿
+@model List<ResultLocationDto> 
+
+<section class="services-section pt_120 pb_90">
     <div class="container">
         <div class="section-title centred mb_60">
             <span class="sub-title">Service Area</span>
             <h2 class="title">Top Places We Serve</h2>
         </div>
         <div class="row">
-            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
-                <div class="services-block-one">
-                    <h6 class="service-title"><a href="#">Paris, France</a></h6>
-                    <div class="services-iamge">
-                        <img src="/carola pack/carola/assets/images/service/service-image-1.jpg" alt="">
+            @foreach(var item in Model)
+            {
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+                    <div class="services-block-one">
+                        <h6 class="service-title"><a href="#">@item.LocationName</a></h6>
+                        <div class="services-iamge">
+                            <img src="@item.LocationImage" alt="">
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
-                <div class="services-block-one">
-                    <h6 class="service-title"><a href="#">Rome, Italy</a></h6>
-                    <div class="services-iamge">
-                        <img src="/carola pack/carola/assets/images/service/service-image-2.jpg" alt="">
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
-                <div class="services-block-one">
-                    <h6 class="service-title"><a href="#">Berlin, Germany</a></h6>
-                    <div class="services-iamge">
-                        <img src="/carola pack/carola/assets/images/service/service-image-3.jpg" alt="">
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
-                <div class="services-block-one">
-                    <h6 class="service-title"><a href="#">Beijing, China</a></h6>
-                    <div class="services-iamge">
-                        <img src="/carola pack/carola/assets/images/service/service-image-4.jpg" alt="">
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
-                <div class="services-block-one">
-                    <h6 class="service-title"><a href="#">Abu Dhabi, UAE</a></h6>
-                    <div class="services-iamge">
-                        <img src="/carola pack/carola/assets/images/service/service-image-5.jpg" alt="">
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
-                <div class="services-block-one">
-                    <h6 class="service-title"><a href="#">Dhaka, Bangladesh</a></h6>
-                    <div class="services-iamge">
-                        <img src="/carola pack/carola/assets/images/service/service-image-6.jpg" alt="">
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
-                <div class="services-block-one">
-                    <h6 class="service-title"><a href="#">Singapore</a></h6>
-                    <div class="services-iamge">
-                        <img src="/carola pack/carola/assets/images/service/service-image-7.jpg" alt="">
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
-                <div class="services-block-one">
-                    <h6 class="service-title"><a href="#">London, UK</a></h6>
-                    <div class="services-iamge">
-                        <img src="/carola pack/carola/assets/images/service/service-image-8.jpg" alt="">
-                    </div>
-                </div>
-            </div>
+            }
         </div>
     </div>
 </section>

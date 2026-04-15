@@ -1,12 +1,24 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Carola.BusinessLayer.Abstract;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Carola.WebUI.ViewComponents.HomePage
 {
-    public class _HomePageBrandComponentPartial:ViewComponent
+    public class _HomePageBrandComponentPartial : ViewComponent
     {
-        public IViewComponentResult Invoke()
+        private readonly IBrandService _brandService;
+
+        public _HomePageBrandComponentPartial(IBrandService brandService)
         {
-            return View("~/Views/Shared/Components/HomePage/_HomePageBrandComponentPartial/Default.cshtml");
+            _brandService = brandService;
+        }
+
+        public async Task<IViewComponentResult> InvokeAsync()
+        {
+            var values = await _brandService.GetAllBrandAsync();
+            values ??= new();
+
+            return View("~/Views/Shared/Components/HomePage/_HomePageBrandComponentPartial/Default.cshtml", values);
         }
     }
 }

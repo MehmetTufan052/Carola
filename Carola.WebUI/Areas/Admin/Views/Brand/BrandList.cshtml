@@ -1,8 +1,8 @@
-﻿@model List<Carola.EntityLayer.Entities.Brand>
+﻿@model List<ResultBrandDto>
 
 @{
     ViewData["Title"] = "BrandList";
-    Layout = "~/Views/AdminLayout/Index.cshtml";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
 
     var totalCount   = Model.Count();
     var activeCount  = Model.Count(b => b.Status);

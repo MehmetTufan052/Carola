@@ -34,7 +34,7 @@ namespace Carola.WebUI.Areas.Admin.Controllers
         public async Task<IActionResult> CreateCategory(CreateCategoryDto createCategoryDto)
         {
             await _categoryService.CreateCategoryAsync(createCategoryDto);
-            return RedirectToAction("CategoryList", "Category", new { area = "Admin" });
+            return RedirectToAction("CategoryList");
         }
 
         [HttpGet]

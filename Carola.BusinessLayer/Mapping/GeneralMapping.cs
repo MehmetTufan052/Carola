@@ -37,6 +37,7 @@ namespace Carola.BusinessLayer.Mapping
                 CreateMap<Car, CreateCarDto>().ReverseMap();
                 CreateMap<Car, UpdateCarDto>().ReverseMap();
                 CreateMap<Car, GetCarByIdDto>().ReverseMap();
+                CreateMap<GetCarByIdDto, UpdateCarDto>().ReverseMap();
 
                 CreateMap<Location, ResultLocationDto>().ReverseMap();
                 CreateMap<Location, CreateLocationDto>().ReverseMap();
