@@ -19,5 +19,6 @@ namespace Carola.DataAccessLayer.Concrete
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Location> Locations { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
     }
 }

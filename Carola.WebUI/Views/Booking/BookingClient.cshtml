@@ -1,0 +1,210 @@
+@model BookingClientFormDto
+
+@{
+    ViewData["Title"] = "Rezervasyon Yap";
+    Layout = "~/Views/Shared/_ClientLayout.cshtml";
+}
+
+<section class="breadcrumb-section booking-hero" style="background-image:linear-gradient(135deg,rgba(12,18,28,.78),rgba(12,18,28,.58)),url('/carola pack/carola/assets/images/background/most-popular-car.jpg');">
+    <div class="container">
+        <div class="banner-content">
+            <span class="sub-title">Smart Booking</span>
+            <h1>Rezervasyon Yap</h1>
+            <p>Kimlik veya ehliyetinizi yukleyin, OCR ile bilgileri otomatik dolduralim.</p>
+        </div>
+    </div>
+</section>
+
+<section class="booking-page-section pt_120 pb_120">
+    <div class="container">
+        <div class="booking-layout">
+            <div class="booking-main">
+                <form asp-action="BookingClient" asp-controller="Booking" method="post" id="bookingClientForm">
+                    <input asp-for="CarId" type="hidden" />
+                    <input asp-for="CustomerId" type="hidden" />
+                    <input asp-for="ReservationId" type="hidden" />
+                    <input asp-for="DailyPrice" type="hidden" id="DailyPrice" />
+                    <input asp-for="TotalDay" type="hidden" id="TotalDay" />
+                    <input asp-for="TotalPrice" type="hidden" id="TotalPrice" />
+                    <input asp-for="ReservationStatus" type="hidden" />
+                    <input asp-for="Status" type="hidden" />
+
+                <section class="booking-panel">
+                    <div class="booking-panel-head">
+                        <div class="booking-step-no">1</div>
+                        <div>
+                            <h3>Belge Fotografi</h3>
+                            <p>Kimlik veya ehliyet gorseliniz yuklendiginde bilgiler otomatik okunur.</p>
+                        </div>
+                    </div>
+
+                    <label class="booking-dropzone" id="ocrDropzone" for="documentFile">
+                        <input id="documentFile" type="file" accept="image/*" />
+                        <div class="booking-dropzone-empty" id="dropzoneEmpty">
+                            <div class="booking-dropzone-icon">OCR</div>
+                            <strong>Belgenizin fotografini yukleyin</strong>
+                            <span>JPG, PNG veya WEBP - maksimum 5 MB</span>
+                        </div>
+                        <div class="booking-dropzone-preview" id="ocrPreview" hidden>
+                            <img id="ocrPreviewImage" alt="Belge onizleme" />
+                        </div>
+                    </label>
+
+                    <div class="booking-upload-actions">
+                        <button type="button" class="theme-btn btn-one" id="scanButton">OCR Tara</button>
+                        <button type="button" class="theme-btn btn-two" id="clearButton">Temizle</button>
+                    </div>
+
+                    <div class="booking-status-card">
+                        <div class="booking-status-row">
+                            <strong>Tarama Durumu</strong>
+                            <span id="ocrDocType">Belge bekleniyor</span>
+                        </div>
+                        <div class="booking-progress">
+                            <div class="booking-progress-bar" id="ocrProgressBar"></div>
+                        </div>
+                        <p id="ocrStatusText">OCR baslatildiginda ilerleme burada gosterilir.</p>
+                    </div>
+
+                    <div class="booking-raw-card">
+                        <div class="booking-raw-head">
+                            <strong>Ham OCR Metni</strong>
+                            <button type="button" id="toggleRawText">Goster</button>
+                        </div>
+                        <pre id="ocrRawText" hidden></pre>
+                    </div>
+                </section>
+
+                <section class="booking-panel">
+                    <div class="booking-panel-head">
+                        <div class="booking-step-no">2</div>
+                        <div>
+                            <h3>Kisisel Bilgiler</h3>
+                            <p>OCR sonucu bulunan alanlari kontrol edin ve gerekiyorsa duzeltin.</p>
+                        </div>
+                    </div>
+
+                    <div class="booking-autofill-note">
+                        <span class="booking-autofill-dot"></span>
+                        <span id="summaryText">Henuz belge taranmadi.</span>
+                    </div>
+
+                    <div class="booking-form-grid">
+                        <div class="booking-field"><label>Ad</label><input asp-for="FirstName" id="firstName" type="text" placeholder="Ad" /></div>
+                        <div class="booking-field"><label>Soyad</label><input asp-for="LastName" id="lastName" type="text" placeholder="Soyad" /></div>
+                        <div class="booking-field"><label>T.C. Kimlik No</label><input asp-for="IdentityNumber" id="identityNumber" type="text" placeholder="11 haneli kimlik numarasi" /><small>Yalnizca kimlik dogrulama amaciyla kullanilir.</small></div>
+                        <div class="booking-field"><label>Dogum Tarihi</label><input asp-for="BirthDate" id="birthDate" type="text" placeholder="GG.AA.YYYY" /></div>
+                        <div class="booking-field"><label>Belge Tipi</label><input asp-for="DocumentType" id="documentType" type="text" placeholder="Kimlik / Ehliyet" readonly /></div>
+                        <div class="booking-field"><label>Belge No</label><input asp-for="DocumentNumber" id="documentNumber" type="text" placeholder="Belge numarasi" /></div>
+                        <div class="booking-field"><label>Gecerlilik Tarihi</label><input asp-for="DocumentExpiryDate" id="expiryDate" type="text" placeholder="GG.AA.YYYY" /></div>
+                        <div class="booking-field"><label>Ehliyet Sinifi</label><input asp-for="LicenseClass" id="licenseClass" type="text" placeholder="B, B1, A2..." /></div>
+                        <div class="booking-field"><label>E-posta</label><input asp-for="Email" id="emailAddress" type="email" placeholder="mail@example.com" /></div>
+                        <div class="booking-field"><label>Telefon</label><input asp-for="PhoneNumber" id="phoneNumber" type="tel" placeholder="05xx xxx xx xx" /></div>
+                    </div>
+                </section>
+
+                <section class="booking-panel">
+                    <div class="booking-panel-head">
+                        <div class="booking-step-no">3</div>
+                        <div>
+                            <h3>Kiralama Detaylari</h3>
+                            <p>Alis ve iade tarihleri ile lokasyon bilgisini tamamlayin.</p>
+                        </div>
+                    </div>
+
+                    <div class="booking-form-grid">
+                        <div class="booking-field"><label>Alis Tarihi</label><input asp-for="PickupDate" id="pickupDate" type="date" /></div>
+                        <div class="booking-field"><label>Iade Tarihi</label><input asp-for="ReturnDate" id="returnDate" type="date" /></div>
+                       
+                        <div class="booking-field">
+                            <label>Alis Lokasyonu</label>
+                            <select asp-for="PickupLocationId" id="PickupLocationId">
+                                <option value="">Lokasyon secin</option>
+                                @foreach (var item in ViewBag.Locations)
+                                {
+                                    <option value="@item.LocationId">@item.LocationName</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="booking-field">
+                            <label>Iade Lokasyonu</label>
+                            <select asp-for="ReturnLocationId" id="ReturnLocationId">
+                                <option value="">Lokasyon secin</option>
+                                @foreach (var item in ViewBag.Locations)
+                                {
+                                    <option value="@item.LocationId">@item.LocationName</option>
+                                }
+                            </select>
+                        </div>
+
+
+                        <div class="booking-field full"><label>Notlar</label><textarea asp-for="Note" id="reservationNotes" rows="5" placeholder="Ek taleplerinizi buraya yazabilirsiniz..."></textarea></div>
+                    </div>
+                </section>
+                </form>
+            </div>
+
+            <aside class="booking-sidebar">
+                <div class="booking-sidebar-card">
+                    <div class="booking-car-visual">
+                        <img src="/carola pack/carola/assets/images/popular-car/popular-car-1.jpg" alt="Secilen arac" />
+                    </div>
+                    <div class="booking-car-copy">
+                        <h3>Toyota Corolla</h3>
+                        <span class="booking-car-year">2023</span>
+                    </div>
+                    <div class="booking-feature-grid">
+                        <div class="booking-feature-item">Hibrit</div>
+                        <div class="booking-feature-item">Otomatik</div>
+                        <div class="booking-feature-item">5 Koltuk</div>
+                        <div class="booking-feature-item">3 Valiz</div>
+                        <div class="booking-feature-item">30000 km</div>
+                        <div class="booking-feature-item">2023</div>
+                    </div>
+                    <div class="booking-meta-list">
+                        <div class="booking-meta-row"><span>Alis</span><strong id="sidebarPickupDate">-</strong></div>
+                        <div class="booking-meta-row"><span>Iade</span><strong id="sidebarReturnDate">-</strong></div>
+                        <div class="booking-meta-row"><span>Sure</span><strong id="sidebarRentalDays">-</strong></div>
+                    </div>
+                    <div class="booking-price-card">
+                        <div class="booking-price-row"><span>Gunluk Fiyat</span><strong>1100,00 TL</strong></div>
+                        <div class="booking-price-row"><span>Gun Sayisi</span><strong id="sidebarDayCount">0 gun</strong></div>
+                        <div class="booking-price-total"><span>Toplam Tutar</span><strong id="sidebarTotalPrice">0,00 TL</strong></div>
+                    </div>
+                    <button type="submit" form="bookingClientForm" class="theme-btn btn-one booking-submit-btn">Rezervasyonu Onayla</button>
+                    <p class="booking-sidebar-note">Bilgileriniz guvenle saklanir.</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+</section>
+
+<style>
+    .booking-hero .banner-content{padding:56px 0 48px;text-align:center}.booking-hero .banner-content h1{margin-bottom:10px;font-size:50px;text-transform:uppercase}.booking-hero .banner-content p{color:rgba(255,255,255,.82);font-size:16px}.booking-page-section{background:linear-gradient(180deg,#f7f8fb 0%,#f2f5fb 100%)}.booking-layout{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(300px,.78fr);gap:28px;align-items:start}.booking-main{display:flex;flex-direction:column;gap:26px}.booking-panel,.booking-sidebar-card{background:#fff;border:1px solid rgba(15,23,42,.07);border-radius:28px;box-shadow:0 18px 50px rgba(15,23,42,.08)}.booking-panel{padding:32px}.booking-panel-head{display:flex;align-items:center;gap:18px;padding-bottom:20px;margin-bottom:24px;border-bottom:1px solid #e9edf5}.booking-step-no{width:46px;height:46px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background:linear-gradient(135deg,#2f7bff,#1758d8);color:#fff;font-size:20px;font-weight:700}.booking-panel-head h3{margin-bottom:4px;font-size:32px;line-height:1.1}.booking-panel-head p{margin:0;color:#778399}.booking-dropzone{display:block;border:2px dashed #2f7bff;border-radius:24px;background:linear-gradient(180deg,#f4f8ff 0%,#eef4ff 100%);min-height:240px;overflow:hidden;cursor:pointer}.booking-dropzone input{display:none}.booking-dropzone-empty,.booking-dropzone-preview{min-height:240px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px}.booking-dropzone-icon{width:80px;height:80px;display:inline-flex;align-items:center;justify-content:center;border-radius:24px;background:rgba(47,123,255,.12);color:#1758d8;margin-bottom:16px;font-size:22px;font-weight:800}.booking-dropzone-empty strong{display:block;margin-bottom:8px;font-size:26px;color:#132238}.booking-dropzone-empty span{color:#7b8698}.booking-dropzone-preview img{width:100%;max-height:360px;object-fit:contain;border-radius:18px}.booking-upload-actions{display:flex;gap:14px;margin-top:18px;flex-wrap:wrap}.booking-upload-actions .theme-btn{min-width:170px;justify-content:center;text-align:center}.booking-status-card,.booking-raw-card{margin-top:18px;padding:18px 20px;border-radius:20px;background:#f8fafe;border:1px solid #e5ebf6}.booking-status-row,.booking-raw-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:12px}.booking-status-row span{padding:8px 14px;border-radius:999px;background:rgba(47,123,255,.10);color:#1758d8;font-size:13px;font-weight:700}.booking-progress{height:10px;border-radius:999px;background:#dfe6f3;overflow:hidden;margin-bottom:10px}.booking-progress-bar{width:0;height:100%;background:linear-gradient(90deg,#2f7bff,#5da3ff);transition:width .2s ease}.booking-status-card p,.booking-raw-card pre{margin:0;color:#64748b;line-height:1.7}.booking-raw-head button{border:none;background:none;color:#1758d8;font-weight:700}.booking-raw-card pre{white-space:pre-wrap;max-height:220px;overflow:auto;font-size:13px}.booking-autofill-note{display:inline-flex;align-items:center;gap:10px;padding:10px 18px;border-radius:999px;background:#eaf8ef;color:#2e7d32;font-size:14px;font-weight:600;margin-bottom:22px}.booking-autofill-dot{width:10px;height:10px;border-radius:50%;background:#39b54a}.booking-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 22px}.booking-field{display:flex;flex-direction:column;gap:8px}.booking-field.full{grid-column:1 / -1}.booking-field label{color:#21324a;font-size:14px;font-weight:700}.booking-field small{color:#8a94a6;font-size:12px;margin-top:2px}.booking-field input,.booking-field textarea,.booking-field select{width:100%;min-height:56px;padding:15px 18px;border-radius:15px;border:1px solid #d9e1ef;background:#fbfcff;color:#10233e;font-size:15px}.booking-field select{appearance:none;-webkit-appearance:none;-moz-appearance:none;cursor:pointer}.booking-field textarea{min-height:130px;resize:vertical}.booking-field input:focus,.booking-field textarea:focus,.booking-field select:focus{outline:none;border-color:#2f7bff;background:#fff;box-shadow:0 0 0 4px rgba(47,123,255,.14)}.booking-sidebar{position:sticky;top:110px}.booking-sidebar-card{padding:22px}.booking-car-visual{margin-bottom:18px;border-radius:20px;overflow:hidden;background:#eef3fc}.booking-car-visual img{width:100%;height:210px;display:block;object-fit:cover}.booking-car-copy h3{margin-bottom:10px;font-size:28px}.booking-car-year{display:inline-flex;align-items:center;justify-content:center;min-width:62px;padding:8px 14px;border-radius:999px;background:rgba(47,123,255,.10);color:#1758d8;font-weight:700}.booking-feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:20px 0 24px}.booking-feature-item{padding:14px 12px;border-radius:14px;background:#f6f8fd;color:#29415f;font-weight:600;text-align:center}.booking-meta-list{border-top:1px solid #e8edf7;border-bottom:1px solid #e8edf7;padding:14px 0;margin-bottom:18px}.booking-meta-row,.booking-price-row,.booking-price-total{display:flex;align-items:center;justify-content:space-between;gap:16px}.booking-meta-row{padding:11px 0;color:#6b7789}.booking-meta-row strong{color:#10233e}.booking-price-card{padding:20px;border-radius:22px;background:linear-gradient(180deg,#2f7bff 0%,#1555d5 100%);color:#fff}.booking-price-row{padding:6px 0;color:rgba(255,255,255,.88)}.booking-price-total{margin-top:14px;padding-top:16px;border-top:1px solid rgba(255,255,255,.18)}.booking-price-total strong{font-size:34px;line-height:1}.booking-submit-btn{width:100%;margin-top:18px;justify-content:center;text-align:center}.booking-sidebar-note{margin:14px 0 4px;color:#8090a8;text-align:center;font-size:13px}@@media (max-width:1199px){.booking-layout{grid-template-columns:1fr}.booking-sidebar{position:static}}@@media (max-width:767px){.booking-hero .banner-content h1{font-size:38px}.booking-panel{padding:24px}.booking-panel-head h3{font-size:28px}.booking-form-grid,.booking-feature-grid{grid-template-columns:1fr}.booking-upload-actions .theme-btn{width:100%}.booking-car-visual img{height:190px}}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script>
+const $=id=>document.getElementById(id),documentFile=$('documentFile'),ocrDropzone=$('ocrDropzone'),ocrPreview=$('ocrPreview'),ocrPreviewImage=$('ocrPreviewImage'),dropzoneEmpty=$('dropzoneEmpty'),scanButton=$('scanButton'),clearButton=$('clearButton'),ocrProgressBar=$('ocrProgressBar'),ocrStatusText=$('ocrStatusText'),ocrDocType=$('ocrDocType'),ocrRawText=$('ocrRawText'),toggleRawText=$('toggleRawText'),summaryText=$('summaryText'),pickupDate=$('pickupDate'),returnDate=$('returnDate'),sidebarPickupDate=$('sidebarPickupDate'),sidebarReturnDate=$('sidebarReturnDate'),sidebarRentalDays=$('sidebarRentalDays'),sidebarDayCount=$('sidebarDayCount'),sidebarTotalPrice=$('sidebarTotalPrice'),totalDayInput=$('TotalDay'),totalPriceInput=$('TotalPrice'),dailyPriceInput=$('DailyPrice');const dailyPrice=1100;let selectedFile=null;
+documentFile.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;selectedFile=file;ocrPreviewImage.src=URL.createObjectURL(file);ocrPreview.hidden=false;dropzoneEmpty.hidden=true;ocrStatusText.textContent='Belge yuklendi. OCR taramasini baslatabilirsiniz.'});
+['dragenter','dragover'].forEach(n=>ocrDropzone.addEventListener(n,e=>{e.preventDefault()}));['dragleave','drop'].forEach(n=>ocrDropzone.addEventListener(n,e=>e.preventDefault()));
+ocrDropzone.addEventListener('drop',e=>{const file=e.dataTransfer?.files?.[0];if(!file)return;documentFile.files=e.dataTransfer.files;documentFile.dispatchEvent(new Event('change'))});
+clearButton.addEventListener('click',()=>{selectedFile=null;documentFile.value='';ocrPreview.hidden=true;dropzoneEmpty.hidden=false;ocrPreviewImage.src='';ocrProgressBar.style.width='0%';ocrStatusText.textContent='OCR baslatildiginda ilerleme burada gosterilir.';ocrDocType.textContent='Belge bekleniyor';ocrRawText.textContent='';ocrRawText.hidden=true;toggleRawText.textContent='Goster';summaryText.textContent='Henuz belge taranmadi.';['documentType','firstName','lastName','identityNumber','documentNumber','birthDate','expiryDate','licenseClass','emailAddress','phoneNumber'].forEach(id=>$(id).value='')});
+toggleRawText.addEventListener('click',()=>{const hidden=ocrRawText.hidden;ocrRawText.hidden=!hidden;toggleRawText.textContent=hidden?'Gizle':'Goster'});
+scanButton.addEventListener('click',async()=>{if(!selectedFile){ocrStatusText.textContent='Once kimlik veya ehliyet gorseli secin.';return}try{scanButton.disabled=true;scanButton.textContent='Taraniyor...';ocrProgressBar.style.width='8%';ocrStatusText.textContent='OCR motoru baslatiliyor...';const result=await Tesseract.recognize(selectedFile,'tur+eng',{logger:m=>{if(m.status==='recognizing text'&&m.progress){const p=Math.round(m.progress*100);ocrProgressBar.style.width=p+'%';ocrStatusText.textContent=`OCR taraniyor... %${p}`}}});const rawText=result?.data?.text||'';ocrRawText.textContent=rawText.trim()||'Metin bulunamadi.';const parsed=parseDocument(rawText);applyParsedData(parsed);ocrProgressBar.style.width='100%';ocrStatusText.textContent=parsed.summary;ocrDocType.textContent=parsed.documentTypeLabel;summaryText.textContent=parsed.summary}catch(error){console.error(error);ocrStatusText.textContent='OCR sirasinda bir sorun olustu. Daha net bir gorsel ile tekrar deneyin.';ocrDocType.textContent='Tarama basarisiz'}finally{scanButton.disabled=false;scanButton.textContent='OCR Tara'}});
+[pickupDate,returnDate].forEach(i=>i.addEventListener('change',updateSidebarSummary));
+function formatDate(v){if(!v)return'-';const p=v.split('-');return p.length===3?`${p[2]}.${p[1]}.${p[0]}`:v}
+function formatCurrency(v){return `${v.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})} TL`}
+function updateSidebarSummary(){sidebarPickupDate.textContent=formatDate(pickupDate.value);sidebarReturnDate.textContent=formatDate(returnDate.value);dailyPriceInput.value=dailyPrice;if(!pickupDate.value||!returnDate.value){sidebarRentalDays.textContent='-';sidebarDayCount.textContent='0 gun';sidebarTotalPrice.textContent=formatCurrency(0);totalDayInput.value=0;totalPriceInput.value=0;return}const days=Math.max(0,Math.ceil((new Date(returnDate.value)-new Date(pickupDate.value))/(1000*60*60*24)));sidebarRentalDays.textContent=days>0?`${days} gun`:'Ayni gun';sidebarDayCount.textContent=`${days} gun`;sidebarTotalPrice.textContent=formatCurrency(days*dailyPrice);totalDayInput.value=days;totalPriceInput.value=days*dailyPrice}
+function normalizeText(v){return(v||'').replace(/\r/g,'').replace(/[İI]/g,'I').replace(/[ı]/g,'i').replace(/[Ş]/g,'S').replace(/[ş]/g,'s').replace(/[Ğ]/g,'G').replace(/[ğ]/g,'g').replace(/[Ü]/g,'U').replace(/[ü]/g,'u').replace(/[Ö]/g,'O').replace(/[ö]/g,'o').replace(/[Ç]/g,'C').replace(/[ç]/g,'c')}
+function getCleanLines(t){return t.split('\n').map(l=>l.trim()).filter(Boolean)}
+function findFirstMatch(t,r){const m=t.match(r);return m?m[1]||m[0]:''}
+function valueAfterLabel(lines,labels){const keys=labels.map(l=>normalizeText(l).toUpperCase());for(let i=0;i<lines.length;i++){const line=lines[i],norm=normalizeText(line).toUpperCase();for(const key of keys){if(norm.includes(key)){const start=norm.indexOf(key);const tail=line.slice(start+key.length).replace(/^[:\-\s]+/,'').trim();if(tail)return tail;const next=lines[i+1];if(next)return next.trim()}}}return''}
+function numberedValue(lines,prefixes){for(const line of lines){const norm=normalizeText(line).toUpperCase();for(const prefix of prefixes){if(norm.startsWith(prefix)){return line.substring(line.indexOf('.')>-1?line.indexOf('.')+1:prefix.length).replace(/^[:\-\s]+/,'').trim()}}}return''}
+function splitFullName(value){const parts=(value||'').trim().split(/\s+/).filter(Boolean);if(parts.length<=1)return{firstName:value||'',lastName:''};return{firstName:parts.slice(0,-1).join(' '),lastName:parts.slice(-1).join(' ')}}
+function detectDocumentType(rawText){const n=normalizeText(rawText).toUpperCase();if(n.includes('SURUCU')||n.includes('DRIVING')||n.includes('DRIVER')||n.includes('SINIF')||n.includes('4D.')||n.includes('BELGE NO'))return'license';if(n.includes('KIMLIK')||n.includes('IDENTITY')||n.includes('TURKIYE CUMHURIYETI'))return'identity';return'unknown'}
+function parseDocument(rawText){const lines=getCleanLines(rawText),type=detectDocumentType(rawText),dates=rawText.match(/\b\d{2}[./-]\d{2}[./-]\d{4}\b/g)||[];const labeledName=valueAfterLabel(lines,['AD SOYAD','ADI SOYADI','NAME SURNAME','FULL NAME']);const numberedSurname=numberedValue(lines,['1.','1 ','1)']);const numberedName=numberedValue(lines,['2.','2 ','2)']);const nameParts=splitFullName(labeledName);const firstName=numberedName||valueAfterLabel(lines,['ADI','GIVEN NAMES','NAME'])||nameParts.firstName;const lastName=numberedSurname||valueAfterLabel(lines,['SOYADI','SURNAME'])||nameParts.lastName;const birthFromLabel=valueAfterLabel(lines,['DOGUM TARIHI','DATE OF BIRTH','3.']);const expiryFromLabel=valueAfterLabel(lines,['GECERLILIK','VALID UNTIL','4B.']);const documentNo=valueAfterLabel(lines,['BELGE NO','DOCUMENT NO','DOC NO','SERI NO','SERIAL NO'])||findFirstMatch(rawText,/4d\.\s*([A-Z0-9]+)/i);const licenseClass=valueAfterLabel(lines,['SINIF','CLASS','9.'])||findFirstMatch(normalizeText(rawText).toUpperCase(),/\b(A1|A2|A|B1|B|BE|C1|C|CE|D1|D|DE|F|G|M)\b/);const parsed={documentType:type,documentTypeLabel:type==='identity'?'T.C. Kimlik Karti':type==='license'?'Surucu Belgesi':'Belge tipi algilanamadi',firstName:firstName||'',lastName:lastName||'',identityNumber:findFirstMatch(rawText,/\b(\d{11})\b/),documentNumber:documentNo||'',birthDate:birthFromLabel||dates[0]||'',expiryDate:expiryFromLabel||dates[dates.length-1]||'',licenseClass:licenseClass||'',summary:''};const filled=[parsed.firstName,parsed.lastName,parsed.identityNumber,parsed.documentNumber,parsed.birthDate].filter(Boolean).length;parsed.summary=filled>0?`${parsed.documentTypeLabel} algilandi. ${filled} temel alan forma islendi.`:'Belge okundu ancak alanlar net ayrisamadi. Alanlari manuel kontrol edin.';return parsed}
+function applyParsedData(p){$('documentType').value=p.documentTypeLabel||'';$('firstName').value=p.firstName||'';$('lastName').value=p.lastName||'';$('identityNumber').value=p.identityNumber||'';$('documentNumber').value=p.documentNumber||'';$('birthDate').value=p.birthDate||'';$('expiryDate').value=p.expiryDate||'';$('licenseClass').value=p.licenseClass||''}
+updateSidebarSummary();
+</script>

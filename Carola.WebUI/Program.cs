@@ -30,6 +30,12 @@ builder.Services.AddScoped<ILocationDal,EfLocationDal>();
 builder.Services.AddScoped<ICustomerService,CustomerManager>();
 builder.Services.AddScoped<ICustomerDal,EfCustomerDal>();
 
+builder.Services.AddScoped<IBookingService,BookingManager>();
+builder.Services.AddScoped<IBookingDal,EfBookingDal>();
+
+builder.Services.AddScoped<IReservationService,ReservationManager>();
+builder.Services.AddScoped<IReservationDal,EfReservationDal>();
+
 builder.Services.AddAutoMapper(typeof(GeneralMapping));
 
 builder.Services.AddScoped<IValidator<Brand>, BrandValidator>();
