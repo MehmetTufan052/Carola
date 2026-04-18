@@ -3,6 +3,8 @@ using Carola.DtoLayer.Dtos.BookingDtos;
 using Carola.DtoLayer.Dtos.ReservationDtos;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Carola.WebUI.Controllers
@@ -15,21 +17,24 @@ namespace Carola.WebUI.Controllers
         private readonly IBookingService _bookingService;
         private readonly IReservationService _reservationService;
         private readonly ILocationService _locationService;
+        private readonly ICarService _carService;
         private readonly IMapper _mapper;
 
-        public BookingController(IBookingService bookingService, IReservationService reservationService, ILocationService locationService, IMapper mapper)
+        public BookingController(IBookingService bookingService, IReservationService reservationService, ILocationService locationService, ICarService carService, IMapper mapper)
         {
             _bookingService = bookingService;
             _reservationService = reservationService;
             _locationService = locationService;
+            _carService = carService;
             _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<IActionResult> BookingClient()
+        public async Task<IActionResult> BookingClient(int? carId, int? pickupLocationId, int? returnLocationId, DateTime? pickupDate, DateTime? returnDate)
         {
             await LoadLocationsAsync();
-            return View(CreateDefaultForm());
+            await LoadCarsAsync();
+            return View(await CreateDefaultFormAsync(carId, pickupLocationId, returnLocationId, pickupDate, returnDate));
         }
        
         [HttpPost]
@@ -40,6 +45,7 @@ namespace Carola.WebUI.Controllers
             if (!ModelState.IsValid)
             {
                 await LoadLocationsAsync();
+                await LoadCarsAsync();
                 return View(model);
             }
 
@@ -56,11 +62,30 @@ namespace Carola.WebUI.Controllers
             ViewBag.Locations = await _locationService.GetAllLocationAsync();
         }
 
-        private static BookingClientFormDto CreateDefaultForm()
+        private async Task LoadCarsAsync()
         {
+            ViewBag.Cars = await _carService.GetAllCarsWithCategoryAsync();
+        }
+
+        private async Task<BookingClientFormDto> CreateDefaultFormAsync(int? carId, int? pickupLocationId, int? returnLocationId, DateTime? pickupDate, DateTime? returnDate)
+        {
+            var cars = await _carService.GetAllCarsWithCategoryAsync();
+            var selectedCar = cars.FirstOrDefault(x => x.CarId == carId) ?? cars.FirstOrDefault(x => x.IsAvailable);
+            var effectivePickupDate = pickupDate?.Date ?? DateTime.Today.AddDays(1);
+            var effectiveReturnDate = returnDate?.Date ?? effectivePickupDate.AddDays(3);
+            var totalDay = Math.Max(1, (effectiveReturnDate - effectivePickupDate).Days);
+            var dailyPrice = selectedCar?.DailyPrice ?? DefaultDailyPrice;
+
             return new BookingClientFormDto
             {
-                DailyPrice = DefaultDailyPrice,
+                CarId = selectedCar?.CarId ?? 0,
+                PickupLocationId = pickupLocationId ?? 0,
+                ReturnLocationId = returnLocationId ?? pickupLocationId ?? 0,
+                PickupDate = effectivePickupDate,
+                ReturnDate = effectiveReturnDate,
+                DailyPrice = dailyPrice,
+                TotalDay = totalDay,
+                TotalPrice = totalDay * dailyPrice,
                 ReservationStatus = DefaultStatus,
                 Status = DefaultStatus
             };

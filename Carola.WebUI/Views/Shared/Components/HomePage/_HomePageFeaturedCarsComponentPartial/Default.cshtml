@@ -1,4 +1,4 @@
-@model List<ResultCarDto>
+﻿@model List<ResultCarDto>
 @{
     var cars = Model ?? new List<ResultCarDto>();
 }
@@ -6,11 +6,11 @@
 <section class="featured-car-section pt_120 pb_90" style="background-image: url(/carola pack/carola/assets/images/background/most-popular-car.jpg);">
     <div class="container">
         <div class="section-title centred mb_60">
-            <span class="sub-title">Featured Cars</span>
-            <h2 class="title">Featured Cars</h2>
+            <span class="sub-title">Öne Çıkan Araçlar</span>
+            <h2 class="title">Öne Çıkan Araçlar</h2>
         </div>
-        
-           <div class="row">
+
+        <div class="row">
             @foreach (var item in cars)
             {
                 <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
@@ -21,28 +21,27 @@
                         <div class="single-featured-car-content">
                             <div class="single-featured-car-rating"><i class="icon-9"></i>4.8</div>
                             <h5 class="single-featured-car-title"><a href="#">@item.Brand @item.Model</a></h5>
-                            <div class="single-featured-car-rent-per-day-2"><span>@item.DailyPrice</span>/ G�n</div>
+                            <div class="single-featured-car-rent-per-day-2"><span>@item.DailyPrice</span>/ Gün</div>
                             <div class="border-divider"></div>
                             <div class="featured-car-info-outer">
                                 <ul class="single-featured-car-info">
                                     <li><i class="icon-6"></i>@item.FuelType</li>
                                     <li><i class="icon-30"></i>@item.TransmissionType</li>
-                                </ul> 
+                                </ul>
                                 <ul class="single-featured-car-info">
                                     <li><i class="icon-28"></i>6 km/Litre</li>
-                                    <li><i class="icon-29"></i>4 Doors</li>
+                                    <li><i class="icon-29"></i>4 Kapı</li>
                                 </ul>
                                 <ul class="single-featured-car-info">
                                     <li><i class="icon-8"></i>@item.SeatCount</li>
                                     <li><i class="icon-7"></i>@item.ModelYear</li>
                                 </ul>
                             </div>
-                            <div class="single-featured-car-book-btn"><a href="" class="btn-style-three">�imdi Kirala</a></div>
+                            <div class="single-featured-car-book-btn"><a href="" class="btn-style-three">Şimdi Kirala</a></div>
                         </div>
                     </div>
                 </div>
             }
-            </div>
-       
+        </div>
     </div>
 </section>

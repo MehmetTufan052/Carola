@@ -199,6 +199,15 @@
         font-size: 20px; font-weight: 700; color: var(--accent);
         font-family: 'Syne', sans-serif; flex-shrink: 0;
     }
+    .ll-loc-image {
+        width: 64px;
+        height: 64px;
+        border-radius: 14px;
+        object-fit: cover;
+        border: 1px solid var(--border);
+        background: var(--bg-dark3);
+        flex-shrink: 0;
+    }
     .ll-loc-info { flex: 1; min-width: 0; }
     .ll-loc-title {
         font-family: 'Syne', sans-serif;
@@ -399,7 +408,8 @@
         l.LocationName,
         l.AuthorizedPerson,
         l.City,
-        l.Address
+        l.Address,
+        l.LocationImage
     })));
 
     var llFilter = 'all';
@@ -479,7 +489,10 @@
         var header =
             '<div class="ll-card-header">' +
                 '<div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0;">' +
-                    '<div class="ll-loc-avatar">' + llEsc(initial) + '</div>' +
+                    (l.LocationImage
+                        ? '<img src="' + llEsc(l.LocationImage) + '" alt="' + llEsc(l.LocationName) + '" class="ll-loc-image" onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'flex\';" />' +
+                          '<div class="ll-loc-avatar" style="display:none;">' + llEsc(initial) + '</div>'
+                        : '<div class="ll-loc-avatar">' + llEsc(initial) + '</div>') +
                     '<div class="ll-loc-info">' +
                         '<div class="ll-loc-title">' + llEsc(l.LocationName) + '</div>' +
                         '<div class="ll-loc-id">#' + l.LocationId + '</div>' +

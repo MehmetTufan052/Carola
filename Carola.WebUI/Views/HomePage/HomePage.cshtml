@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "HomePage";
+    ViewData["Title"] = "Ana Sayfa";
     Layout = "~/Views/Shared/_ClientLayout.cshtml";
 }
 
@@ -10,10 +10,244 @@
         background-repeat: no-repeat;
         background-size: cover;
     }
+
+    .home-showcase-panel {
+        min-height: 430px;
+        border-radius: 28px;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        align-items: flex-end;
+        padding: 42px;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18);
+    }
+
+    .home-showcase-panel::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, rgba(10, 15, 24, 0.82) 0%, rgba(10, 15, 24, 0.56) 38%, rgba(10, 15, 24, 0.18) 100%);
+    }
+
+    .home-showcase-copy {
+        position: relative;
+        z-index: 1;
+        max-width: 520px;
+        color: #fff;
+    }
+
+    .home-showcase-copy span {
+        display: inline-flex;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.12);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+    }
+
+    .home-showcase-copy h2 {
+        color: #fff;
+        font-size: 46px;
+        line-height: 1.05;
+        margin-bottom: 14px;
+    }
+
+    .home-showcase-copy p {
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 16px;
+        line-height: 1.8;
+        margin-bottom: 0;
+    }
+
+    @@media (max-width: 767px) {
+        .home-showcase-panel {
+            min-height: 340px;
+            padding: 28px 22px;
+            border-radius: 20px;
+        }
+
+        .home-showcase-copy h2 {
+            font-size: 34px;
+        }
+    }
+
+    .ai-chat-widget {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 14px;
+    }
+
+    .ai-chat-panel {
+        width: min(380px, calc(100vw - 24px));
+        background: #fff;
+        border-radius: 24px;
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22);
+        overflow: hidden;
+        border: 1px solid rgba(226, 232, 240, 0.9);
+        display: none;
+    }
+
+    .ai-chat-panel.is-open {
+        display: block;
+    }
+
+    .ai-chat-header {
+        padding: 18px 20px;
+        background: linear-gradient(135deg, #101828 0%, #1f2937 100%);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .ai-chat-title {
+        margin: 0;
+        color: #fff;
+        font-size: 18px;
+    }
+
+    .ai-chat-subtitle {
+        margin: 4px 0 0;
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.78);
+    }
+
+    .ai-chat-close {
+        border: 0;
+        background: rgba(255, 255, 255, 0.12);
+        color: #fff;
+        width: 36px;
+        height: 36px;
+        border-radius: 999px;
+        font-size: 20px;
+        line-height: 1;
+    }
+
+    .ai-chat-messages {
+        max-height: 360px;
+        overflow-y: auto;
+        padding: 18px;
+        background: #f8fafc;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .ai-chat-message {
+        max-width: 88%;
+        padding: 12px 14px;
+        border-radius: 18px;
+        font-size: 14px;
+        line-height: 1.6;
+        white-space: pre-wrap;
+    }
+
+    .ai-chat-message.bot {
+        align-self: flex-start;
+        background: #fff;
+        color: #0f172a;
+        border: 1px solid #e2e8f0;
+    }
+
+    .ai-chat-message.user {
+        align-self: flex-end;
+        background: #ff3341;
+        color: #fff;
+    }
+
+    .ai-chat-actions {
+        padding: 0 18px 14px;
+        background: #f8fafc;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .ai-chat-chip {
+        border: 1px solid #dbe4ee;
+        background: #fff;
+        color: #0f172a;
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-size: 12px;
+        line-height: 1.2;
+    }
+
+    .ai-chat-form {
+        padding: 16px 18px 18px;
+        background: #fff;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        gap: 10px;
+    }
+
+    .ai-chat-input {
+        flex: 1;
+        min-height: 52px;
+        max-height: 120px;
+        resize: vertical;
+        border: 1px solid #dbe4ee;
+        border-radius: 16px;
+        padding: 13px 14px;
+        font-size: 14px;
+        color: #0f172a;
+    }
+
+    .ai-chat-submit {
+        min-width: 108px;
+        border: 0;
+        border-radius: 16px;
+        background: #ff3341;
+        color: #fff;
+        font-weight: 700;
+        padding: 0 18px;
+    }
+
+    .ai-chat-toggle {
+        width: 64px;
+        height: 64px;
+        border: 0;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #ff3341 0%, #d9192b 100%);
+        color: #fff;
+        box-shadow: 0 20px 40px rgba(255, 51, 65, 0.35);
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+    }
+
+    @@media (max-width: 767px) {
+        .ai-chat-widget {
+            right: 12px;
+            left: 12px;
+            bottom: 12px;
+            align-items: stretch;
+        }
+
+        .ai-chat-panel {
+            width: 100%;
+        }
+
+        .ai-chat-toggle {
+            align-self: flex-end;
+        }
+    }
 </style>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 
 <!-- Page Wrapper -->
 <body class="boxed_wrapper">
@@ -44,14 +278,136 @@
 
     <section class="video-section">
         <div class="container-fulid">
-            <div class="vedio-section-outer" style="background-image: url(/carola pack/carola/assets/images/background/dark-vedio-bg.jpg);">
-                <a href="https://www.youtube.com/watch?v=nfP5N9Yc72A&t=28s" class="lightbox-image"><i class="icon-14"></i></a>
+            <div class="home-showcase-panel" style="background-image: url('/carola pack/carola/assets/images/background/car-collage-showcase-v2.png');">
+                <div class="home-showcase-copy">
+                    <span>Premium Filo</span>
+                    <h2>Her Yolculuğa Uygun Güçlü ve Şık Araçlar</h2>
+                    <p>Spor otomobilden sedana, hatchback modellerden günlük kullanıma uygun seçeneklere kadar zengin filomuzu keşfedin.</p>
+                </div>
             </div>
         </div>
     </section>
 
     @await Component.InvokeAsync("_HomePageServiceComponentPartial")  
 
+    <div class="ai-chat-widget" id="aiChatWidget">
+        <div class="ai-chat-panel" id="aiChatPanel">
+            <div class="ai-chat-header">
+                <div>
+                    <h4 class="ai-chat-title">Carola AI Asistan</h4>
+                    <p class="ai-chat-subtitle">Size uygun aracı birkaç saniyede önerebilirim.</p>
+                </div>
+                <button type="button" class="ai-chat-close" id="aiChatClose" aria-label="Sohbeti kapat">×</button>
+            </div>
+            <div class="ai-chat-messages" id="aiChatMessages">
+                <div class="ai-chat-message bot">Merhaba, ben Carola AI asistanı. Aile, bagaj, yakıt türü, bütçe veya vites tercihinize göre size uygun araçları önerebilirim.</div>
+            </div>
+            <div class="ai-chat-actions">
+                <button type="button" class="ai-chat-chip" data-prompt="Anne, baba ve 10 yaşında çocuk için uygun araç önerir misiniz?">Aile için araç öner</button>
+                <button type="button" class="ai-chat-chip" data-prompt="Günlük bütçesi uygun otomatik sedan önerir misiniz?">Uygun fiyatlı sedan</button>
+                <button type="button" class="ai-chat-chip" data-prompt="Bagajı geniş ve uzun yol için konforlu araç önerir misiniz?">Geniş bagajlı araç</button>
+            </div>
+            <form class="ai-chat-form" id="aiChatForm">
+                <textarea class="ai-chat-input" id="aiChatInput" placeholder="Örn: 4 kişilik aile için otomatik vites ve geniş bagajlı araç önerir misiniz?"></textarea>
+                <button type="submit" class="ai-chat-submit" id="aiChatSubmit">Gönder</button>
+            </form>
+        </div>
+        <button type="button" class="ai-chat-toggle" id="aiChatToggle">AI</button>
+    </div>
+
+    <script>
+        (function () {
+            function initAiChatWidget() {
+                var widget = document.getElementById('aiChatWidget');
+                if (!widget) {
+                    return;
+                }
+
+                var panel = document.getElementById('aiChatPanel');
+                var toggle = document.getElementById('aiChatToggle');
+                var closeButton = document.getElementById('aiChatClose');
+                var form = document.getElementById('aiChatForm');
+                var input = document.getElementById('aiChatInput');
+                var submitButton = document.getElementById('aiChatSubmit');
+                var messages = document.getElementById('aiChatMessages');
+                var chips = widget.querySelectorAll('.ai-chat-chip');
+
+                function appendMessage(text, role) {
+                    var message = document.createElement('div');
+                    message.className = 'ai-chat-message ' + role;
+                    message.textContent = text;
+                    messages.appendChild(message);
+                    messages.scrollTop = messages.scrollHeight;
+                }
+
+                function setLoading(isLoading) {
+                    submitButton.disabled = isLoading;
+                    submitButton.textContent = isLoading ? 'Bekleyin...' : 'Gönder';
+                }
+
+                async function sendMessage(messageText) {
+                    var trimmed = (messageText || '').trim();
+                    if (!trimmed) {
+                        return;
+                    }
+
+                    appendMessage(trimmed, 'user');
+                    input.value = '';
+                    setLoading(true);
+
+                    try {
+                        var response = await fetch('/api/ai-chat', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ message: trimmed })
+                        });
+
+                        var data = await response.json();
+                        appendMessage((data && data.message) ? data.message : 'Şu anda yanıt alınamadı.', 'bot');
+                    } catch (error) {
+                        appendMessage('AI asistana ulaşırken bir sorun oluştu. Lütfen tekrar deneyin.', 'bot');
+                    } finally {
+                        setLoading(false);
+                    }
+                }
+
+                toggle.addEventListener('click', function () {
+                    panel.classList.toggle('is-open');
+                });
+
+                closeButton.addEventListener('click', function () {
+                    panel.classList.remove('is-open');
+                });
+
+                form.addEventListener('submit', function (event) {
+                    event.preventDefault();
+                    sendMessage(input.value);
+                });
+
+                input.addEventListener('keydown', function (event) {
+                    if (event.key === 'Enter' && !event.shiftKey) {
+                        event.preventDefault();
+                        sendMessage(input.value);
+                    }
+                });
+
+                chips.forEach(function (chip) {
+                    chip.addEventListener('click', function () {
+                        var prompt = chip.getAttribute('data-prompt') || '';
+                        sendMessage(prompt);
+                    });
+                });
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initAiChatWidget);
+            } else {
+                initAiChatWidget();
+            }
+        })();
+    </script>
 
 </body>
 <!-- End Page Wrapper -->

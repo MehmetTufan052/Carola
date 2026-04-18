@@ -40,7 +40,9 @@
         padding: 28px;
         font-family: 'DM Sans', 'Segoe UI', sans-serif;
         color: var(--text);
-        max-width: 780px;
+        width: 100%;
+        max-width: 1280px;
+        margin: 0 auto;
     }
 
     /* ── Breadcrumb ── */
@@ -328,6 +330,25 @@
         transition: all .3s;
     }
 
+    .lc-preview-image {
+        width: 72px;
+        height: 72px;
+        border-radius: 14px;
+        object-fit: cover;
+        border: 1px solid var(--border);
+        background: var(--bg-dark);
+        display: none;
+        flex-shrink: 0;
+    }
+
+    .lc-preview-card.has-image .lc-preview-image {
+        display: block;
+    }
+
+    .lc-preview-card.has-image .lc-preview-avatar {
+        display: none;
+    }
+
     .lc-preview-avatar {
         width: 44px;
         height: 44px;
@@ -598,6 +619,24 @@
                         <span class="lc-hint">Tam adresi mahalle, cadde, numara ve ilçe bilgisiyle girin.</span>
                     </div>
 
+                    <!-- Lokasyon Fotoğrafı -->
+                    <div class="lc-field full">
+                        <label class="lc-label" for="LocationImage">
+                            🖼️ Lokasyon Fotoğrafı
+                        </label>
+                        <div class="lc-input-wrap">
+                            <span class="lc-input-prefix">🔗</span>
+                            <input asp-for="LocationImage"
+                                   class="lc-input"
+                                   id="LocationImage"
+                                   placeholder="Örn: /images/locations/istanbul-sube.jpg"
+                                   autocomplete="off"
+                                   oninput="lcUpdatePreview()" />
+                        </div>
+                        <span asp-validation-for="LocationImage" class="lc-val-msg"></span>
+                        <span class="lc-hint">Lokasyona ait görselin URL veya dosya yolunu girin.</span>
+                    </div>
+
                 </div>
             </div>
 
@@ -614,6 +653,7 @@
 
             <div class="lc-preview-wrap">
                 <div class="lc-preview-card" id="lcPreviewCard">
+                    <img id="lcPreviewImage" class="lc-preview-image" alt="Lokasyon görsel önizleme" />
                     <div class="lc-preview-avatar" id="lcPreviewAvatar">?</div>
                     <div class="lc-preview-info">
                         <div class="lc-preview-name" id="lcPreviewName">Lokasyon adı girilmedi</div>
@@ -650,6 +690,7 @@
             var person  = document.getElementById('AuthorizedPerson').value.trim();
             var city    = document.getElementById('City').value.trim();
             var address = document.getElementById('Address').value.trim();
+            var image   = document.getElementById('LocationImage').value.trim();
 
             /* Avatar */
             var initial = name ? name.charAt(0).toUpperCase() : '?';
@@ -669,6 +710,18 @@
             /* City badge */
             document.getElementById('lcPreviewCity').textContent =
                 '🏙️ ' + (city || '—');
+
+            /* Image preview */
+            var previewCard = document.getElementById('lcPreviewCard');
+            var previewImage = document.getElementById('lcPreviewImage');
+
+            if (image) {
+                previewImage.src = image;
+                previewCard.classList.add('has-image');
+            } else {
+                previewImage.removeAttribute('src');
+                previewCard.classList.remove('has-image');
+            }
         }
 
         /* Client-side validation before submit */
@@ -709,6 +762,8 @@
                 btn.textContent = '⏳ Kaydediliyor...';
             }
         });
+
+        lcUpdatePreview();
     </script>
 }
 

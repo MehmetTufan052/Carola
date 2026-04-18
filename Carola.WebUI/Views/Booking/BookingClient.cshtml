@@ -3,6 +3,12 @@
 @{
     ViewData["Title"] = "Rezervasyon Yap";
     Layout = "~/Views/Shared/_ClientLayout.cshtml";
+    var cars = ViewBag.Cars as List<ResultCarDto> ?? new List<ResultCarDto>();
+    var selectedCar = cars.FirstOrDefault(x => x.CarId == Model.CarId) ?? cars.FirstOrDefault();
+    var selectedImage = string.IsNullOrWhiteSpace(selectedCar?.ImageUrl)
+        ? "/carola pack/carola/assets/images/popular-car/popular-car-1.jpg"
+        : selectedCar.ImageUrl;
+    var selectedDailyPrice = selectedCar?.DailyPrice ?? Model.DailyPrice;
 }
 
 <section class="breadcrumb-section booking-hero" style="background-image:linear-gradient(135deg,rgba(12,18,28,.78),rgba(12,18,28,.58)),url('/carola pack/carola/assets/images/background/most-popular-car.jpg');">
@@ -148,19 +154,19 @@
             <aside class="booking-sidebar">
                 <div class="booking-sidebar-card">
                     <div class="booking-car-visual">
-                        <img src="/carola pack/carola/assets/images/popular-car/popular-car-1.jpg" alt="Secilen arac" />
+                        <img src="@selectedImage" alt="Secilen arac" />
                     </div>
                     <div class="booking-car-copy">
-                        <h3>Toyota Corolla</h3>
-                        <span class="booking-car-year">2023</span>
+                        <h3>@(selectedCar is null ? "Arac Secilmedi" : $"{selectedCar.Brand} {selectedCar.Model}")</h3>
+                        <span class="booking-car-year">@(selectedCar?.ModelYear.ToString() ?? "-")</span>
                     </div>
                     <div class="booking-feature-grid">
-                        <div class="booking-feature-item">Hibrit</div>
-                        <div class="booking-feature-item">Otomatik</div>
-                        <div class="booking-feature-item">5 Koltuk</div>
-                        <div class="booking-feature-item">3 Valiz</div>
-                        <div class="booking-feature-item">30000 km</div>
-                        <div class="booking-feature-item">2023</div>
+                        <div class="booking-feature-item">@(selectedCar?.FuelType ?? "-")</div>
+                        <div class="booking-feature-item">@(selectedCar?.TransmissionType ?? "-")</div>
+                        <div class="booking-feature-item">@((selectedCar?.SeatCount ?? 0) > 0 ? $"{selectedCar!.SeatCount} Koltuk" : "-")</div>
+                        <div class="booking-feature-item">@((selectedCar?.LuggageCapacity ?? 0) > 0 ? $"{selectedCar!.LuggageCapacity} Valiz" : "-")</div>
+                        <div class="booking-feature-item">@((selectedCar?.Mileage ?? 0) > 0 ? $"{selectedCar!.Mileage} km" : "-")</div>
+                        <div class="booking-feature-item">@(selectedCar?.Status ?? "-")</div>
                     </div>
                     <div class="booking-meta-list">
                         <div class="booking-meta-row"><span>Alis</span><strong id="sidebarPickupDate">-</strong></div>
@@ -168,7 +174,7 @@
                         <div class="booking-meta-row"><span>Sure</span><strong id="sidebarRentalDays">-</strong></div>
                     </div>
                     <div class="booking-price-card">
-                        <div class="booking-price-row"><span>Gunluk Fiyat</span><strong>1100,00 TL</strong></div>
+                        <div class="booking-price-row"><span>Gunluk Fiyat</span><strong>@selectedDailyPrice.ToString("N2") TL</strong></div>
                         <div class="booking-price-row"><span>Gun Sayisi</span><strong id="sidebarDayCount">0 gun</strong></div>
                         <div class="booking-price-total"><span>Toplam Tutar</span><strong id="sidebarTotalPrice">0,00 TL</strong></div>
                     </div>
@@ -186,7 +192,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
-const $=id=>document.getElementById(id),documentFile=$('documentFile'),ocrDropzone=$('ocrDropzone'),ocrPreview=$('ocrPreview'),ocrPreviewImage=$('ocrPreviewImage'),dropzoneEmpty=$('dropzoneEmpty'),scanButton=$('scanButton'),clearButton=$('clearButton'),ocrProgressBar=$('ocrProgressBar'),ocrStatusText=$('ocrStatusText'),ocrDocType=$('ocrDocType'),ocrRawText=$('ocrRawText'),toggleRawText=$('toggleRawText'),summaryText=$('summaryText'),pickupDate=$('pickupDate'),returnDate=$('returnDate'),sidebarPickupDate=$('sidebarPickupDate'),sidebarReturnDate=$('sidebarReturnDate'),sidebarRentalDays=$('sidebarRentalDays'),sidebarDayCount=$('sidebarDayCount'),sidebarTotalPrice=$('sidebarTotalPrice'),totalDayInput=$('TotalDay'),totalPriceInput=$('TotalPrice'),dailyPriceInput=$('DailyPrice');const dailyPrice=1100;let selectedFile=null;
+const $=id=>document.getElementById(id),documentFile=$('documentFile'),ocrDropzone=$('ocrDropzone'),ocrPreview=$('ocrPreview'),ocrPreviewImage=$('ocrPreviewImage'),dropzoneEmpty=$('dropzoneEmpty'),scanButton=$('scanButton'),clearButton=$('clearButton'),ocrProgressBar=$('ocrProgressBar'),ocrStatusText=$('ocrStatusText'),ocrDocType=$('ocrDocType'),ocrRawText=$('ocrRawText'),toggleRawText=$('toggleRawText'),summaryText=$('summaryText'),pickupDate=$('pickupDate'),returnDate=$('returnDate'),sidebarPickupDate=$('sidebarPickupDate'),sidebarReturnDate=$('sidebarReturnDate'),sidebarRentalDays=$('sidebarRentalDays'),sidebarDayCount=$('sidebarDayCount'),sidebarTotalPrice=$('sidebarTotalPrice'),totalDayInput=$('TotalDay'),totalPriceInput=$('TotalPrice'),dailyPriceInput=$('DailyPrice');const dailyPrice=Number(dailyPriceInput.value||0);let selectedFile=null;
 documentFile.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;selectedFile=file;ocrPreviewImage.src=URL.createObjectURL(file);ocrPreview.hidden=false;dropzoneEmpty.hidden=true;ocrStatusText.textContent='Belge yuklendi. OCR taramasini baslatabilirsiniz.'});
 ['dragenter','dragover'].forEach(n=>ocrDropzone.addEventListener(n,e=>{e.preventDefault()}));['dragleave','drop'].forEach(n=>ocrDropzone.addEventListener(n,e=>e.preventDefault()));
 ocrDropzone.addEventListener('drop',e=>{const file=e.dataTransfer?.files?.[0];if(!file)return;documentFile.files=e.dataTransfer.files;documentFile.dispatchEvent(new Event('change'))});

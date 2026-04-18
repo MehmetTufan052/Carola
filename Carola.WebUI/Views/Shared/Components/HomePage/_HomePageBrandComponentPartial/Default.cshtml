@@ -1,4 +1,4 @@
-@model List<ResultBrandDto>
+﻿@model List<ResultBrandDto>
 @{
     var brands = Model ?? new List<ResultBrandDto>();
 }
@@ -7,11 +7,11 @@
     <div class="container">
         <div class="section-title-box">
             <div class="section-title">
-                <span class="sub-title">Brands</span>
-                <h2 class="title">Explore Premium Car Brands</h2>
+                <span class="sub-title">Markalar</span>
+                <h2 class="title">Premium Araç Markalarını Keşfedin</h2>
             </div>
             <div class="show-all-btn">
-                <a href="/Admin/Brand/BrandList" class="btn-style-three">Show all Brands</a>
+                <a href="/Admin/Brand/BrandList" class="btn-style-three">Tüm Markaları Gör</a>
             </div>
         </div>
 
@@ -128,8 +128,8 @@
         @if (!brands.Any())
         {
             <div class="hp-brand-empty">
-                <h5>No brands found yet</h5>
-                <p>Brands will appear here after they are added in the admin panel.</p>
+                <h5>Henüz marka bulunmuyor</h5>
+                <p>Yönetim panelinden marka eklendikten sonra burada görünecektir.</p>
             </div>
         }
         else
@@ -161,7 +161,7 @@
 
                         <span class="hp-brand-status">
                             <span class="hp-brand-status-dot"></span>
-                            @(item.Status ? "Available" : "Passive")
+                            @(item.Status ? "Aktif" : "Pasif")
                         </span>
                     </div>
                 }

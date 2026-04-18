@@ -6,6 +6,8 @@ using Carola.DataAccessLayer.Abstract;
 using Carola.DataAccessLayer.Concrete;
 using Carola.DataAccessLayer.EntityFramework;
 using Carola.EntityLayer.Entities;
+using Carola.WebUI.Options;
+using Carola.WebUI.Services;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,6 +42,11 @@ builder.Services.AddAutoMapper(typeof(GeneralMapping));
 
 builder.Services.AddScoped<IValidator<Brand>, BrandValidator>();
 
+builder.Services.Configure<OpenAiChatOptions>(builder.Configuration.GetSection("OpenAI"));
+builder.Services.AddHttpClient<IAiChatService, OpenAiChatService>(client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(45);
+});
 
 
 

@@ -1,202 +1,281 @@
-﻿
+@model HomePageBookingViewModel
+
+@{
+    var selectedPickup = Model.Locations.FirstOrDefault(x => x.LocationId == Model.PickupLocationId);
+    var selectedCar = Model.Cars.FirstOrDefault(x => x.CarId == Model.CarId) ?? Model.Cars.FirstOrDefault();
+}
+
 <section class="booking-section home-three">
     <div class="container">
         <div class="filter-wrapper">
             <div class="filter-group">
-                <form>
+                <form asp-controller="Booking" asp-action="BookingClient" method="get">
                     <div class="filter-area">
-                        <div class="row">
-                            <div class="col-xl-3 col-md-6 col-sm-12 colmun">
-                                <div class="single-search-box">
+                        <div class="booking-home-grid">
+                            <div class="booking-home-item">
+                                <div class="single-search-box booking-home-box">
                                     <div class="icon"><i class="icon-24"></i></div>
                                     <div class="searchbox-input">
-                                        <label>Your Destination</label>
+                                        <label>Alis Lokasyonu</label>
                                         <div class="custom-select-dropdown">
                                             <div class="select-input">
-                                                <input type="text" readonly value="Bangladesh" />
+                                                <select asp-for="PickupLocationId" class="booking-home-select" id="homePickupLocationId">
+                                                    @foreach (var item in Model.Locations)
+                                                    {
+                                                        <option value="@item.LocationId" data-city="@item.City">@item.LocationName</option>
+                                                    }
+                                                </select>
                                                 <i class="fas fa-angle-down"></i>
                                             </div>
-                                            <div class="custom-select-wrap">
-                                                <div class="custom-select-search-area">
-                                                    <i class="fas fa-magnifying-glass"></i>
-                                                    <input type="text" placeholder="Type Your Destination" />
-                                                </div>
-                                                <ul class="option-list">
-                                                    <li>
-                                                        <div class="destination">
-                                                            <h6>Bangladesh</h6>
-                                                            <p>Dhaka, Cox's Bazar, Sylhet</p>
-                                                        </div>
-                                                        <div class="tour">
-                                                            <span>
-                                                                50 <br />
-                                                                Tour
-                                                            </span>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="destination">
-                                                            <h6>Nepal</h6>
-                                                            <p>KATHMANDU, POKHARA</p>
-                                                        </div>
-                                                        <div class="tour">
-                                                            <span>
-                                                                30 <br />
-                                                                Tour
-                                                            </span>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="destination">
-                                                            <h6>India</h6>
-                                                            <p>Delhi, Agra, Himachal</p>
-                                                        </div>
-                                                        <div class="tour">
-                                                            <span>
-                                                                30 <br />
-                                                                Tour
-                                                            </span>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="destination">
-                                                            <h6>Brazil</h6>
-                                                            <p>Sao Paulo, Salvador, Bonito</p>
-                                                        </div>
-                                                        <div class="tour">
-                                                            <span>
-                                                                20 <br />
-                                                                Tour
-                                                            </span>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="destination">
-                                                            <h6>Thailand</h6>
-                                                            <p>Bangkok, Phuket, Trang</p>
-                                                        </div>
-                                                        <div class="tour">
-                                                            <span>
-                                                                40 <br />
-                                                                Tour
-                                                            </span>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="destination">
-                                                            <h6>Span</h6>
-                                                            <p>Barcelona, Madrid</p>
-                                                        </div>
-                                                        <div class="tour">
-                                                            <span>
-                                                                20 <br />
-                                                                Tour
-                                                            </span>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="destination">
-                                                            <h6>Dubai</h6>
-                                                            <p>Abu Dhabi, Burj Khalifa</p>
-                                                        </div>
-                                                        <div class="tour">
-                                                            <span>
-                                                                35 <br />
-                                                                Tour
-                                                            </span>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="destination">
-                                                            <h6>United States</h6>
-                                                            <p>New York, Las Vegas, Colorado</p>
-                                                        </div>
-                                                        <div class="tour">
-                                                            <span>
-                                                                45 <br />
-                                                                Tour
-                                                            </span>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </div>
                                         </div>
+                                        <small class="booking-home-hint" id="homeLocationHint">@(selectedPickup?.City ?? "Lokasyon secin")</small>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xl-3 col-md-6 col-sm-12 colmun">
-                                <div class="single-search-box">
+                            <div class="booking-home-item">
+                                <div class="single-search-box booking-home-box booking-home-date">
                                     <div class="icon"><i class="icon-25"></i></div>
                                     <div class="searchbox-input">
-                                        <label>When to Start</label>
+                                        <label>Alis Tarihi</label>
                                         <div class="custom-select-dropdown">
                                             <div class="select-input">
-                                                <input type="text" name="inOut" readonly value="" />
-                                                <i class="fas fa-angle-down"></i>
+                                                <input asp-for="PickupDate" type="date" />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xl-3 col-md-6 col-sm-12 colmun">
-                                <div class="single-search-box">
+                            <div class="booking-home-item">
+                                <div class="single-search-box booking-home-box booking-home-date">
                                     <div class="icon"><i class="icon-26"></i></div>
                                     <div class="searchbox-input">
-                                        <label>When to Finish</label>
+                                        <label>Iade Tarihi</label>
                                         <div class="custom-select-dropdown">
                                             <div class="select-input">
-                                                <input type="text" name="inOut" readonly value="Sep 20" />
-                                                <i class="fas fa-angle-down"></i>
+                                                <input asp-for="ReturnDate" type="date" />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xl-3 col-md-6 col-sm-12 colmun">
-                                <div class="single-search-box">
+                            <div class="booking-home-item">
+                                <div class="single-search-box booking-home-box">
                                     <div class="icon"><i class="icon-27"></i></div>
                                     <div class="searchbox-input">
-                                        <label>People</label>
+                                        <label>Arac Secimi</label>
                                         <div class="custom-select-dropdown">
                                             <div class="select-input">
-                                                <h6><span id="adult-qty">1</span> Adults, <span id="child-qty">0</span> Child</h6>
+                                                <select asp-for="CarId" class="booking-home-select" id="homeCarId">
+                                                    @foreach (var item in Model.Cars)
+                                                    {
+                                                        <option value="@item.CarId"
+                                                                data-summary="@($"{item.ModelYear} - {item.TransmissionType} - {item.SeatCount} koltuk")">
+                                                            @item.Brand @item.Model - @item.DailyPrice.ToString("N0") TL
+                                                        </option>
+                                                    }
+                                                </select>
                                                 <i class="fas fa-angle-down"></i>
                                             </div>
-                                            <div class="custom-select-wrap two no-scroll">
-                                                <ul class="guest-count">
-                                                    <li class="single-item">
-                                                        <div class="title">
-                                                            <h6>Adult</h6>
-                                                            <span>17 years+</span>
-                                                        </div>
-                                                        <div class="quantity-counter">
-                                                            <a href="#" data-type="adult" class="guest-quantity__minus"><i class="fas fa-minus"></i></a>
-                                                            <input name="adult_quantity" type="text" class="quantity__input" value="1" />
-                                                            <a href="#" data-type="adult" class="guest-quantity__plus"><i class="fas fa-plus"></i></a>
-                                                        </div>
-                                                    </li>
-                                                    <li class="single-item">
-                                                        <div class="title">
-                                                            <h6>Children</h6>
-                                                            <span>0-17 years</span>
-                                                        </div>
-                                                        <div class="quantity-counter">
-                                                            <a href="#" data-type="child" class="guest-quantity__minus"><i class="fas fa-minus"></i></a>
-                                                            <input name="child_quantity" type="text" class="quantity__input" value="0" />
-                                                            <a href="#" data-type="child" class="guest-quantity__plus"><i class="fas fa-plus"></i></a>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </div>
                                         </div>
+                                        <small class="booking-home-hint" id="homeCarHint">
+                                            @if (selectedCar is not null)
+                                            {
+                                                @($"{selectedCar.ModelYear} - {selectedCar.TransmissionType} - {selectedCar.SeatCount} koltuk")
+                                            }
+                                            else
+                                            {
+                                                @:Musait arac bulunamadi
+                                            }
+                                        </small>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <input asp-for="ReturnLocationId" type="hidden" id="homeReturnLocationId" />
                     </div>
-                    <button type="submit">Search</button>
+                    <button type="submit" class="booking-home-submit">Arac Bul</button>
                 </form>
             </div>
         </div>
     </div>
 </section>
+
+<style>
+    .booking-section .filter-wrapper .filter-group form {
+        align-items: stretch;
+        gap: 18px;
+    }
+
+    .booking-section .filter-wrapper .filter-group form .filter-area {
+        padding: 0;
+    }
+
+    .booking-home-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+        width: 100%;
+    }
+
+    .booking-home-item {
+        min-width: 0;
+    }
+
+    .booking-home-box {
+        min-height: 92px;
+        padding: 16px 16px 14px;
+        border: 1px solid #e4e7ee;
+        border-radius: 8px;
+        background: #fff;
+        gap: 14px;
+    }
+
+    .booking-home-box .icon {
+        flex: 0 0 auto;
+        font-size: 26px;
+        line-height: 1;
+        color: var(--theme-color);
+    }
+
+    .booking-home-box .searchbox-input {
+        min-width: 0;
+    }
+
+    .booking-home-box .searchbox-input label {
+        margin-bottom: 10px;
+    }
+
+    .booking-home-box .select-input {
+        min-width: 0;
+    }
+
+    .booking-home-select {
+        width: 100%;
+        height: 26px;
+        border: none;
+        background: transparent;
+        color: #10233e;
+        font-size: 15px;
+        font-weight: 500;
+        line-height: 1.2;
+        padding: 0 28px 0 0;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        cursor: pointer;
+        min-width: 0;
+        text-overflow: ellipsis;
+    }
+
+    .booking-home-select:focus,
+    .booking-section input[type="date"]:focus {
+        outline: none;
+    }
+
+    .booking-section input[type="date"] {
+        width: 100%;
+        height: 26px;
+        border: none;
+        background: transparent;
+        color: #10233e;
+        font-size: 15px;
+        font-weight: 500;
+        padding: 0;
+        cursor: pointer;
+        min-width: 0;
+    }
+
+    .booking-home-hint {
+        display: block;
+        margin-top: 10px;
+        color: #7b8698;
+        font-size: 12px;
+        line-height: 1.4;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .booking-home-submit {
+        min-width: 150px;
+        border: none;
+        border-radius: 8px;
+        padding: 0 28px;
+        background: var(--theme-color);
+        color: #fff;
+        font-size: 18px;
+        font-weight: 700;
+        transition: all 0.3s ease;
+    }
+
+    .booking-home-submit:hover {
+        background: #101828;
+    }
+
+    .booking-home-date .select-input {
+        justify-content: flex-start;
+    }
+
+    .booking-home-date input[type="date"]::-webkit-calendar-picker-indicator {
+        opacity: 1;
+        cursor: pointer;
+    }
+
+    @@media (max-width: 1199px) {
+        .booking-home-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .booking-home-submit {
+            min-height: 64px;
+        }
+    }
+
+    @@media (max-width: 767px) {
+        .booking-section .filter-wrapper .filter-group form {
+            flex-direction: column;
+        }
+
+        .booking-home-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .booking-home-submit {
+            width: 100%;
+            min-height: 56px;
+        }
+    }
+</style>
+
+<script>
+    (function () {
+        const pickupLocation = document.getElementById('homePickupLocationId');
+        const returnLocation = document.getElementById('homeReturnLocationId');
+        const locationHint = document.getElementById('homeLocationHint');
+        const carSelect = document.getElementById('homeCarId');
+        const carHint = document.getElementById('homeCarHint');
+
+        if (pickupLocation && returnLocation) {
+            const syncLocation = () => {
+                const selectedOption = pickupLocation.options[pickupLocation.selectedIndex];
+                returnLocation.value = pickupLocation.value;
+                if (locationHint && selectedOption) {
+                    locationHint.textContent = selectedOption.dataset.city || 'Lokasyon secin';
+                }
+            };
+
+            pickupLocation.addEventListener('change', syncLocation);
+            syncLocation();
+        }
+
+        if (carSelect && carHint) {
+            const syncCar = () => {
+                const selectedOption = carSelect.options[carSelect.selectedIndex];
+                carHint.textContent = selectedOption?.dataset.summary || 'Musait arac bulunamadi';
+            };
+
+            carSelect.addEventListener('change', syncCar);
+            syncCar();
+        }
+    })();
+</script>

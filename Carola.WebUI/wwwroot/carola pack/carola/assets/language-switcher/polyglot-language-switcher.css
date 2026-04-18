@@ -122,6 +122,10 @@
 	background-image: url(../language-switcher/gb.png);
 }
 
+#tr {
+	background-image: url(../language-switcher/tr.png);
+}
+
 #fr { 
 	background-image: url(../language-switcher/fr.png);	
 }
@@ -137,5 +141,3 @@
 #es { 
 	background-image: url(../language-switcher/es.png);
 }
-
-
