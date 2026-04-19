@@ -1,0 +1,615 @@
+@using Carola.DtoLayer.Dtos.BookingDtos
+@model List<ResultBookingDto>
+@{
+    ViewData["Title"] = "BookingList";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+
+    var totalCount = Model.Count;
+    var pendingCount = Model.Count(x => !string.IsNullOrWhiteSpace(x.Status) && (x.Status.Contains("Bekle", StringComparison.OrdinalIgnoreCase) || x.Status.Contains("Onay Bekleniyor", StringComparison.OrdinalIgnoreCase)));
+    var completedCount = Model.Count(x => !string.IsNullOrWhiteSpace(x.Status) && (x.Status.Contains("Tamam", StringComparison.OrdinalIgnoreCase) || x.Status.Contains("Onay", StringComparison.OrdinalIgnoreCase)));
+    var totalRevenue = Model.Sum(x => x.DailyPrice * x.TotalDay);
+}
+
+<style>
+    :root {
+        --bg-dark: #0d0f14;
+        --bg-dark2: #13161e;
+        --bg-dark3: #1a1e2a;
+        --accent: #e8ff47;
+        --accent-dim: rgba(232,255,71,.12);
+        --accent2: #4f8dff;
+        --accent2-dim: rgba(79,141,255,.12);
+        --success: #30e0a1;
+        --danger: #ff5259;
+        --warning: #ffb547;
+        --border: rgba(255,255,255,.07);
+        --text: #e2e8f0;
+        --text-muted: #7a8499;
+        --radius: 12px;
+        --radius-lg: 18px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    .bk-root {
+        padding: 28px;
+        font-family: 'DM Sans', 'Segoe UI', sans-serif;
+        color: var(--text);
+    }
+
+    .bk-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-bottom: 6px;
+    }
+
+    .bk-breadcrumb span { color: var(--text); }
+
+    .bk-page-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+    }
+
+    .bk-page-title {
+        font-family: 'Syne', Georgia, sans-serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1;
+    }
+
+    .bk-page-subtitle {
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-top: 5px;
+    }
+
+    .bk-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        margin-bottom: 22px;
+    }
+
+    @@media (max-width: 900px) {
+        .bk-stats { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @@media (max-width: 640px) {
+        .bk-stats { grid-template-columns: 1fr; }
+    }
+
+    .bk-stat-card {
+        background: var(--bg-dark2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px 18px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .bk-stat-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+
+    .bk-stat-icon.yellow { background: var(--accent-dim); color: var(--accent); }
+    .bk-stat-icon.blue { background: var(--accent2-dim); color: var(--accent2); }
+    .bk-stat-icon.green { background: rgba(48,224,161,.1); color: var(--success); }
+    .bk-stat-icon.orange { background: rgba(255,181,71,.12); color: var(--warning); }
+
+    .bk-stat-num {
+        font-family: 'Syne', sans-serif;
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .bk-stat-label {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-top: 3px;
+    }
+
+    .bk-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+    }
+
+    .bk-search-wrap {
+        position: relative;
+        flex: 1;
+        min-width: 220px;
+        max-width: 380px;
+    }
+
+    .bk-search-wrap input {
+        width: 100%;
+        background: var(--bg-dark2);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        color: var(--text);
+        padding: 9px 13px 9px 36px;
+        font-size: 13px;
+        font-family: inherit;
+        outline: none;
+    }
+
+    .bk-search-wrap input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-dim);
+    }
+
+    .bk-search-wrap input::placeholder { color: var(--text-muted); }
+
+    .bk-search-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 14px;
+        color: var(--text-muted);
+        pointer-events: none;
+    }
+
+    .bk-filter {
+        background: var(--bg-dark2);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        color: var(--text);
+        padding: 8px 12px;
+        font-size: 12px;
+        font-family: inherit;
+        outline: none;
+        cursor: pointer;
+    }
+
+    .bk-filter:focus { border-color: var(--accent); }
+
+    .bk-result-info {
+        margin-left: auto;
+        font-size: 12px;
+        color: var(--text-muted);
+    }
+
+    .bk-result-info strong { color: var(--text); }
+
+    .bk-alert {
+        margin-bottom: 16px;
+        padding: 14px 16px;
+        border-radius: 14px;
+        font-size: 13px;
+        line-height: 1.6;
+        border: 1px solid transparent;
+    }
+
+    .bk-alert.success {
+        background: rgba(48,224,161,.12);
+        border-color: rgba(48,224,161,.22);
+        color: var(--success);
+    }
+
+    .bk-alert.error {
+        background: rgba(255,82,89,.12);
+        border-color: rgba(255,82,89,.22);
+        color: #ff9ea3;
+    }
+
+    .bk-table-wrap {
+        background: var(--bg-dark2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+    }
+
+    .bk-table-scroll { overflow-x: auto; }
+
+    .bk-table {
+        width: 100%;
+        min-width: 1100px;
+        border-collapse: collapse;
+    }
+
+    .bk-table thead tr {
+        background: var(--bg-dark3);
+        border-bottom: 1px solid var(--border);
+    }
+
+    .bk-table th {
+        padding: 13px 16px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-align: left;
+        text-transform: uppercase;
+        letter-spacing: .05em;
+        white-space: nowrap;
+    }
+
+    .bk-table tbody tr {
+        border-bottom: 1px solid var(--border);
+        transition: background .15s;
+    }
+
+    .bk-table tbody tr:last-child { border-bottom: none; }
+    .bk-table tbody tr:hover { background: rgba(255,255,255,.025); }
+
+    .bk-table td {
+        padding: 14px 16px;
+        font-size: 13px;
+        color: var(--text);
+        vertical-align: middle;
+    }
+
+    .bk-person {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .bk-person strong {
+        font-size: 13px;
+        color: var(--text);
+    }
+
+    .bk-person span,
+    .bk-subtext {
+        font-size: 12px;
+        color: var(--text-muted);
+    }
+
+    .bk-code {
+        display: inline-flex;
+        align-items: center;
+        min-height: 28px;
+        padding: 4px 9px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--bg-dark3);
+        color: var(--accent2);
+        font-family: Consolas, monospace;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    .bk-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .03em;
+        white-space: nowrap;
+    }
+
+    .bk-status.pending {
+        background: rgba(255,181,71,.12);
+        color: var(--warning);
+    }
+
+    .bk-status.success {
+        background: rgba(48,224,161,.12);
+        color: var(--success);
+    }
+
+    .bk-status.danger {
+        background: rgba(255,82,89,.12);
+        color: var(--danger);
+    }
+
+    .bk-amount {
+        font-weight: 700;
+        color: var(--accent);
+        white-space: nowrap;
+    }
+
+    .bk-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .bk-btn {
+        border: 1px solid transparent;
+        border-radius: 10px;
+        padding: 8px 12px;
+        font-size: 12px;
+        font-weight: 700;
+        font-family: inherit;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+    }
+
+    .bk-btn.approve {
+        background: rgba(48,224,161,.12);
+        border-color: rgba(48,224,161,.2);
+        color: var(--success);
+    }
+
+    .bk-btn.approve:hover { opacity: .85; }
+
+    .bk-btn.disabled {
+        background: var(--bg-dark3);
+        border-color: var(--border);
+        color: var(--text-muted);
+        cursor: default;
+    }
+
+    .bk-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 20px;
+        gap: 12px;
+        color: var(--text-muted);
+        text-align: center;
+    }
+
+    .bk-empty i { font-size: 40px; }
+</style>
+
+<div class="bk-root">
+    <div class="bk-breadcrumb">
+        <i class="bi bi-house-door"></i>
+        <span>Admin</span>
+        <i class="bi bi-chevron-right"></i>
+        <span>Booking Listesi</span>
+    </div>
+
+    <div class="bk-page-header">
+        <div>
+            <h1 class="bk-page-title">Booking Kayıtları</h1>
+            <p class="bk-page-subtitle">Booking formu üzerinden gelen rezervasyon talepleri burada onaya dusurulur. Admin onayi sonrasinda teklif formatli e-posta kullaniciya gonderilir.</p>
+        </div>
+    </div>
+
+    @if (TempData["BookingSuccess"] is string successMessage)
+    {
+        <div class="bk-alert success">@successMessage</div>
+    }
+
+    @if (TempData["BookingError"] is string errorMessage)
+    {
+        <div class="bk-alert error">@errorMessage</div>
+    }
+
+    <div class="bk-stats">
+        <div class="bk-stat-card">
+            <div class="bk-stat-icon yellow"><i class="bi bi-journal-check"></i></div>
+            <div>
+                <div class="bk-stat-num">@totalCount</div>
+                <div class="bk-stat-label">Toplam Booking</div>
+            </div>
+        </div>
+        <div class="bk-stat-card">
+            <div class="bk-stat-icon orange"><i class="bi bi-hourglass-split"></i></div>
+            <div>
+                <div class="bk-stat-num">@pendingCount</div>
+                <div class="bk-stat-label">Bekleyen Kayıt</div>
+            </div>
+        </div>
+        <div class="bk-stat-card">
+            <div class="bk-stat-icon green"><i class="bi bi-check2-circle"></i></div>
+            <div>
+                <div class="bk-stat-num">@completedCount</div>
+                <div class="bk-stat-label">Tamamlanan / Onaylı</div>
+            </div>
+        </div>
+        <div class="bk-stat-card">
+            <div class="bk-stat-icon blue"><i class="bi bi-cash-stack"></i></div>
+            <div>
+                <div class="bk-stat-num">@totalRevenue.ToString("N0") ₺</div>
+                <div class="bk-stat-label">Toplam Tutar</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bk-toolbar">
+        <div class="bk-search-wrap">
+            <i class="bi bi-search bk-search-icon"></i>
+            <input type="text" id="bookingSearch" placeholder="Ad, soyad, mail, telefon veya kimlik no ara..." />
+        </div>
+
+        <select id="bookingStatusFilter" class="bk-filter">
+            <option value="all">Tum Durumlar</option>
+            <option value="Onay Bekleniyor">Onay Bekleniyor</option>
+            <option value="Beklemede">Beklemede</option>
+            <option value="Onayli">Onayli</option>
+            <option value="Onaylandi">Onaylandi</option>
+            <option value="Tamamlandi">Tamamlandi</option>
+            <option value="Iptal">Iptal</option>
+        </select>
+
+        <div class="bk-result-info">
+            Gosterilen kayit: <strong id="bookingVisibleCount">@totalCount</strong>
+        </div>
+    </div>
+
+    <div class="bk-table-wrap">
+        <div class="bk-table-scroll">
+            <table class="bk-table">
+                <thead>
+                    <tr>
+                        <th>Booking</th>
+                        <th>Musteri</th>
+                        <th>Iletisim</th>
+                        <th>Arac / Rezervasyon</th>
+                        <th>Kimlik</th>
+                        <th>Sure / Ucret</th>
+                        <th>Durum</th>
+                        <th>Kayit Tarihi</th>
+                        <th>Islem</th>
+                    </tr>
+                </thead>
+                <tbody id="bookingTableBody">
+                    @if (Model.Any())
+                    {
+                        foreach (var item in Model.OrderByDescending(x => x.CreatedDate).ThenByDescending(x => x.BookingId))
+                        {
+                            var totalPrice = item.DailyPrice * item.TotalDay;
+                            var normalizedStatus = item.Status ?? string.Empty;
+                            var statusClass = normalizedStatus.Contains("ipt", StringComparison.OrdinalIgnoreCase)
+                                ? "danger"
+                                : normalizedStatus.Contains("onay", StringComparison.OrdinalIgnoreCase) || normalizedStatus.Contains("tamam", StringComparison.OrdinalIgnoreCase)
+                                    ? "success"
+                                    : "pending";
+                            var canApprove = normalizedStatus.Contains("Onay Bekleniyor", StringComparison.OrdinalIgnoreCase)
+                                || normalizedStatus.Contains("Bekle", StringComparison.OrdinalIgnoreCase);
+                            var searchableText = string.Join(" ",
+                                item.BookingId,
+                                item.ReservationId,
+                                item.CarId,
+                                item.FirstName,
+                                item.LastName,
+                                item.Email,
+                                item.PhoneNumber,
+                                item.IdentityNumber,
+                                item.DocumentNumber,
+                                item.Status);
+
+                            <tr data-search="@searchableText.ToLowerInvariant()" data-status="@normalizedStatus.ToLowerInvariant()">
+                                <td>
+                                    <div class="bk-person">
+                                        <strong>#@item.BookingId</strong>
+                                        <span>Booking ID</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="bk-person">
+                                        <strong>@item.FirstName @item.LastName</strong>
+                                        <span>@item.DocumentType / @item.LicenseClass</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="bk-person">
+                                        <strong>@item.Email</strong>
+                                        <span>@item.PhoneNumber</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="bk-person">
+                                        <span class="bk-code">Car: @item.CarId</span>
+                                        <span class="bk-subtext">Rezervasyon: #@item.ReservationId</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="bk-person">
+                                        <strong>@item.IdentityNumber</strong>
+                                        <span>Belge No: @item.DocumentNumber</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="bk-person">
+                                        <strong class="bk-amount">@totalPrice.ToString("N0") ₺</strong>
+                                        <span>@item.TotalDay gun x @item.DailyPrice.ToString("N0") ₺</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="bk-status @statusClass">@(!string.IsNullOrWhiteSpace(item.Status) ? item.Status : "Durum Yok")</span>
+                                </td>
+                                <td>
+                                    <div class="bk-person">
+                                        <strong>@item.CreatedDate.ToString("dd.MM.yyyy")</strong>
+                                        <span>@item.CreatedDate.ToString("HH:mm")</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="bk-actions">
+                                        @if (canApprove)
+                                        {
+                                            <form method="post" asp-area="Admin" asp-controller="Booking" asp-action="ApproveBooking">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@item.BookingId" />
+                                                <button type="submit" class="bk-btn approve">
+                                                    <i class="bi bi-check2-circle"></i>
+                                                    Onayla ve Mail Gonder
+                                                </button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <span class="bk-btn disabled">
+                                                <i class="bi bi-envelope-check"></i>
+                                                Islem Tamam
+                                            </span>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="9">
+                                <div class="bk-empty">
+                                    <i class="bi bi-inbox"></i>
+                                    <strong>Henüz booking kaydı bulunmuyor.</strong>
+                                    <span>Booking formundan kayıt geldikçe burada listelenecek.</span>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    (() => {
+        const searchInput = document.getElementById('bookingSearch');
+        const statusFilter = document.getElementById('bookingStatusFilter');
+        const tableBody = document.getElementById('bookingTableBody');
+        const visibleCount = document.getElementById('bookingVisibleCount');
+
+        if (!searchInput || !statusFilter || !tableBody || !visibleCount) return;
+
+        const rows = Array.from(tableBody.querySelectorAll('tr[data-search]'));
+
+        function applyFilters() {
+            const query = searchInput.value.trim().toLowerCase();
+            const selectedStatus = statusFilter.value.toLowerCase();
+            let count = 0;
+
+            rows.forEach((row) => {
+                const rowSearch = row.dataset.search || '';
+                const rowStatus = row.dataset.status || '';
+                const matchesSearch = !query || rowSearch.includes(query);
+                const matchesStatus = selectedStatus === 'all' || rowStatus.includes(selectedStatus);
+                const isVisible = matchesSearch && matchesStatus;
+
+                row.style.display = isVisible ? '' : 'none';
+                if (isVisible) count++;
+            });
+
+            visibleCount.textContent = count.toString();
+        }
+
+        searchInput.addEventListener('input', applyFilters);
+        statusFilter.addEventListener('change', applyFilters);
+    })();
+</script>

@@ -1,0 +1,729 @@
+@model Carola.WebUI.Areas.Admin.Models.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+
+    var recentBookings = Model.Bookings
+        .OrderByDescending(x => x.CreatedDate)
+        .Take(6)
+        .ToList();
+
+    var upcomingReservations = Model.Reservations
+        .OrderBy(x => x.PickupDate)
+        .Take(6)
+        .ToList();
+
+    var topCategories = Model.Categories
+        .OrderByDescending(x => x.CarCount)
+        .Take(5)
+        .ToList();
+
+    var expensiveCars = Model.Cars
+        .OrderByDescending(x => x.DailyPrice)
+        .Take(5)
+        .ToList();
+
+    var topCities = Model.Locations
+        .GroupBy(x => x.City)
+        .Select(x => new { City = x.Key, Count = x.Count() })
+        .OrderByDescending(x => x.Count)
+        .Take(5)
+        .ToList();
+}
+
+<style>
+    :root {
+        --db-bg-dark: #0d0f14;
+        --db-bg-dark2: #13161e;
+        --db-bg-dark3: #1a1e2a;
+        --db-accent: #e8ff47;
+        --db-accent-dim: rgba(232,255,71,.12);
+        --db-accent2: #4f8dff;
+        --db-accent2-dim: rgba(79,141,255,.12);
+        --db-success: #30e0a1;
+        --db-success-dim: rgba(48,224,161,.1);
+        --db-warning: #ffb547;
+        --db-warning-dim: rgba(255,181,71,.12);
+        --db-danger: #ff5259;
+        --db-danger-dim: rgba(255,82,89,.12);
+        --db-border: rgba(255,255,255,.07);
+        --db-text: #e2e8f0;
+        --db-text-muted: #7a8499;
+        --db-radius: 16px;
+        --db-radius-lg: 22px;
+    }
+
+    .db-root {
+        padding: 28px;
+        color: var(--db-text);
+        font-family: 'DM Sans', 'Segoe UI', sans-serif;
+    }
+
+    .db-hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.4fr) minmax(320px, .8fr);
+        gap: 18px;
+        margin-bottom: 22px;
+    }
+
+    .db-panel {
+        background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0)), var(--db-bg-dark2);
+        border: 1px solid var(--db-border);
+        border-radius: var(--db-radius-lg);
+        box-shadow: 0 18px 45px rgba(0,0,0,.18);
+    }
+
+    .db-hero-main {
+        padding: 26px 28px;
+        background:
+            radial-gradient(circle at top right, rgba(79,141,255,.18), transparent 30%),
+            radial-gradient(circle at bottom left, rgba(232,255,71,.12), transparent 26%),
+            var(--db-bg-dark2);
+    }
+
+    .db-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        background: var(--db-accent-dim);
+        color: var(--db-accent);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+    }
+
+    .db-title {
+        margin: 16px 0 10px;
+        font-family: 'Syne', sans-serif;
+        font-size: 34px;
+        line-height: 1.05;
+    }
+
+    .db-subtitle {
+        max-width: 720px;
+        color: var(--db-text-muted);
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .db-mini-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    .db-mini-card {
+        padding: 14px;
+        border-radius: 14px;
+        background: rgba(255,255,255,.03);
+        border: 1px solid var(--db-border);
+    }
+
+    .db-mini-label {
+        font-size: 11px;
+        color: var(--db-text-muted);
+        text-transform: uppercase;
+        letter-spacing: .05em;
+    }
+
+    .db-mini-value {
+        margin-top: 8px;
+        font-family: 'Syne', sans-serif;
+        font-size: 24px;
+    }
+
+    .db-hero-side {
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .db-side-card {
+        padding: 16px;
+        border-radius: 16px;
+        background: var(--db-bg-dark3);
+        border: 1px solid var(--db-border);
+    }
+
+    .db-side-label {
+        font-size: 12px;
+        color: var(--db-text-muted);
+        margin-bottom: 8px;
+    }
+
+    .db-side-value {
+        font-family: 'Syne', sans-serif;
+        font-size: 28px;
+    }
+
+    .db-side-meta {
+        margin-top: 8px;
+        color: var(--db-text-muted);
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .db-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        margin-bottom: 22px;
+    }
+
+    .db-stat {
+        padding: 18px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .db-stat-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    .db-stat-icon.accent { background: var(--db-accent-dim); color: var(--db-accent); }
+    .db-stat-icon.blue { background: var(--db-accent2-dim); color: var(--db-accent2); }
+    .db-stat-icon.green { background: var(--db-success-dim); color: var(--db-success); }
+    .db-stat-icon.orange { background: var(--db-warning-dim); color: var(--db-warning); }
+
+    .db-stat-label {
+        font-size: 12px;
+        color: var(--db-text-muted);
+        margin-bottom: 4px;
+    }
+
+    .db-stat-value {
+        font-family: 'Syne', sans-serif;
+        font-size: 24px;
+        line-height: 1;
+    }
+
+    .db-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.25fr) minmax(0, .9fr);
+        gap: 18px;
+    }
+
+    .db-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .db-section {
+        padding: 20px;
+    }
+
+    .db-section-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+    }
+
+    .db-section-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 22px;
+    }
+
+    .db-section-subtitle {
+        font-size: 12px;
+        color: var(--db-text-muted);
+    }
+
+    .db-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        background: var(--db-bg-dark3);
+        border: 1px solid var(--db-border);
+        font-size: 11px;
+        color: var(--db-text-muted);
+    }
+
+    .db-table-wrap { overflow-x: auto; }
+
+    .db-table {
+        width: 100%;
+        min-width: 720px;
+        border-collapse: collapse;
+    }
+
+    .db-table th,
+    .db-table td {
+        padding: 12px 10px;
+        border-bottom: 1px solid var(--db-border);
+        text-align: left;
+        vertical-align: middle;
+    }
+
+    .db-table th {
+        font-size: 11px;
+        color: var(--db-text-muted);
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        font-weight: 700;
+    }
+
+    .db-table td {
+        font-size: 13px;
+        color: var(--db-text);
+    }
+
+    .db-muted { color: var(--db-text-muted); }
+
+    .db-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .db-badge.pending { background: var(--db-warning-dim); color: var(--db-warning); }
+    .db-badge.success { background: var(--db-success-dim); color: var(--db-success); }
+    .db-badge.danger { background: var(--db-danger-dim); color: var(--db-danger); }
+    .db-badge.blue { background: var(--db-accent2-dim); color: var(--db-accent2); }
+
+    .db-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .db-list-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 14px 15px;
+        border-radius: 14px;
+        background: var(--db-bg-dark3);
+        border: 1px solid var(--db-border);
+    }
+
+    .db-list-title {
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .db-list-meta {
+        font-size: 12px;
+        color: var(--db-text-muted);
+    }
+
+    .db-progress {
+        width: 120px;
+        max-width: 100%;
+        height: 8px;
+        border-radius: 999px;
+        background: rgba(255,255,255,.06);
+        overflow: hidden;
+    }
+
+    .db-progress > span {
+        display: block;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, var(--db-accent2), var(--db-accent));
+    }
+
+    .db-quick-links {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .db-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 14px 15px;
+        border-radius: 14px;
+        background: var(--db-bg-dark3);
+        border: 1px solid var(--db-border);
+        color: var(--db-text);
+        text-decoration: none;
+        transition: transform .18s ease, border-color .18s ease;
+    }
+
+    .db-link:hover {
+        color: var(--db-text);
+        transform: translateY(-1px);
+        border-color: rgba(255,255,255,.15);
+    }
+
+    .db-link strong {
+        display: block;
+        font-size: 13px;
+    }
+
+    .db-link span {
+        display: block;
+        margin-top: 4px;
+        font-size: 12px;
+        color: var(--db-text-muted);
+    }
+
+    .db-link i:last-child { color: var(--db-accent); }
+
+    @@media (max-width: 1200px) {
+        .db-grid { grid-template-columns: repeat(2, 1fr); }
+        .db-layout,
+        .db-hero { grid-template-columns: 1fr; }
+    }
+
+    @@media (max-width: 768px) {
+        .db-root { padding: 18px; }
+        .db-grid,
+        .db-mini-grid,
+        .db-quick-links { grid-template-columns: 1fr; }
+        .db-title { font-size: 28px; }
+    }
+</style>
+
+<section id="content" class="db-root">
+    <div class="db-hero">
+        <div class="db-panel db-hero-main">
+            <div class="db-kicker"><i class="bi bi-stars"></i> Admin Dashboard</div>
+            <h1 class="db-title">Tum yonetim verileri tek ekranda.</h1>
+            <p class="db-subtitle">
+                Filo, booking, reservation, musteri, marka, kategori ve sube ozetlerini ayni noktada izleyebilirsiniz.
+                Bu ekran anlik servis verileriyle beslenir ve admin taraftaki ana kontrol merkezi olarak kullanilabilir.
+            </p>
+
+            <div class="db-mini-grid">
+                <div class="db-mini-card">
+                    <div class="db-mini-label">Filo Gunluk Deger</div>
+                    <div class="db-mini-value">@Model.FleetDailyValue.ToString("N0") ₺</div>
+                </div>
+                <div class="db-mini-card">
+                    <div class="db-mini-label">Booking Geliri</div>
+                    <div class="db-mini-value">@Model.BookingRevenue.ToString("N0") ₺</div>
+                </div>
+                <div class="db-mini-card">
+                    <div class="db-mini-label">Reservation Geliri</div>
+                    <div class="db-mini-value">@Model.ReservationRevenue.ToString("N0") ₺</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="db-panel db-hero-side">
+            <div class="db-side-card">
+                <div class="db-side-label">Musteri Havuzu</div>
+                <div class="db-side-value">@Model.TotalCustomers</div>
+                <div class="db-side-meta">Ortalama yas: @Math.Round(Model.AverageCustomerAge, 1)</div>
+            </div>
+            <div class="db-side-card">
+                <div class="db-side-label">Aktif Marka / Toplam Marka</div>
+                <div class="db-side-value">@Model.ActiveBrands / @Model.TotalBrands</div>
+                <div class="db-side-meta">Pasif markalar arac secim ekranlarinda gizlenebilir.</div>
+            </div>
+            <div class="db-side-card">
+                <div class="db-side-label">Sube / Sehir Yogunlugu</div>
+                <div class="db-side-value">@Model.TotalLocations</div>
+                <div class="db-side-meta">@topCities.Count farkli sehir ozetleniyor.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="db-grid">
+        <div class="db-panel db-stat">
+            <div class="db-stat-icon accent"><i class="bi bi-car-front-fill"></i></div>
+            <div>
+                <div class="db-stat-label">Toplam Arac</div>
+                <div class="db-stat-value">@Model.TotalCars</div>
+            </div>
+        </div>
+        <div class="db-panel db-stat">
+            <div class="db-stat-icon green"><i class="bi bi-check2-circle"></i></div>
+            <div>
+                <div class="db-stat-label">Musait Arac</div>
+                <div class="db-stat-value">@Model.AvailableCars</div>
+            </div>
+        </div>
+        <div class="db-panel db-stat">
+            <div class="db-stat-icon orange"><i class="bi bi-hourglass-split"></i></div>
+            <div>
+                <div class="db-stat-label">Bekleyen Booking</div>
+                <div class="db-stat-value">@Model.PendingBookings</div>
+            </div>
+        </div>
+        <div class="db-panel db-stat">
+            <div class="db-stat-icon blue"><i class="bi bi-calendar2-check"></i></div>
+            <div>
+                <div class="db-stat-label">Aktif Reservation</div>
+                <div class="db-stat-value">@Model.ActiveReservations</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="db-layout">
+        <div class="db-stack">
+            <div class="db-panel db-section">
+                <div class="db-section-head">
+                    <div>
+                        <div class="db-section-title">Son Booking Kayitlari</div>
+                        <div class="db-section-subtitle">Booking formundan gelen en guncel talepler</div>
+                    </div>
+                    <span class="db-chip"><i class="bi bi-journal-text"></i> @Model.TotalBookings toplam kayit</span>
+                </div>
+
+                <div class="db-table-wrap">
+                    <table class="db-table">
+                        <thead>
+                            <tr>
+                                <th>Musteri</th>
+                                <th>Arac</th>
+                                <th>Sure</th>
+                                <th>Tutar</th>
+                                <th>Durum</th>
+                                <th>Tarih</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (recentBookings.Any())
+                            {
+                                foreach (var booking in recentBookings)
+                                {
+                                    var amount = booking.DailyPrice * booking.TotalDay;
+                                    var statusClass = (booking.Status ?? string.Empty).Contains("ipt", StringComparison.OrdinalIgnoreCase)
+                                        ? "danger"
+                                        : (booking.Status ?? string.Empty).Contains("onay", StringComparison.OrdinalIgnoreCase) || (booking.Status ?? string.Empty).Contains("tamam", StringComparison.OrdinalIgnoreCase)
+                                            ? "success"
+                                            : "pending";
+
+                                    <tr>
+                                        <td>
+                                            <strong>@booking.FirstName @booking.LastName</strong><br />
+                                            <span class="db-muted">@booking.Email</span>
+                                        </td>
+                                        <td>
+                                            <span class="db-muted">Car ID</span> #@booking.CarId<br />
+                                            <span class="db-muted">Rez.</span> #@booking.ReservationId
+                                        </td>
+                                        <td>@booking.TotalDay gun</td>
+                                        <td>@amount.ToString("N0") ₺</td>
+                                        <td><span class="db-badge @statusClass">@booking.Status</span></td>
+                                        <td>@booking.CreatedDate.ToString("dd.MM.yyyy HH:mm")</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6" class="db-muted">Booking kaydi bulunmuyor.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="db-panel db-section">
+                <div class="db-section-head">
+                    <div>
+                        <div class="db-section-title">Yaklasan Reservationlar</div>
+                        <div class="db-section-subtitle">Pickup tarihine gore en yakin rezervasyonlar</div>
+                    </div>
+                    <span class="db-chip"><i class="bi bi-calendar-week"></i> @Model.TotalReservations toplam reservation</span>
+                </div>
+
+                <div class="db-table-wrap">
+                    <table class="db-table">
+                        <thead>
+                            <tr>
+                                <th>Reservation</th>
+                                <th>Arac / Musteri</th>
+                                <th>Pickup</th>
+                                <th>Return</th>
+                                <th>Tutar</th>
+                                <th>Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (upcomingReservations.Any())
+                            {
+                                foreach (var reservation in upcomingReservations)
+                                {
+                                    var reservationBadge = (reservation.ReservationStatus ?? string.Empty).Contains("ipt", StringComparison.OrdinalIgnoreCase)
+                                        ? "danger"
+                                        : (reservation.ReservationStatus ?? string.Empty).Contains("tamam", StringComparison.OrdinalIgnoreCase) || (reservation.ReservationStatus ?? string.Empty).Contains("onay", StringComparison.OrdinalIgnoreCase)
+                                            ? "success"
+                                            : "blue";
+                                    <tr>
+                                        <td>#@reservation.ReservationId</td>
+                                        <td>
+                                            Car #@reservation.CarId<br />
+                                            <span class="db-muted">Customer #@reservation.CustomerId</span>
+                                        </td>
+                                        <td>@reservation.PickupDate.ToString("dd.MM.yyyy")</td>
+                                        <td>@reservation.ReturnDate.ToString("dd.MM.yyyy")</td>
+                                        <td>@reservation.TotalPrice.ToString("N0") ₺</td>
+                                        <td><span class="db-badge @reservationBadge">@reservation.ReservationStatus</span></td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6" class="db-muted">Reservation verisi bulunmuyor.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="db-stack">
+            <div class="db-panel db-section">
+                <div class="db-section-head">
+                    <div>
+                        <div class="db-section-title">Hizli Erisim</div>
+                        <div class="db-section-subtitle">Yonetimde en sik kullanilan ekranlar</div>
+                    </div>
+                </div>
+                <div class="db-quick-links">
+                    <a class="db-link" href="/Admin/Car/CarList">
+                        <div>
+                            <strong>Arac Listesi</strong>
+                            <span>Filo yonetimine git</span>
+                        </div>
+                        <i class="bi bi-arrow-up-right"></i>
+                    </a>
+                    <a class="db-link" href="/Admin/Booking/BookingList">
+                        <div>
+                            <strong>Booking Listesi</strong>
+                            <span>Yeni talepleri incele</span>
+                        </div>
+                        <i class="bi bi-arrow-up-right"></i>
+                    </a>
+                    <a class="db-link" href="/Admin/Brand/BrandList">
+                        <div>
+                            <strong>Markalar</strong>
+                            <span>Aktif ve pasif markalari yonet</span>
+                        </div>
+                        <i class="bi bi-arrow-up-right"></i>
+                    </a>
+                    <a class="db-link" href="/Admin/Location/LocationList">
+                        <div>
+                            <strong>Subeler</strong>
+                            <span>Sehir ve lokasyon dagilimini gor</span>
+                        </div>
+                        <i class="bi bi-arrow-up-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="db-panel db-section">
+                <div class="db-section-head">
+                    <div>
+                        <div class="db-section-title">Kategori Dagilimi</div>
+                        <div class="db-section-subtitle">En fazla araca sahip kategoriler</div>
+                    </div>
+                </div>
+                <div class="db-list">
+                    @if (topCategories.Any())
+                    {
+                        foreach (var category in topCategories)
+                        {
+                            var ratio = Model.TotalCars == 0 ? 0 : (int)Math.Round((double)category.CarCount / Model.TotalCars * 100);
+                            <div class="db-list-item">
+                                <div>
+                                    <div class="db-list-title">@category.CategoryName</div>
+                                    <div class="db-list-meta">@category.CarCount arac</div>
+                                </div>
+                                <div style="display:flex;align-items:center;gap:12px;">
+                                    <div class="db-progress"><span style="width:@ratio%;"></span></div>
+                                    <strong>@ratio%</strong>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="db-muted">Kategori verisi bulunmuyor.</div>
+                    }
+                </div>
+            </div>
+
+            <div class="db-panel db-section">
+                <div class="db-section-head">
+                    <div>
+                        <div class="db-section-title">En Yuksek Gunluk Fiyatli Araclar</div>
+                        <div class="db-section-subtitle">Gunluk gelir potansiyeli yuksek araclar</div>
+                    </div>
+                </div>
+                <div class="db-list">
+                    @if (expensiveCars.Any())
+                    {
+                        foreach (var car in expensiveCars)
+                        {
+                            <div class="db-list-item">
+                                <div>
+                                    <div class="db-list-title">@car.Brand @car.Model</div>
+                                    <div class="db-list-meta">@car.ModelYear • @car.FuelType • @car.TransmissionType</div>
+                                </div>
+                                <div style="text-align:right;">
+                                    <strong>@car.DailyPrice.ToString("N0") ₺</strong><br />
+                                    <span class="db-muted">@car.PlateNumber</span>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="db-muted">Arac verisi bulunmuyor.</div>
+                    }
+                </div>
+            </div>
+
+            <div class="db-panel db-section">
+                <div class="db-section-head">
+                    <div>
+                        <div class="db-section-title">Sehir ve Sube Ozetleri</div>
+                        <div class="db-section-subtitle">Lokasyon yogunlugu</div>
+                    </div>
+                </div>
+                <div class="db-list">
+                    @if (topCities.Any())
+                    {
+                        foreach (var city in topCities)
+                        {
+                            <div class="db-list-item">
+                                <div>
+                                    <div class="db-list-title">@city.City</div>
+                                    <div class="db-list-meta">@city.Count sube</div>
+                                </div>
+                                <span class="db-badge blue">@city.Count</span>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="db-muted">Lokasyon verisi bulunmuyor.</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

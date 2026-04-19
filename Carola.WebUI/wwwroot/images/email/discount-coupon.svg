@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" fill="none">
+  <rect width="1200" height="720" rx="36" fill="#0F172A"/>
+  <rect x="42" y="42" width="1116" height="636" rx="28" fill="url(#paint0_linear)"/>
+  <circle cx="1110" cy="108" r="92" fill="#E8FF47" fill-opacity=".18"/>
+  <circle cx="165" cy="565" r="138" fill="#fff" fill-opacity=".08"/>
+  <text x="90" y="150" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="700" letter-spacing="6">CAROLA PREMIUM OFFER</text>
+  <text x="90" y="295" fill="#E8FF47" font-family="Arial, Helvetica, sans-serif" font-size="148" font-weight="800">%30</text>
+  <text x="90" y="395" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="74" font-weight="700">INDIRIM KUPONU</text>
+  <text x="90" y="470" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif" font-size="34">Onaylanan booking taleplerinde secili araclar icin gecerli ozel teklif</text>
+  <rect x="90" y="540" width="310" height="82" rx="20" fill="#E8FF47"/>
+  <text x="140" y="593" fill="#0F172A" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="800">KOD: CAROLA30</text>
+  <text x="755" y="593" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700">Sinirli sureli kampanya</text>
+  <defs>
+    <linearGradient id="paint0_linear" x1="88" y1="80" x2="1100" y2="640" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1D4ED8"/>
+      <stop offset="1" stop-color="#0F172A"/>
+    </linearGradient>
+  </defs>
+</svg>

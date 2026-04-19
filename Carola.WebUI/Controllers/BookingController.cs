@@ -12,21 +12,23 @@ namespace Carola.WebUI.Controllers
     public class BookingController : Controller
     {
         private const decimal DefaultDailyPrice = 1100;
-        private const string DefaultStatus = "Beklemede";
+        private const string DefaultStatus = "Onay Bekleniyor";
 
         private readonly IBookingService _bookingService;
         private readonly IReservationService _reservationService;
         private readonly ILocationService _locationService;
         private readonly ICarService _carService;
         private readonly IMapper _mapper;
+        private readonly ILogger<BookingController> _logger;
 
-        public BookingController(IBookingService bookingService, IReservationService reservationService, ILocationService locationService, ICarService carService, IMapper mapper)
+        public BookingController(IBookingService bookingService, IReservationService reservationService, ILocationService locationService, ICarService carService, IMapper mapper, ILogger<BookingController> logger)
         {
             _bookingService = bookingService;
             _reservationService = reservationService;
             _locationService = locationService;
             _carService = carService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -49,13 +51,28 @@ namespace Carola.WebUI.Controllers
                 return View(model);
             }
 
-            var createReservationDto = _mapper.Map<CreateReservationDto>(model);
-            model.ReservationId = await _reservationService.CreateReservationAsync(createReservationDto);
+            try
+            {
+                var createReservationDto = _mapper.Map<CreateReservationDto>(model);
+                model.ReservationId = await _reservationService.CreateReservationAsync(createReservationDto);
 
-            var createBookingDto = _mapper.Map<CreateBookingDto>(model);
-            await _bookingService.CreateBookingAsync(createBookingDto);
-            return RedirectToAction("BookingClient");
+                var createBookingDto = _mapper.Map<CreateBookingDto>(model);
+                await _bookingService.CreateBookingAsync(createBookingDto);
+
+                TempData["BookingClientSuccess"] = "Rezervasyon talebiniz basariyla alindi.";
+                return RedirectToAction("BookingClient");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Booking kaydi olusturulurken hata olustu. CarId: {CarId}, ReservationId: {ReservationId}", model.CarId, model.ReservationId);
+                ModelState.AddModelError(string.Empty, $"Kayit olusturulamadi: {ex.Message}");
+                await LoadLocationsAsync();
+                await LoadCarsAsync();
+                return View(model);
+            }
         }
+
+
 
         private async Task LoadLocationsAsync()
         {
@@ -93,9 +110,19 @@ namespace Carola.WebUI.Controllers
 
         private void ValidateRequiredReferences(BookingClientFormDto model)
         {
-            if (model.CarId <= 0 || model.CustomerId <= 0)
+            if (model.CarId <= 0)
             {
-                ModelState.AddModelError(string.Empty, "Rezervasyon icin CarId ve CustomerId bilgisi gerekli.");
+                ModelState.AddModelError(string.Empty, "Rezervasyon icin gecerli bir arac secimi gerekli.");
+            }
+
+            if (model.PickupLocationId <= 0 || model.ReturnLocationId <= 0)
+            {
+                ModelState.AddModelError(string.Empty, "Alis ve iade lokasyonlarini secmeniz gerekiyor.");
+            }
+
+            if (model.PickupDate == default || model.ReturnDate == default || model.ReturnDate < model.PickupDate)
+            {
+                ModelState.AddModelError(string.Empty, "Lutfen gecerli alis ve iade tarihleri girin.");
             }
         }
     }

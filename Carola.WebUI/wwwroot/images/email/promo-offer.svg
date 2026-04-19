@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" fill="none">
+  <rect width="1200" height="720" rx="36" fill="#111827"/>
+  <rect x="40" y="40" width="1120" height="640" rx="28" fill="#1F2937"/>
+  <path d="M0 520C155 445 246 420 370 430C520 442 582 554 738 560C889 566 1028 482 1200 354V720H0V520Z" fill="url(#paint0_linear)"/>
+  <text x="92" y="146" fill="#93C5FD" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" letter-spacing="5">BOOKING APPROVAL BONUS</text>
+  <text x="90" y="260" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="92" font-weight="800">Teklifinize</text>
+  <text x="90" y="352" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="92" font-weight="800">Ekstra Ayricaliklar</text>
+  <rect x="90" y="420" width="438" height="172" rx="24" fill="#0F172A" fill-opacity=".7" stroke="#334155"/>
+  <text x="126" y="480" fill="#E8FF47" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="800">VIP teslimat opsiyonu</text>
+  <text x="126" y="536" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif" font-size="30">Esnek destek ve premium arac avantajlari</text>
+  <text x="90" y="644" fill="#E5E7EB" font-family="Arial, Helvetica, sans-serif" font-size="30">Carola ile onaylanan rezervasyon sureciniz artik daha avantajli.</text>
+  <defs>
+    <linearGradient id="paint0_linear" x1="130" y1="430" x2="1170" y2="680" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1D4ED8"/>
+      <stop offset="1" stop-color="#38BDF8"/>
+    </linearGradient>
+  </defs>
+</svg>

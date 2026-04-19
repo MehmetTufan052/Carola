@@ -28,8 +28,14 @@ namespace Carola.BusinessLayer.Concrete
 
         public async Task UpdateReservationAsync(UpdateReservationDto updateReservationDto)
         {
-            var value = _mapper.Map<Reservation>(updateReservationDto);
-            await _reservationDal.UpdateAsync(value);
+            var currentReservation = await _reservationDal.GetByIdAsync(updateReservationDto.ReservationId);
+            if (currentReservation == null)
+            {
+                return;
+            }
+
+            _mapper.Map(updateReservationDto, currentReservation);
+            await _reservationDal.UpdateAsync(currentReservation);
         }
 
         public async Task DeleteReservationAsync(int id)

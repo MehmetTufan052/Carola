@@ -29,6 +29,7 @@ namespace Carola.DtoLayer.Dtos.BookingDtos
 
         public decimal DailyPrice { get; set; }
         public int TotalDay { get; set; }
+        public DateTime CreatedDate { get; set; }
 
         public string Status { get; set; }
     }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Carola.DtoLayer.Dtos.BookingDtos;
+using Carola.DtoLayer.Dtos.EmailDtos;
 using Carola.DtoLayer.Dtos.BrandDtos;
 using Carola.DtoLayer.Dtos.CarDtos;
 using Carola.DtoLayer.Dtos.CategoryDtos;
@@ -51,18 +52,31 @@ namespace Carola.BusinessLayer.Mapping
             CreateMap<Booking, CreateBookingDto>().ReverseMap();
             CreateMap<Booking, UpdateBookingDto>().ReverseMap();
             CreateMap<Booking, GetBookingByIdDto>().ReverseMap();
+            CreateMap<GetBookingByIdDto, UpdateBookingDto>().ReverseMap();
+            CreateMap<GetBookingByIdDto, BookingApprovalEmailDto>()
+                .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}".Trim()))
+                .ForMember(dest => dest.CustomerEmail, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.DailyPrice, opt => opt.MapFrom(src => src.DailyPrice))
+                .ForMember(dest => dest.TotalDay, opt => opt.MapFrom(src => src.TotalDay))
+                .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.DailyPrice * src.TotalDay));
             CreateMap<BookingClientFormDto, CreateBookingDto>()
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src =>
-                    string.IsNullOrWhiteSpace(src.Status) ? "Beklemede" : src.Status));
+                    string.IsNullOrWhiteSpace(src.Status) ? "Onay Bekleniyor" : src.Status));
              
             CreateMap<Reservation, ResultReservationDto>().ReverseMap();
             CreateMap<Reservation, CreateReservationDto>().ReverseMap();
             CreateMap<Reservation, UpdateReservationDto>().ReverseMap();
             CreateMap<Reservation, GetReservationByIdDto>().ReverseMap();
+            CreateMap<GetReservationByIdDto, UpdateReservationDto>().ReverseMap();
+            CreateMap<GetCarByIdDto, BookingApprovalEmailDto>()
+                .ForMember(dest => dest.CarDisplayName, opt => opt.MapFrom(src => $"{src.Brand} {src.Model}".Trim()))
+                .ForMember(dest => dest.PlateNumber, opt => opt.MapFrom(src => src.PlateNumber))
+                .ForMember(dest => dest.FuelType, opt => opt.MapFrom(src => src.FuelType))
+                .ForMember(dest => dest.TransmissionType, opt => opt.MapFrom(src => src.TransmissionType));
             CreateMap<BookingClientFormDto, CreateReservationDto>()
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Note))
                 .ForMember(dest => dest.ReservationStatus, opt => opt.MapFrom(src =>
-                    string.IsNullOrWhiteSpace(src.ReservationStatus) ? "Beklemede" : src.ReservationStatus));
+                    string.IsNullOrWhiteSpace(src.ReservationStatus) ? "Onay Bekleniyor" : src.ReservationStatus));
         }
     }
 }

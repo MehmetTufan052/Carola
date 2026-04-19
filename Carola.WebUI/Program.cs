@@ -1,5 +1,6 @@
 using Carola.BusinessLayer.Abstract;
 using Carola.BusinessLayer.Concrete;
+using Carola.BusinessLayer.Utilities;
 using Carola.BusinessLayer.Mapping;
 using Carola.BusinessLayer.ValidationRules;
 using Carola.DataAccessLayer.Abstract;
@@ -37,12 +38,14 @@ builder.Services.AddScoped<IBookingDal,EfBookingDal>();
 
 builder.Services.AddScoped<IReservationService,ReservationManager>();
 builder.Services.AddScoped<IReservationDal,EfReservationDal>();
+builder.Services.AddScoped<IEmailService, EmailManager>();
 
 builder.Services.AddAutoMapper(typeof(GeneralMapping));
 
 builder.Services.AddScoped<IValidator<Brand>, BrandValidator>();
 
 builder.Services.Configure<OpenAiChatOptions>(builder.Configuration.GetSection("OpenAI"));
+builder.Services.AddSingleton(builder.Configuration.GetSection("Smtp").Get<SmtpConfiguration>() ?? new SmtpConfiguration());
 builder.Services.AddHttpClient<IAiChatService, OpenAiChatService>(client =>
 {
     client.Timeout = TimeSpan.FromSeconds(45);

@@ -1,6 +1,19 @@
 ﻿
 @{
     Layout = null;
+    var currentPath = Context.Request.Path.Value ?? string.Empty;
+    var isDashboardPage = currentPath.Equals("/Admin/Dashboard", StringComparison.OrdinalIgnoreCase)
+        || currentPath.Equals("/Admin/Dashboard/Index", StringComparison.OrdinalIgnoreCase)
+        || currentPath.Equals("/Admin", StringComparison.OrdinalIgnoreCase);
+    var isCarPage = currentPath.Contains("/Admin/Car", StringComparison.OrdinalIgnoreCase);
+    var isCategoryPage = currentPath.Contains("/Admin/Category", StringComparison.OrdinalIgnoreCase);
+    var isBrandPage = currentPath.Contains("/Admin/Brand", StringComparison.OrdinalIgnoreCase);
+    var isBookingPage = currentPath.Contains("/Admin/Booking", StringComparison.OrdinalIgnoreCase);
+    var isCustomerPage = currentPath.Contains("/Admin/Customer", StringComparison.OrdinalIgnoreCase);
+    var isLocationPage = currentPath.Contains("/Admin/Location", StringComparison.OrdinalIgnoreCase);
+    var adminSection = ViewData["AdminSection"]?.ToString() ?? "Admin";
+    var adminPage = ViewData["AdminPage"]?.ToString() ?? "Panel";
+    var globalSearchPlaceholder = ViewData["GlobalSearchPlaceholder"]?.ToString() ?? "Global arama...";
 }
 
 <!DOCTYPE html>
@@ -796,7 +809,7 @@
 
                     <!-- Dashboard -->
                     <li class="nav-item">
-                        <a href="#" onclick="return false;">
+                        <a href="/Admin/Dashboard/Index" class="@(isDashboardPage ? "active" : string.Empty)">
                             <i class="bi bi-grid-1x2-fill"></i>
                             <span class="nav-label">Dashboard</span>
                         </a>
@@ -804,28 +817,35 @@
 
                     <!-- Araç Yönetimi -->
                     <div class="nav-section-label">Araç Yönetimi</div>
-                    <li class="nav-item open" id="menu-vehicles">
+                    <li class="nav-item @((isCarPage || isCategoryPage) ? "open" : string.Empty)" id="menu-vehicles">
                         <a href="#" onclick="toggleSubmenu('menu-vehicles'); return false;">
                             <i class="bi bi-car-front"></i>
                             <span class="nav-label">Araç Yönetimi</span>
                             <i class="bi bi-chevron-right submenu-arrow"></i>
                         </a>
                         <ul class="sub-menu">
-                            <li><a href="#" class="active" onclick="return false;">Araç Listesi</a></li>
-                            <li><a href="#" onclick="showAddModal(); return false;">Araç Ekle</a></li>
-                            <li><a href="#" onclick="return false;">Araç Kategorileri</a></li>
+                            <li><a href="/Admin/Car/CarList" class="@(isCarPage ? "active" : string.Empty)">Araç Listesi</a></li>
+                            <li><a href="/Admin/Car/CreateCar">Araç Ekle</a></li>
+                            <li><a href="/Admin/Category/CategoryList" class="@(isCategoryPage ? "active" : string.Empty)">Araç Kategorileri</a></li>
                         </ul>
                     </li>
 
+                    <li class="nav-item">
+                        <a href="/Admin/Brand/BrandList" class="@(isBrandPage ? "active" : string.Empty)">
+                            <i class="bi bi-bookmark-star"></i>
+                            <span class="nav-label">Markalar</span>
+                        </a>
+                    </li>
+
                     <!-- Rezervasyonlar -->
-                    <li class="nav-item" id="menu-reservations">
+                    <li class="nav-item @(isBookingPage ? "open" : string.Empty)" id="menu-reservations">
                         <a href="#" onclick="toggleSubmenu('menu-reservations'); return false;">
                             <i class="bi bi-calendar-check"></i>
                             <span class="nav-label">Rezervasyonlar</span>
                             <i class="bi bi-chevron-right submenu-arrow"></i>
                         </a>
                         <ul class="sub-menu">
-                            <li><a href="#" onclick="return false;">Aktif Rezervasyonlar</a></li>
+                            <li><a href="/Admin/Booking/BookingList" class="@(isBookingPage ? "active" : string.Empty)">Rezervasyon Listesi</a></li>
                             <li><a href="#" onclick="return false;">Tamamlanan Rezervasyonlar</a></li>
                         </ul>
                     </li>
@@ -833,7 +853,7 @@
                     <!-- Müşteriler -->
                     <div class="nav-section-label">CRM</div>
                     <li class="nav-item">
-                        <a href="#" onclick="return false;">
+                        <a href="/Admin/Customer/CustomerList" class="@(isCustomerPage ? "active" : string.Empty)">
                             <i class="bi bi-people"></i>
                             <span class="nav-label">Müşteriler</span>
                         </a>
@@ -841,7 +861,7 @@
 
                     <!-- Şubeler -->
                     <li class="nav-item">
-                        <a href="#" onclick="return false;">
+                        <a href="/Admin/Location/LocationList" class="@(isLocationPage ? "active" : string.Empty)">
                             <i class="bi bi-shop"></i>
                             <span class="nav-label">Şubeler</span>
                         </a>
@@ -891,13 +911,13 @@
 
                 <!-- Breadcrumb -->
                 <div class="nav-breadcrumb d-none d-md-block">
-                    Araç Yönetimi &rsaquo; <span>Araç Listesi</span>
+                    @adminSection &rsaquo; <span>@adminPage</span>
                 </div>
 
                 <!-- Search -->
                 <div class="nav-search d-none d-lg-block">
                     <i class="bi bi-search"></i>
-                    <input type="text" placeholder="Global arama..." id="globalSearch" oninput="filterCards(this.value)" />
+                    <input type="text" placeholder="@globalSearchPlaceholder" id="globalSearch" oninput="if (typeof filterCards === 'function') { filterCards(this.value); }" />
                 </div>
 
                 <!-- Actions -->
