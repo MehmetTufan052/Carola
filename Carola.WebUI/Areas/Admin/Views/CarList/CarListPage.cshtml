@@ -65,6 +65,62 @@
         color: #6b7280;
         font-size: 15px;
     }
+
+    .car-pagination-wrap {
+        display: flex;
+        justify-content: center;
+        margin-top: 32px;
+    }
+
+    .car-pagination {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .car-pagination.is-visible {
+        display: flex;
+    }
+
+    .car-pagination-btn,
+    .car-pagination-number {
+        min-width: 44px;
+        height: 44px;
+        padding: 0 16px;
+        border: 1px solid #d9dfef;
+        border-radius: 999px;
+        background: #fff;
+        color: #0f172a;
+        font-size: 14px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all .2s ease;
+        cursor: pointer;
+    }
+
+    .car-pagination-btn:hover,
+    .car-pagination-number:hover {
+        border-color: #3f7df6;
+        color: #3f7df6;
+        box-shadow: 0 10px 24px rgba(63, 125, 246, 0.14);
+    }
+
+    .car-pagination-number.is-active {
+        background: #3f7df6;
+        border-color: #3f7df6;
+        color: #fff;
+        box-shadow: 0 14px 30px rgba(63, 125, 246, 0.24);
+    }
+
+    .car-pagination-btn[disabled] {
+        opacity: .45;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
 </style>
 
 <section class="breadcrumb-section car-listing-hero" style="background-image: url('@Url.Content("~/carola pack/carola/assets/images/background/car-listing-collage-banner-v2.png")');">
@@ -308,6 +364,9 @@
                         </div>
                     </div>
                 </div>
+                <div class="car-pagination-wrap">
+                    <div class="car-pagination" id="carListPagination"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -342,6 +401,9 @@
             var transmissionFilter = $('#transmissionFilter');
             var capacityFilters = $('.capacity-filter');
             var emptyState = $('#carFilterEmptyState');
+            var pagination = $('#carListPagination');
+            var itemsPerPage = 6;
+            var currentPage = 1;
 
             function updateAmount(min, max) {
                 amount.val(min + ' ₺ - ' + max + ' ₺');
@@ -369,13 +431,70 @@
                 return matched;
             }
 
-            function applyFilters() {
+            function renderPagination(totalItems, totalPages) {
+                pagination.empty();
+
+                if (totalItems <= itemsPerPage || totalPages <= 1) {
+                    pagination.removeClass('is-visible');
+                    return;
+                }
+
+                var prevButton = $('<button/>', {
+                    type: 'button',
+                    class: 'car-pagination-btn',
+                    text: 'Önceki',
+                    disabled: currentPage === 1
+                }).on('click', function () {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        applyFilters(false);
+                    }
+                });
+
+                pagination.append(prevButton);
+
+                for (var page = 1; page <= totalPages; page++) {
+                    (function (pageNumber) {
+                        var numberButton = $('<button/>', {
+                            type: 'button',
+                            class: 'car-pagination-number' + (pageNumber === currentPage ? ' is-active' : ''),
+                            text: pageNumber
+                        }).on('click', function () {
+                            currentPage = pageNumber;
+                            applyFilters(false);
+                        });
+
+                        pagination.append(numberButton);
+                    })(page);
+                }
+
+                var nextButton = $('<button/>', {
+                    type: 'button',
+                    class: 'car-pagination-btn',
+                    text: 'Sonraki',
+                    disabled: currentPage === totalPages
+                }).on('click', function () {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        applyFilters(false);
+                    }
+                });
+
+                pagination.append(nextButton);
+                pagination.addClass('is-visible');
+            }
+
+            function applyFilters(resetPage) {
                 var searchTerm = (searchInput.val() || '').toString().trim().toLowerCase();
                 var selectedCategory = (categoryFilter.val() || '').toString();
                 var selectedBrand = (brandFilter.val() || '').toString();
                 var selectedFuel = (fuelFilter.val() || '').toString();
                 var selectedTransmission = (transmissionFilter.val() || '').toString();
-                var visibleCount = 0;
+                var filteredCards = $();
+
+                if (resetPage !== false) {
+                    currentPage = 1;
+                }
 
                 $('.car-price-item').each(function () {
                     var card = $(this);
@@ -397,14 +516,28 @@
                         (!selectedTransmission || transmission === selectedTransmission) &&
                         isSeatMatch(seatCount);
 
-                    card.toggle(matches);
-
                     if (matches) {
-                        visibleCount++;
+                        filteredCards = filteredCards.add(card);
                     }
+
+                    card.hide();
                 });
 
+                var visibleCount = filteredCards.length;
+                var totalPages = Math.max(1, Math.ceil(visibleCount / itemsPerPage));
+
+                if (currentPage > totalPages) {
+                    currentPage = totalPages;
+                }
+
+                if (visibleCount > 0) {
+                    var startIndex = (currentPage - 1) * itemsPerPage;
+                    var endIndex = startIndex + itemsPerPage;
+                    filteredCards.slice(startIndex, endIndex).show();
+                }
+
                 emptyState.toggle(visibleCount === 0);
+                renderPagination(visibleCount, totalPages);
             }
 
             if (slider.length && $.fn.slider) {
@@ -421,7 +554,7 @@
                         currentMin = ui.values[0];
                         currentMax = ui.values[1];
                         updateAmount(currentMin, currentMax);
-                        applyFilters();
+                        applyFilters(true);
                     }
                 });
             }
@@ -436,7 +569,7 @@
                         currentMax = values[1];
                     }
 
-                    applyFilters();
+                    applyFilters(true);
                 });
 
                 $('#clearPriceFilterBtn').on('click.carListFilters', function () {
@@ -454,24 +587,24 @@
                     fuelFilter.val('');
                     transmissionFilter.val('');
                     capacityFilters.prop('checked', false);
-                    applyFilters();
+                    applyFilters(true);
                 });
 
-                $('#carSearchButton').on('click.carListFilters', applyFilters);
-                searchInput.on('input.carListFilters', applyFilters);
+                $('#carSearchButton').on('click.carListFilters', function () { applyFilters(true); });
+                searchInput.on('input.carListFilters', function () { applyFilters(true); });
 
                 $(document).on('change.carListFilters', '#categoryFilter, #brandFilter, #fuelFilter, #transmissionFilter', function () {
-                    applyFilters();
+                    applyFilters(true);
                 });
 
                 $(document).on('change.carListFilters', '.capacity-filter', function () {
-                    applyFilters();
+                    applyFilters(true);
                 });
 
                 window.__carListFiltersBound = true;
             }
 
-            applyFilters();
+            applyFilters(true);
         }
 
         if (document.readyState === 'loading') {

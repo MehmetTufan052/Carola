@@ -1,0 +1,52 @@
+@model List<ResultCarDto>
+@{
+    ViewData["Title"] = "CarList";
+    Layout = "~/Views/Shared/_ClientLayout.cshtml";
+
+    var cars = Model ?? new List<ResultCarDto>();
+}
+
+<section class="breadcrumb-section" style="background-image:linear-gradient(110deg, rgba(10,15,24,.82), rgba(10,15,24,.55)), url('@Url.Content("~/carola pack/carola/assets/images/background/car-collage-showcase-v2.png")');background-size:cover;background-position:center;">
+    <div class="container">
+        <div class="banner-content" style="padding:40px 0;">
+            <span style="display:inline-block;padding:8px 16px;border-radius:999px;background:rgba(255,255,255,.12);color:#fff;font-size:12px;letter-spacing:.08em;text-transform:uppercase;">Client Layout</span>
+            <div style="margin-top:12px;display:inline-block;padding:8px 14px;border-radius:999px;background:rgba(232,255,71,.16);border:1px solid rgba(232,255,71,.24);color:#f3ff77;font-size:12px;font-weight:700;letter-spacing:.06em;">
+                VIEW: /Admin/CarList/CarList
+            </div>
+            <h1 style="color:#fff;margin-top:14px;">Araç Listesi</h1>
+            <p style="color:rgba(255,255,255,.82);max-width:620px;">Bu sayfa `CarListController/CarList` için ayrıldı. `CarListPage` ve `/Admin/Car/CarList` ekranlarından bağımsız çalışır.</p>
+        </div>
+    </div>
+</section>
+
+<section style="padding:80px 0;background:linear-gradient(180deg,#f7f8fb 0%,#eef2f9 100%);">
+    <div class="container">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;">
+            @foreach (var item in cars)
+            {
+                <article style="background:#fff;border:1px solid rgba(15,23,42,.08);border-radius:24px;overflow:hidden;box-shadow:0 18px 40px rgba(15,23,42,.06);">
+                    <div style="height:190px;background:#e9eef8;">
+                        <img src="@(string.IsNullOrWhiteSpace(item.ImageUrl) ? Url.Content("~/carola pack/carola/assets/images/popular-car/popular-car-1.jpg") : item.ImageUrl)"
+                             alt="@($"{item.Brand} {item.Model}")"
+                             style="width:100%;height:100%;object-fit:cover;" />
+                    </div>
+                    <div style="padding:22px;">
+                        <h3 style="margin-bottom:8px;font-size:26px;">@item.Brand @item.Model</h3>
+                        <p style="margin-bottom:14px;color:#64748b;">@(item.Category?.CategoryName ?? "Kategori yok") • @item.ModelYear</p>
+                        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
+                            <span style="padding:8px 12px;border-radius:999px;background:#eef4ff;color:#1d4ed8;font-weight:600;">@item.FuelType</span>
+                            <span style="padding:8px 12px;border-radius:999px;background:#f5f3ff;color:#6d28d9;font-weight:600;">@item.TransmissionType</span>
+                            <span style="padding:8px 12px;border-radius:999px;background:#f0fdf4;color:#15803d;font-weight:600;">@item.SeatCount Koltuk</span>
+                        </div>
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+                            <strong style="font-size:28px;color:#0f172a;">@item.DailyPrice.ToString("N0") TL</strong>
+                            <span style="padding:8px 14px;border-radius:999px;background:@(item.IsAvailable ? "#dcfce7" : "#fee2e2");color:@(item.IsAvailable ? "#166534" : "#b91c1c");font-weight:700;">
+                                @(item.IsAvailable ? "Müsait" : "Kirada")
+                            </span>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+    </div>
+</section>

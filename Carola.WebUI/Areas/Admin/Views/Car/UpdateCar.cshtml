@@ -1,4 +1,4 @@
-@model GetCarByIdDto
+@model UpdateCarDto
 
 @{
     ViewData["Title"] = "UpdateCar";
@@ -18,12 +18,14 @@
             <div class="page-title">Araç Güncelle</div>
             <div class="page-subtitle">@Model.Brand @Model.Model — mevcut bilgileri düzenleyin</div>
         </div>
-        <a asp-action="Index" asp-controller="Car" class="btn-outline">
+        <a asp-area="Admin" asp-action="CarList" asp-controller="Car" class="btn-outline">
             <i class="bi bi-arrow-left"></i> Geri Dön
         </a>
     </div>
 
-    <form asp-action="UpdateCar" asp-controller="Car" method="post">
+    <form asp-area="Admin" asp-action="UpdateCar" asp-controller="Car" asp-route-id="@Model.CarId" method="post">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" style="margin-bottom:18px;padding:12px 14px;border-radius:12px;background:rgba(255,82,89,.08);border:1px solid rgba(255,82,89,.16);color:var(--danger);font-size:12px;"></div>
         <input asp-for="CarId" type="hidden" />
 
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
@@ -212,7 +214,7 @@
             <button type="submit" class="btn-accent">
                 <i class="bi bi-check-lg"></i> Değişiklikleri Kaydet
             </button>
-            <a asp-action="Index" asp-controller="Car" class="btn-outline">
+            <a asp-area="Admin" asp-action="CarList" asp-controller="Car" class="btn-outline">
                 İptal
             </a>
             <button type="button"
@@ -282,7 +284,21 @@
         // Silme onayi
         function confirmDelete(id) {
             if (confirm('Bu araci silmek istediginize emin misiniz?')) {
-                window.location.href = '/Car/DeleteCar/' + id;
+                const form = document.createElement('form');
+                form.method = 'post';
+                form.action = '/Admin/Car/DeleteCar/' + id;
+
+                const token = document.querySelector('input[name="__RequestVerificationToken"]');
+                if (token) {
+                    const hidden = document.createElement('input');
+                    hidden.type = 'hidden';
+                    hidden.name = '__RequestVerificationToken';
+                    hidden.value = token.value;
+                    form.appendChild(hidden);
+                }
+
+                document.body.appendChild(form);
+                form.submit();
             }
         }
     </script>

@@ -24,7 +24,8 @@ namespace Carola.BusinessLayer.Concrete
 
         public async Task CreateCarAsync(CreateCarDto createCarDto)
         {
-           var values= _mapper.Map<Car>(createCarDto);
+            var values = _mapper.Map<Car>(createCarDto);
+            values.Status = ResolveCarStatus(createCarDto.Status, createCarDto.IsAvailable);
             await _carDal.InsertAsync(values);
         }
 
@@ -53,8 +54,19 @@ namespace Carola.BusinessLayer.Concrete
 
         public async Task UpdateCarAsync(UpdateCarDto updateCarDto)
         {
-            var values= _mapper.Map<Car>(updateCarDto); 
+            var values = _mapper.Map<Car>(updateCarDto);
+            values.Status = ResolveCarStatus(updateCarDto.Status, updateCarDto.IsAvailable);
             await _carDal.UpdateAsync(values);
+        }
+
+        private static string ResolveCarStatus(string? status, bool isAvailable)
+        {
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                return status.Trim();
+            }
+
+            return isAvailable ? "Musait" : "Kirada";
         }
     }
 }

@@ -602,9 +602,9 @@
 <div class="cc-root">
 
     <div class="cc-breadcrumb">
-        <a asp-controller="Car" asp-action="Index">Araç Yönetimi</a>
+        <a asp-area="Admin" asp-controller="Car" asp-action="CarList">Araç Yönetimi</a>
         <span>›</span>
-        <a asp-controller="Car" asp-action="CarList">Araç Listesi</a>
+        <a asp-area="Admin" asp-controller="Car" asp-action="CarList">Araç Listesi</a>
         <span>›</span>
         <span>Yeni Araç Ekle</span>
     </div>
@@ -614,11 +614,12 @@
             <h1 class="cc-page-title">Yeni Araç Ekle</h1>
             <p class="cc-page-subtitle">Filoya yeni bir araç kaydı oluşturun.</p>
         </div>
-        <a asp-controller="Car" asp-action="CarList" class="btn-back">← Listeye Dön</a>
+        <a asp-area="Admin" asp-controller="Car" asp-action="CarList" class="btn-back">← Listeye Dön</a>
     </div>
 
-    <form asp-controller="Car" asp-action="CreateCar" method="post">
+    <form asp-area="Admin" asp-controller="Car" asp-action="CreateCar" method="post">
         @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="field-validation-error" style="margin-bottom:16px;"></div>
 
         <div class="cc-form-body">
 

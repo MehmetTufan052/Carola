@@ -54,16 +54,8 @@
     }
 
     .db-root {
-        padding: 28px;
         color: var(--db-text);
         font-family: 'DM Sans', 'Segoe UI', sans-serif;
-    }
-
-    .db-hero {
-        display: grid;
-        grid-template-columns: minmax(0, 1.4fr) minmax(320px, .8fr);
-        gap: 18px;
-        margin-bottom: 22px;
     }
 
     .db-panel {
@@ -71,6 +63,13 @@
         border: 1px solid var(--db-border);
         border-radius: var(--db-radius-lg);
         box-shadow: 0 18px 45px rgba(0,0,0,.18);
+    }
+
+    .db-hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.45fr) minmax(300px, .9fr);
+        gap: 18px;
+        margin-bottom: 22px;
     }
 
     .db-hero-main {
@@ -103,7 +102,7 @@
     }
 
     .db-subtitle {
-        max-width: 720px;
+        max-width: 760px;
         color: var(--db-text-muted);
         font-size: 14px;
         line-height: 1.7;
@@ -111,7 +110,7 @@
 
     .db-mini-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 12px;
         margin-top: 20px;
     }
@@ -138,8 +137,7 @@
 
     .db-hero-side {
         padding: 22px;
-        display: flex;
-        flex-direction: column;
+        display: grid;
         gap: 14px;
     }
 
@@ -170,7 +168,7 @@
 
     .db-grid {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 14px;
         margin-bottom: 22px;
     }
@@ -209,20 +207,25 @@
         line-height: 1;
     }
 
-    .db-layout {
+    .db-content-grid {
         display: grid;
-        grid-template-columns: minmax(0, 1.25fr) minmax(0, .9fr);
+        grid-template-columns: repeat(12, minmax(0, 1fr));
         gap: 18px;
     }
 
-    .db-stack {
-        display: flex;
-        flex-direction: column;
+    .db-col-12 { grid-column: span 12; }
+    .db-col-8 { grid-column: span 8; }
+    .db-col-6 { grid-column: span 6; }
+    .db-col-4 { grid-column: span 4; }
+
+    .db-sidebar-stack {
+        display: grid;
         gap: 18px;
     }
 
     .db-section {
         padding: 20px;
+        min-height: 100%;
     }
 
     .db-section-head {
@@ -303,8 +306,7 @@
     .db-badge.blue { background: var(--db-accent2-dim); color: var(--db-accent2); }
 
     .db-list {
-        display: flex;
-        flex-direction: column;
+        display: grid;
         gap: 10px;
     }
 
@@ -347,7 +349,7 @@
 
     .db-quick-links {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 10px;
     }
 
@@ -385,18 +387,59 @@
 
     .db-link i:last-child { color: var(--db-accent); }
 
+    .db-highlight-list {
+        display: grid;
+        gap: 12px;
+    }
+
+    .db-highlight-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 14px 15px;
+        border-radius: 14px;
+        background: var(--db-bg-dark3);
+        border: 1px solid var(--db-border);
+    }
+
+    .db-highlight-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        background: rgba(255,255,255,.04);
+        color: var(--db-accent);
+        font-size: 18px;
+    }
+
+    .db-highlight-title {
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .db-highlight-text {
+        font-size: 12px;
+        line-height: 1.6;
+        color: var(--db-text-muted);
+    }
+
     @@media (max-width: 1200px) {
-        .db-grid { grid-template-columns: repeat(2, 1fr); }
-        .db-layout,
         .db-hero { grid-template-columns: 1fr; }
+        .db-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .db-col-8,
+        .db-col-6,
+        .db-col-4 { grid-column: span 12; }
     }
 
     @@media (max-width: 768px) {
-        .db-root { padding: 18px; }
         .db-grid,
         .db-mini-grid,
         .db-quick-links { grid-template-columns: 1fr; }
         .db-title { font-size: 28px; }
+        .db-table { min-width: 640px; }
     }
 </style>
 
@@ -404,43 +447,43 @@
     <div class="db-hero">
         <div class="db-panel db-hero-main">
             <div class="db-kicker"><i class="bi bi-stars"></i> Admin Dashboard</div>
-            <h1 class="db-title">Tum yonetim verileri tek ekranda.</h1>
+            <h1 class="db-title">T&uuml;m y&ouml;netim verileri tek ekranda.</h1>
             <p class="db-subtitle">
-                Filo, booking, reservation, musteri, marka, kategori ve sube ozetlerini ayni noktada izleyebilirsiniz.
-                Bu ekran anlik servis verileriyle beslenir ve admin taraftaki ana kontrol merkezi olarak kullanilabilir.
+                Filo, booking, reservation, m&uuml;&#351;teri, marka, kategori ve &#351;ube &ouml;zetlerini ayn&#305; noktada izleyebilirsiniz.
+                Bu ekran anl&#305;k servis verileriyle beslenir ve admin taraftaki ana kontrol merkezi olarak kullan&#305;labilir.
             </p>
 
             <div class="db-mini-grid">
                 <div class="db-mini-card">
-                    <div class="db-mini-label">Filo Gunluk Deger</div>
-                    <div class="db-mini-value">@Model.FleetDailyValue.ToString("N0") ₺</div>
+                    <div class="db-mini-label">Filo G&uuml;nl&uuml;k De&#287;er</div>
+                    <div class="db-mini-value">@Model.FleetDailyValue.ToString("N0") &#8378;</div>
                 </div>
                 <div class="db-mini-card">
                     <div class="db-mini-label">Booking Geliri</div>
-                    <div class="db-mini-value">@Model.BookingRevenue.ToString("N0") ₺</div>
+                    <div class="db-mini-value">@Model.BookingRevenue.ToString("N0") &#8378;</div>
                 </div>
                 <div class="db-mini-card">
                     <div class="db-mini-label">Reservation Geliri</div>
-                    <div class="db-mini-value">@Model.ReservationRevenue.ToString("N0") ₺</div>
+                    <div class="db-mini-value">@Model.ReservationRevenue.ToString("N0") &#8378;</div>
                 </div>
             </div>
         </div>
 
         <div class="db-panel db-hero-side">
             <div class="db-side-card">
-                <div class="db-side-label">Musteri Havuzu</div>
+                <div class="db-side-label">M&uuml;&#351;teri Havuzu</div>
                 <div class="db-side-value">@Model.TotalCustomers</div>
-                <div class="db-side-meta">Ortalama yas: @Math.Round(Model.AverageCustomerAge, 1)</div>
+                <div class="db-side-meta">Ortalama ya&#351;: @Math.Round(Model.AverageCustomerAge, 1)</div>
             </div>
             <div class="db-side-card">
                 <div class="db-side-label">Aktif Marka / Toplam Marka</div>
                 <div class="db-side-value">@Model.ActiveBrands / @Model.TotalBrands</div>
-                <div class="db-side-meta">Pasif markalar arac secim ekranlarinda gizlenebilir.</div>
+                <div class="db-side-meta">Pasif markalar ara&ccedil; se&ccedil;im ekranlar&#305;nda gizlenebilir.</div>
             </div>
             <div class="db-side-card">
-                <div class="db-side-label">Sube / Sehir Yogunlugu</div>
+                <div class="db-side-label">&#350;ube / &#350;ehir Yo&#287;unlu&#287;u</div>
                 <div class="db-side-value">@Model.TotalLocations</div>
-                <div class="db-side-meta">@topCities.Count farkli sehir ozetleniyor.</div>
+                <div class="db-side-meta">@topCities.Count farkl&#305; &#351;ehir &ouml;zetleniyor.</div>
             </div>
         </div>
     </div>
@@ -449,14 +492,14 @@
         <div class="db-panel db-stat">
             <div class="db-stat-icon accent"><i class="bi bi-car-front-fill"></i></div>
             <div>
-                <div class="db-stat-label">Toplam Arac</div>
+                <div class="db-stat-label">Toplam Ara&ccedil;</div>
                 <div class="db-stat-value">@Model.TotalCars</div>
             </div>
         </div>
         <div class="db-panel db-stat">
             <div class="db-stat-icon green"><i class="bi bi-check2-circle"></i></div>
             <div>
-                <div class="db-stat-label">Musait Arac</div>
+                <div class="db-stat-label">M&uuml;sait Ara&ccedil;</div>
                 <div class="db-stat-value">@Model.AvailableCars</div>
             </div>
         </div>
@@ -476,24 +519,24 @@
         </div>
     </div>
 
-    <div class="db-layout">
-        <div class="db-stack">
+    <div class="db-content-grid">
+        <div class="db-col-8">
             <div class="db-panel db-section">
                 <div class="db-section-head">
                     <div>
-                        <div class="db-section-title">Son Booking Kayitlari</div>
-                        <div class="db-section-subtitle">Booking formundan gelen en guncel talepler</div>
+                        <div class="db-section-title">Son Booking Kay&#305;tlar&#305;</div>
+                        <div class="db-section-subtitle">Booking formundan gelen en g&uuml;ncel talepler</div>
                     </div>
-                    <span class="db-chip"><i class="bi bi-journal-text"></i> @Model.TotalBookings toplam kayit</span>
+                    <span class="db-chip"><i class="bi bi-journal-text"></i> @Model.TotalBookings toplam kay&#305;t</span>
                 </div>
 
                 <div class="db-table-wrap">
                     <table class="db-table">
                         <thead>
                             <tr>
-                                <th>Musteri</th>
-                                <th>Arac</th>
-                                <th>Sure</th>
+                                <th>M&uuml;&#351;teri</th>
+                                <th>Ara&ccedil;</th>
+                                <th>S&uuml;re</th>
                                 <th>Tutar</th>
                                 <th>Durum</th>
                                 <th>Tarih</th>
@@ -520,8 +563,8 @@
                                             <span class="db-muted">Car ID</span> #@booking.CarId<br />
                                             <span class="db-muted">Rez.</span> #@booking.ReservationId
                                         </td>
-                                        <td>@booking.TotalDay gun</td>
-                                        <td>@amount.ToString("N0") ₺</td>
+                                        <td>@booking.TotalDay g&uuml;n</td>
+                                        <td>@amount.ToString("N0") &#8378;</td>
                                         <td><span class="db-badge @statusClass">@booking.Status</span></td>
                                         <td>@booking.CreatedDate.ToString("dd.MM.yyyy HH:mm")</td>
                                     </tr>
@@ -530,19 +573,98 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="6" class="db-muted">Booking kaydi bulunmuyor.</td>
+                                    <td colspan="6" class="db-muted">Booking kayd&#305; bulunmuyor.</td>
                                 </tr>
                             }
                         </tbody>
                     </table>
                 </div>
             </div>
+        </div>
 
+        <div class="db-col-4">
+            <div class="db-sidebar-stack">
+                <div class="db-panel db-section">
+                    <div class="db-section-head">
+                        <div>
+                            <div class="db-section-title">H&#305;zl&#305; Eri&#351;im</div>
+                            <div class="db-section-subtitle">Y&ouml;netimde en s&#305;k kullan&#305;lan ekranlar</div>
+                        </div>
+                    </div>
+
+                    <div class="db-quick-links">
+                        <a class="db-link" href="/Admin/Car/CarList">
+                            <div>
+                                <strong>Ara&ccedil; Listesi</strong>
+                                <span>Filo y&ouml;netimine git</span>
+                            </div>
+                            <i class="bi bi-arrow-up-right"></i>
+                        </a>
+                        <a class="db-link" href="/Admin/Booking/BookingList">
+                            <div>
+                                <strong>Booking Listesi</strong>
+                                <span>Yeni talepleri incele</span>
+                            </div>
+                            <i class="bi bi-arrow-up-right"></i>
+                        </a>
+                        <a class="db-link" href="/Admin/Brand/BrandList">
+                            <div>
+                                <strong>Markalar</strong>
+                                <span>Aktif ve pasif markalar&#305; y&ouml;net</span>
+                            </div>
+                            <i class="bi bi-arrow-up-right"></i>
+                        </a>
+                        <a class="db-link" href="/Admin/Location/LocationList">
+                            <div>
+                                <strong>&#350;ubeler</strong>
+                                <span>&#350;ehir ve lokasyon da&#287;&#305;l&#305;m&#305;n&#305; g&ouml;r</span>
+                            </div>
+                            <i class="bi bi-arrow-up-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="db-panel db-section">
+                    <div class="db-section-head">
+                        <div>
+                            <div class="db-section-title">Operasyon Notlar&#305;</div>
+                            <div class="db-section-subtitle">Bug&uuml;n &ouml;ne &ccedil;&#305;kan veriler</div>
+                        </div>
+                    </div>
+
+                    <div class="db-highlight-list">
+                        <div class="db-highlight-item">
+                            <div class="db-highlight-icon"><i class="bi bi-car-front"></i></div>
+                            <div>
+                                <div class="db-highlight-title">Filoda @Model.AvailableCars m&uuml;sait ara&ccedil; var</div>
+                                <div class="db-highlight-text">M&uuml;saitlik oran&#305; bug&uuml;n a&ccedil;&#305;lacak yeni rezervasyonlar i&ccedil;in g&uuml;&ccedil;l&uuml; bir kapasite sa&#287;l&#305;yor.</div>
+                            </div>
+                        </div>
+                        <div class="db-highlight-item">
+                            <div class="db-highlight-icon"><i class="bi bi-hourglass-split"></i></div>
+                            <div>
+                                <div class="db-highlight-title">@Model.PendingBookings booking beklemede</div>
+                                <div class="db-highlight-text">Onay bekleyen taleplerin erken cevaplanmas&#305; d&ouml;n&uuml;&#351;&uuml;m oran&#305;n&#305; do&#287;rudan etkileyebilir.</div>
+                            </div>
+                        </div>
+                        <div class="db-highlight-item">
+                            <div class="db-highlight-icon"><i class="bi bi-geo-alt"></i></div>
+                            <div>
+                                <div class="db-highlight-title">@Model.TotalLocations aktif lokasyon takip ediliyor</div>
+                                <div class="db-highlight-text">En yo&#287;un lokasyonlar&#305; a&#351;a&#287;&#305;daki karttan h&#305;zl&#305;ca kontrol edebilirsiniz.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="db-col-8">
             <div class="db-panel db-section">
                 <div class="db-section-head">
                     <div>
-                        <div class="db-section-title">Yaklasan Reservationlar</div>
-                        <div class="db-section-subtitle">Pickup tarihine gore en yakin rezervasyonlar</div>
+                        <div class="db-section-title">Yakla&#351;an Reservationlar</div>
+                        <div class="db-section-subtitle">Pickup tarihine g&ouml;re en yak&#305;n rezervasyonlar</div>
                     </div>
                     <span class="db-chip"><i class="bi bi-calendar-week"></i> @Model.TotalReservations toplam reservation</span>
                 </div>
@@ -552,7 +674,7 @@
                         <thead>
                             <tr>
                                 <th>Reservation</th>
-                                <th>Arac / Musteri</th>
+                                <th>Ara&ccedil; / M&uuml;&#351;teri</th>
                                 <th>Pickup</th>
                                 <th>Return</th>
                                 <th>Tutar</th>
@@ -569,6 +691,7 @@
                                         : (reservation.ReservationStatus ?? string.Empty).Contains("tamam", StringComparison.OrdinalIgnoreCase) || (reservation.ReservationStatus ?? string.Empty).Contains("onay", StringComparison.OrdinalIgnoreCase)
                                             ? "success"
                                             : "blue";
+
                                     <tr>
                                         <td>#@reservation.ReservationId</td>
                                         <td>
@@ -577,7 +700,7 @@
                                         </td>
                                         <td>@reservation.PickupDate.ToString("dd.MM.yyyy")</td>
                                         <td>@reservation.ReturnDate.ToString("dd.MM.yyyy")</td>
-                                        <td>@reservation.TotalPrice.ToString("N0") ₺</td>
+                                        <td>@reservation.TotalPrice.ToString("N0") &#8378;</td>
                                         <td><span class="db-badge @reservationBadge">@reservation.ReservationStatus</span></td>
                                     </tr>
                                 }
@@ -594,63 +717,26 @@
             </div>
         </div>
 
-        <div class="db-stack">
+        <div class="db-col-4">
             <div class="db-panel db-section">
                 <div class="db-section-head">
                     <div>
-                        <div class="db-section-title">Hizli Erisim</div>
-                        <div class="db-section-subtitle">Yonetimde en sik kullanilan ekranlar</div>
-                    </div>
-                </div>
-                <div class="db-quick-links">
-                    <a class="db-link" href="/Admin/Car/CarList">
-                        <div>
-                            <strong>Arac Listesi</strong>
-                            <span>Filo yonetimine git</span>
-                        </div>
-                        <i class="bi bi-arrow-up-right"></i>
-                    </a>
-                    <a class="db-link" href="/Admin/Booking/BookingList">
-                        <div>
-                            <strong>Booking Listesi</strong>
-                            <span>Yeni talepleri incele</span>
-                        </div>
-                        <i class="bi bi-arrow-up-right"></i>
-                    </a>
-                    <a class="db-link" href="/Admin/Brand/BrandList">
-                        <div>
-                            <strong>Markalar</strong>
-                            <span>Aktif ve pasif markalari yonet</span>
-                        </div>
-                        <i class="bi bi-arrow-up-right"></i>
-                    </a>
-                    <a class="db-link" href="/Admin/Location/LocationList">
-                        <div>
-                            <strong>Subeler</strong>
-                            <span>Sehir ve lokasyon dagilimini gor</span>
-                        </div>
-                        <i class="bi bi-arrow-up-right"></i>
-                    </a>
-                </div>
-            </div>
-
-            <div class="db-panel db-section">
-                <div class="db-section-head">
-                    <div>
-                        <div class="db-section-title">Kategori Dagilimi</div>
+                        <div class="db-section-title">Kategori Da&#287;&#305;l&#305;m&#305;</div>
                         <div class="db-section-subtitle">En fazla araca sahip kategoriler</div>
                     </div>
                 </div>
+
                 <div class="db-list">
                     @if (topCategories.Any())
                     {
                         foreach (var category in topCategories)
                         {
                             var ratio = Model.TotalCars == 0 ? 0 : (int)Math.Round((double)category.CarCount / Model.TotalCars * 100);
+
                             <div class="db-list-item">
                                 <div>
                                     <div class="db-list-title">@category.CategoryName</div>
-                                    <div class="db-list-meta">@category.CarCount arac</div>
+                                    <div class="db-list-meta">@category.CarCount ara&ccedil;</div>
                                 </div>
                                 <div style="display:flex;align-items:center;gap:12px;">
                                     <div class="db-progress"><span style="width:@ratio%;"></span></div>
@@ -665,14 +751,17 @@
                     }
                 </div>
             </div>
+        </div>
 
+        <div class="db-col-6">
             <div class="db-panel db-section">
                 <div class="db-section-head">
                     <div>
-                        <div class="db-section-title">En Yuksek Gunluk Fiyatli Araclar</div>
-                        <div class="db-section-subtitle">Gunluk gelir potansiyeli yuksek araclar</div>
+                        <div class="db-section-title">En Y&uuml;ksek G&uuml;nl&uuml;k Fiyatl&#305; Ara&ccedil;lar</div>
+                        <div class="db-section-subtitle">G&uuml;nl&uuml;k gelir potansiyeli y&uuml;ksek ara&ccedil;lar</div>
                     </div>
                 </div>
+
                 <div class="db-list">
                     @if (expensiveCars.Any())
                     {
@@ -681,10 +770,10 @@
                             <div class="db-list-item">
                                 <div>
                                     <div class="db-list-title">@car.Brand @car.Model</div>
-                                    <div class="db-list-meta">@car.ModelYear • @car.FuelType • @car.TransmissionType</div>
+                                    <div class="db-list-meta">@car.ModelYear &bull; @car.FuelType &bull; @car.TransmissionType</div>
                                 </div>
                                 <div style="text-align:right;">
-                                    <strong>@car.DailyPrice.ToString("N0") ₺</strong><br />
+                                    <strong>@car.DailyPrice.ToString("N0") &#8378;</strong><br />
                                     <span class="db-muted">@car.PlateNumber</span>
                                 </div>
                             </div>
@@ -692,18 +781,21 @@
                     }
                     else
                     {
-                        <div class="db-muted">Arac verisi bulunmuyor.</div>
+                        <div class="db-muted">Ara&ccedil; verisi bulunmuyor.</div>
                     }
                 </div>
             </div>
+        </div>
 
+        <div class="db-col-6">
             <div class="db-panel db-section">
                 <div class="db-section-head">
                     <div>
-                        <div class="db-section-title">Sehir ve Sube Ozetleri</div>
-                        <div class="db-section-subtitle">Lokasyon yogunlugu</div>
+                        <div class="db-section-title">&#350;ehir ve &#350;ube &Ouml;zetleri</div>
+                        <div class="db-section-subtitle">Lokasyon yo&#287;unlu&#287;u</div>
                     </div>
                 </div>
+
                 <div class="db-list">
                     @if (topCities.Any())
                     {
@@ -712,7 +804,7 @@
                             <div class="db-list-item">
                                 <div>
                                     <div class="db-list-title">@city.City</div>
-                                    <div class="db-list-meta">@city.Count sube</div>
+                                    <div class="db-list-meta">@city.Count &#351;ube</div>
                                 </div>
                                 <span class="db-badge blue">@city.Count</span>
                             </div>
